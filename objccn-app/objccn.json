@@ -202,12 +202,12 @@
   {
   "sectionTitle": "#18 游戏",
   "sectionArticles": [
-                      {"articleTitle": "卷首语", "articleLocation": "issue-17-0"},
-                      {"articleTitle": "设计优雅的移动游戏", "articleLocation": "issue-17-1"},
-                      {"articleTitle": "Metal", "articleLocation": "issue-17-2"},
-                      {"articleTitle": "Scene Kit", "articleLocation": "issue-17-3"},
-                      {"articleTitle": "游戏中的多点互联", "articleLocation": "issue-17-4"},
-                      {"articleTitle": "虚拟音域 - 声音设计的艺术", "articleLocation": "issue-17-5"}
+                      {"articleTitle": "卷首语", "articleLocation": "issue-18-0"},
+                      {"articleTitle": "设计优雅的移动游戏", "articleLocation": "issue-18-1"},
+                      {"articleTitle": "Metal", "articleLocation": "issue-18-2"},
+                      {"articleTitle": "Scene Kit", "articleLocation": "issue-18-3"},
+                      {"articleTitle": "游戏中的多点互联", "articleLocation": "issue-18-4"},
+                      {"articleTitle": "虚拟音域 - 声音设计的艺术", "articleLocation": "issue-18-5"}
                       ]
   },
   
