@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    
+    <title>项目介绍</title>
+    <meta name="description" content="" />
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <meta name="google-site-verification" content="m9cRSZABM-v4ZnQ2oia-QgKq1TvTqbZPkFxzYmi31Jc" />
+    <meta name="baidu-site-verification" content="q04WZj6EQE" />
+
+    <link rel="shortcut icon" href="../assets/images/favicon.png" />
+    
+    <link rel="stylesheet" href="../assets/css/ghostion.min.css" />
+
+    
+    <link rel="stylesheet" href="../assets/css/ghostion.custom.css" />
+
+    
+    <meta name="generator" content="Ghost 0.4" />
+<link rel="alternate" type="application/rss+xml" title="objc中国" href="../rss/index.html">
+<link rel="canonical" href="index.html" />
+</head>
+<body class="post-template page">
+    <div id="at_page_surround">
+        <div id="at_body">
+            
+
+
+<div id="at_header">
+    <div class="row">
+        <div class="medium-4 columns">
+            <div class="at_logo_container">
+                
+                    <a href="../index.html"><img class="at_logo_img" src="../content/images/2014/Mar/logo-1.png" alt="objc中国" />
+                    
+                    <span class="at_logo_text">objc中国</span></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="at_showcase">
+	<div class="at_blog_cover" >
+	    <div class="at_showcase_overlay ">
+			<div class="row">
+				<div class="large-12 large-centered columns">
+					<div class="at_block">
+						<div class="text-center">
+				            
+				            <div class="at_block">
+				                <article class="post page">
+				                    <div class="at_post_header">
+				                        <h1 class="at_post_title">项目介绍</h1>
+				                    </div>
+				                    <div class="at_post_meta">
+				                        <span class="at_featured_post"><span class="fa fa-bookmark"></span> <span>Featured</span></span>
+				                        <span class="at_post_author"><span class="fa fa-user"></span> KooFrank</span>
+				                        <time class="at_post_time" datetime="2014-03-24"><span class="fa fa-calendar"></span> 24 Mar 2014</time>
+				                        <span class="at_post_tags"> </span>
+				                    </div>
+					                <div class="at_post_share">
+					                    <h6 class="at_post_share_title">分享文章</h6>
+					                    <a class="at_post_share_icon" href="http://twitter.com/share?text=%23objc%E4%B8%AD%E5%9B%BD%20%E9%A1%B9%E7%9B%AE%E4%BB%8B%E7%BB%8D&url=http://objccn.io/issue-8-1/"
+					                        onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+					                        <span class="fa fa-twitter-square"></span>
+					                    </a>
+					                    <a class="at_post_share_icon" href="https://www.facebook.com/sharer/sharer.php?u=http://objccn.io/issue-8-1/"
+					                        onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+					                        <span class="fa fa-facebook-square"></span>
+					                    </a>
+					                    <a class="at_post_share_icon" href="http://service.weibo.com/share/share.php?url=http://objccn.io/issue-8-1/&appkey=&title=%23objc%E4%B8%AD%E5%9B%BD%23%20%E9%A1%B9%E7%9B%AE%E4%BB%8B%E7%BB%8D&pic=&ralateUid=&language=zh_cn"
+					                        onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+					                        <span class="fa fa-weibo"></span>
+					                    </a>
+					                </div>
+				                </article>
+				            </div>
+				            
+						</div>
+					</div>
+				</div>
+			</div>
+	    </div>
+	</div>
+</div>
+
+
+<div id="at_mainbody" class="at_post" role="main">
+    <div class="row">
+        <div class="large-12 columns">
+            
+            <div class="at_block">
+                <article class="post page">
+                    <div class="at_post_content">
+                        <h2 id="">初始计划</h2>
+
+<p>我们第一个想法是利用蓝牙信号在室内去操控飞行器。在这个飞机器上搭载 iPhone，这样可以通过获取从室内发送来的一些信号转化为三维坐标来获取它的当前位置。</p>
+
+<p>然而，我们第一实验是用信号的强弱来测量信标和 iPhone 之间的距离，但是结果令人失望。当测量到两到三米多的距离(大约 6 到 10 英尺)的时候发现信号和正常准确的信号相差太远。</p>
+
+<p>最后放弃了这个想法，转而开始寻找替代的方案。</p>
+
+<h2 id="">修订计划</h2>
+
+<p>因为我们不想偏离让飞行器搭载 iPhone 自己导航的这个想法，所以我们决定试一下老的 GPS 设备。显然这个需要我们移动到户外这样才能更好的获取到 GPS 信号。事实证明。冬天在柏林的测试非常的寒冷，甚至有微风也影响了飞行器的飞行。</p>
+
+<p>总体的计划就是有一个 iPhone 可以搭载在飞行器上，然后通过 WiFi 连接它，通过 Core Location 可以知道当前位置和方向然后控制飞行器飞往它的目的地坐标。</p>
+
+<p>为了让这个项目更有趣，我们又添加了一个 iPhone，让这个 iPhone 通过使用新的 multipeer APIs 与搭载在飞行器上的 iPhone 建立联系，并且发送它自己的位置作为飞行器的目的地坐标。搭载 iPhone 的飞行器会朝着另外一个 iPhone 移动，另外通过连接上这个飞行器也可以发送起飞和降落的命令。</p>
+
+<p>制定一个轨道通往 Chris 家，并且让飞行器在这个轨道上飞行，这个让飞行器能够受我们控制的想法很诱人。不幸的是，事情和预期还是有区别的，寒冷的温度和外面的风同样影响了飞行器，以及电池的寿命和我们要在很短时间按下正确的方向。（但是对于 Chris 来说这还不是糟糕的，我们把他的iPhone绑到了飞行器，所以通常我们测试的时候他都追着飞行器，生怕看不到他的 iPhone。）</p>
+
+<h2 id="">飞行器</h2>
+
+<p>在我们的项目中我们使用了标准的 AR Drone 2.0，为了把 iPhone 安装到飞行器上，我们用了一些泡沫塑料裹着 iPhone 然后用胶带绑到飞行器上，最初我们是想把它绑在飞行器的顶部，但是这个不是很稳定。这个飞行器几乎不能搭载任何东西，以至于很轻的 iPhone 的都会很显著的影响飞行的稳定。</p>
+
+<p><img src="http://img.objccn.io/issue-8/iphone-above.jpg" alt="iphone-above" title="" /></p>
+
+<p>但是飞行器起飞后摇晃的很，所以我们决定把iPhone绑在飞行器的底部来降低重心，事实证明，这表现的很好，由于现在飞行器的最下面是 iPhone，我们使用大量的拉链领带来保护 iPhone，让这个飞行器不容易突然坠落。（这也是一种来方法来缓解 Chris 的顾虑）</p>
+
+<p><img src="http://img.objccn.io/issue-8/iphone-below.jpg" alt="iphone-below" title="" /></p>
+
+<h2 id="">导航应用</h2>
+
+<p>就像上面提到的那样，搭载在飞行器上的iPhone的通过 WiFi 连接另外一个 iPhone，通过这个连接我们可以通过 UDP API 来发送导航命令，虽然这一切看上去比较的晦涩，但是一旦我们搞清楚这个原理基础，就会工作的很好。Daniel 在<a href="../issue-8-2.1.html">这篇文章</a>中详细的介绍了 Core Foundation networking 这个类如何使用才能让它工作。</p>
+
+<p>通过使用 iPhone 和飞行器之前的通讯，导航应用也需要处理导航部分内容，这个应用通过 Core Location 来处理它当前位置和方向然后计算它与目的地的距离，你可以通过<a href="../issue-8-3/index.html">这篇文章</a>了解它是如何工作的。</p>
+
+<h2 id="">客户端应用</h2>
+
+<p>这个客户端应用唯一的工作就是发送目的地坐标给搭载飞行器的 iPhone 和一些基础的命令例如起飞和降落。它会通过 multipeer connection 来通知它自己和简单的广播它的位置给所有连接的 peers。</p>
+
+<p><img src="http://img.objccn.io/issue-8/client-app.jpg" alt="connect_map" title="" /></p>
+
+<p>因为我们想有一种方法不用飞行很多次就可以测试整个配置，而且我们也想待在室内，所以我们给这个应用添加了两种模式。第一种模式就是简单的发送地图上的中心位置作为它当前的位置。这种方法我们可以平移地图，模拟改变目的地坐标，另一种模式是通过 Core Location 发送真实的iPhone的位置。</p>
+
+<p>在我们短暂的测试中由于时间的原因我们只使用第一种模式，并且由于恶劣的天气，我们某人追逐飞行器的不能够实现了。</p>
+
+<p>其实这是一个非常有趣的项目，我们实验了很多有趣的APIs。您可以查看后续的关于 <a href="../issue-8-2.1.html">Core Foundation networking</a>，<a href="../issue-8-3/index.html">导航应用</a>和<a href="../issue-8-4.1.html">客户端</a>的文章的具体细节。</p>
+
+<hr />
+
+<p><a href="../issue-8.1.html">话题 #8 下的更多文章</a></p>
+
+<p>原文 <a href="http://www.objc.io/issue-8/the-quadcopter-project.html">The Project</a></p>
+                    </div>
+                    <h3>关于译者</h3>
+                    <div class="at_author">
+                        <div class="row">
+                            <div class="medium-2 columns show-for-medium-up">
+                                <div class="at_author_image">
+                                    <img src="../content/images/2014/Mar/koofrank.jpg" alt="KooFrank">
+                                </div>
+                            </div>
+                            <div class="medium-10 columns">
+                                <div class="at_author_name">
+                                    <h3>KooFrank</h3>
+                                </div>
+                                <div class="at_author_bio">
+                                    <p>iOS开发者，有产品和技术洁癖</p>
+                                    <p><a href="http://koofrank.com">http://koofrank.com</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+
+<div id="at_footer">
+	<div class="row">
+		<div class="large-12 columns text-center">
+			<div class="at_block">
+				<div class="copyright">
+					<span>&copy; 2015 <a href="../index.html">objc中国</a><br />本站由 <a href="http://im.onevcat.com">@onevcat</a> 创建，文章源自 <a href="http://objc.io">objc.io</a>，由 <a href="https://github.com/objccn">objc中国 项目组</a>整理维护</span>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+        </div>
+    </div>
+
+    
+    <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.1.0.min.js"></script>
+    <script>window.jQuery || document.write('<script src="../assets/js/jquery-2.1.0.min.js"><\/script>')</script>
+
+    <script>
+        var ghostionConfig = {
+            site_url:                       "objccn.io",
+            google_fonts_family:            "Open+Sans:400,400italic,700,700italic",
+            google_analytics_tracking_id:   "UA-49045539-1",
+            disqus_shortname:               "objccn"
+        };
+    </script>
+    <script src="../assets/js/ghostion.min.js"></script>
+    
+</body>
+</html>

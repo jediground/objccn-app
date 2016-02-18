@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    
+    <title>为 iOS 建立 Travis CI</title>
+    <meta name="description" content="" />
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <meta name="google-site-verification" content="m9cRSZABM-v4ZnQ2oia-QgKq1TvTqbZPkFxzYmi31Jc" />
+    <meta name="baidu-site-verification" content="q04WZj6EQE" />
+
+    <link rel="shortcut icon" href="../assets/images/favicon.png" />
+    
+    <link rel="stylesheet" href="../assets/css/ghostion.min.css" />
+
+    
+    <link rel="stylesheet" href="../assets/css/ghostion.custom.css" />
+
+    
+    <meta name="generator" content="Ghost 0.4" />
+<link rel="alternate" type="application/rss+xml" title="objc中国" href="../rss/index.html">
+<link rel="canonical" href="index.html" />
+</head>
+<body class="post-template page">
+    <div id="at_page_surround">
+        <div id="at_body">
+            
+
+
+<div id="at_header">
+    <div class="row">
+        <div class="medium-4 columns">
+            <div class="at_logo_container">
+                
+                    <a href="../index.html"><img class="at_logo_img" src="../content/images/2014/Mar/logo-1.png" alt="objc中国" />
+                    
+                    <span class="at_logo_text">objc中国</span></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="at_showcase">
+	<div class="at_blog_cover" >
+	    <div class="at_showcase_overlay ">
+			<div class="row">
+				<div class="large-12 large-centered columns">
+					<div class="at_block">
+						<div class="text-center">
+				            
+				            <div class="at_block">
+				                <article class="post page">
+				                    <div class="at_post_header">
+				                        <h1 class="at_post_title">为 iOS 建立 Travis CI</h1>
+				                    </div>
+				                    <div class="at_post_meta">
+				                        <span class="at_featured_post"><span class="fa fa-bookmark"></span> <span>Featured</span></span>
+				                        <span class="at_post_author"><span class="fa fa-user"></span> 袁欣</span>
+				                        <time class="at_post_time" datetime="2014-04-23"><span class="fa fa-calendar"></span> 23 Apr 2014</time>
+				                        <span class="at_post_tags"> </span>
+				                    </div>
+					                <div class="at_post_share">
+					                    <h6 class="at_post_share_title">分享文章</h6>
+					                    <a class="at_post_share_icon" href="http://twitter.com/share?text=%23objc%E4%B8%AD%E5%9B%BD%20%E4%B8%BA%20iOS%20%E5%BB%BA%E7%AB%8B%20Travis%20CI&url=http://objccn.io/issue-6-5/"
+					                        onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+					                        <span class="fa fa-twitter-square"></span>
+					                    </a>
+					                    <a class="at_post_share_icon" href="https://www.facebook.com/sharer/sharer.php?u=http://objccn.io/issue-6-5/"
+					                        onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+					                        <span class="fa fa-facebook-square"></span>
+					                    </a>
+					                    <a class="at_post_share_icon" href="http://service.weibo.com/share/share.php?url=http://objccn.io/issue-6-5/&appkey=&title=%23objc%E4%B8%AD%E5%9B%BD%23%20%E4%B8%BA%20iOS%20%E5%BB%BA%E7%AB%8B%20Travis%20CI&pic=&ralateUid=&language=zh_cn"
+					                        onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+					                        <span class="fa fa-weibo"></span>
+					                    </a>
+					                </div>
+				                </article>
+				            </div>
+				            
+						</div>
+					</div>
+				</div>
+			</div>
+	    </div>
+	</div>
+</div>
+
+
+<div id="at_mainbody" class="at_post" role="main">
+    <div class="row">
+        <div class="large-12 columns">
+            
+            <div class="at_block">
+                <article class="post page">
+                    <div class="at_post_content">
+                        <p>你是否曾经试着为 iOS 项目搭建一台支持<a href="http://en.wikipedia.org/wiki/Continuous_integration">持续集成</a>的服务器，从我的个人经验而言，这可不是一个轻松的活。首先需要准备一台 Mac 电脑，并安装好全部所需的软件和插件。你要负责管理所有的用户账户，并提供安全保护。你需要授予访问仓库的权限，并配置所有的编译步骤和证书。在项目运行时期，你需要保持服务器的稳健和最新。</p>
+
+<p>最后，原本你想节省的时间，会发现你花费了大量的时间去维护这台服务器。不过如果你的项目托管在 <a href="https://github.com/">GitHub</a>) 上，现在有了新的希望：<a href="https://travis-ci.org/">Travis CI</a>。该服务可以为你的项目提供持续集成的支持，也就意味着它会负责好托管一个项目的所有细节。在 <a href="https://www.ruby-lang.org/">Ruby</a> 的世界中，Travis CI 已久负盛名。从 2013 年 4 月起，Travis 也开始支持 iOS 和 Mac 平台。</p>
+
+<p>在这篇文章中，我将向你展示如何一步步的在项目中集成 Travis。不仅包括项目的编译和单元测试的运行，还包括将应用部署到你所有的测试设备上。为了演示，我在 GitHub 上放了一个<a href="https://github.com/objcio/issue-6-travis-ci">示例项目</a>。在这篇文章的最后，我会教你一些提示：如何用 Travis 去定位程序中的错误。</p>
+
+<h3 id="github">GitHub 集成</h3>
+
+<p>我最喜欢 Travis 的一点就是它与 GitHub 的 Web UI 集成的非常好。例如 pull 请求。Travis 会为每次请求都执行编译操作。如果一切正常，pull 请求在 GitHub 上看起来就像这样：</p>
+
+<p><img src="http://img.objccn.io/issue-6/github_ready_to_merge.jpg"></p>
+
+<p>万一编译不成功，GitHub 页面会修改相应的颜色，给予提醒：</p>
+
+<p><img src="http://img.objccn.io/issue-6/github_merge_with_caution.jpg"></p>
+
+<h2 id="travisgithub">链接 Travis 和 GitHub</h2>
+
+<p>让我们看一下如何将 GitHub 项目与 Travis 链接上。使用 GitHub 账号登录 <a href="https://travis-ci.org/">Travis 站点</a>。对于私有仓库，需要注册一个 <a href="https://magnum.travis-ci.com">Travis 专业版账号</a>。</p>
+
+<p>登录成功后，需要为项目开启 Travis 支持。导航到<a href="https://travis-ci.org/profile">属性页面</a>，该页面列出了所有 GitHub 项目。不过要注意，如果你此后创建了一个新的仓库，要使用 <code>Sync now</code> 按钮进行同步。Travis 只会偶尔更新你的项目列表。</p>
+
+<p><img src="http://img.objccn.io/issue-6/objc_travis_flick.jpg"></p>
+
+<p>现在只需要打开这个开关就可以为你的项目添加 Travis 服务。之后你会看到 Travis 会和 GitHub 项目设置相关联。下一步就是告诉 Travis， 当它收到项目改动通知之后该做什么。</p>
+
+<h2 id="">最简单的项目配置</h2>
+
+<p>Travis CI 需要项目的一些基本信息。在项目的根目录创建一个名叫 <code>.travis.yml</code> 的文件，文件中的内容如下：</p>
+
+<pre><code>language: objective-c
+</code></pre>
+
+<p>Travis 编译器运行在虚拟机环境下。该编译器已经利用 <a href="https://www.ruby-lang.org/en/">Ruby</a>，<a href="http://brew.sh/">Homebrew</a>，<a href="http://cocoapods.org/">CocoaPods</a> 和<a href="https://github.com/jspahrsummers/objc-build-scripts">一些默认的编译脚本</a>进行过<a href="http://about.travis-ci.org/docs/user/osx-ci-environment/">预配置</a>。上述的配置项已经足够编译你的项目了。</p>
+
+<p>预装的编译脚本会分析你的 Xcode 项目，并对每个 target 进行编译。如果所有文件都没有编译错误，并且测试也没有被打断，那么项目就编译成功了。现在可以将相关改动 Push 到 GitHub 中看看能否成功编译。</p>
+
+<p>虽然上述配置过程真的很简单，不过对你的项目不一定适用。这里几乎没有什么文档来指导用户如何配置默认的编译行为。例如，有一次我没有用 <code>iphonesimulator</code> SDK 导致<a href="https://github.com/travis-ci/travis-ci/issues/1322">代码签名错误</a>。如果刚刚那个最简单的配置对你的项目不适用的话，让我们来看一下如何对 Travis 使用自定义的编译命令。</p>
+
+<h2 id="">自定义编译命令</h2>
+
+<p>Travis 使用命令行对项目进行编译。因此，第一步就是使项目能够在本地编译。作为 Xcode 命令行工具的一部分，Apple 提供了 <a href="https://developer.apple.com/library/mac/documentation/Darwin/Reference/ManPages/man1/xcodebuild.1.html"><code>xcodebuild</code></a> 命令。</p>
+
+<p>打开终端并输入：</p>
+
+<pre><code>xcodebuild --help
+</code></pre>
+
+<p>上述命令会列出 <code>xcodebuild</code> 所有可用的参数。如果命令执行失败了，确保<a href="http://stackoverflow.com/a/9329325">命令行工具</a>已经成功安装。一个常见的编译命令看起来是这样的：</p>
+
+<pre><code>xcodebuild -project {project}.xcodeproj -target {target} -sdk iphonesimulator ONLY_ACTIVE_ARCH=NO
+</code></pre>
+
+<p>使用 <code>iphonesimulator</code> SDK 是为了避免签名错误。直到我们稍后引入证书之前，这一步是必须的。通过设置 <code>ONLY_ACTIVE_ARCH=NO</code> 我们可以确保利用模拟器架构编译工程。你也可以设置额外的属性，例如 <code>configuration</code>，输入 <code>man xcodebuild</code> 查看相关文档。</p>
+
+<p>对于使用 <code>CocoaPods</code> 的项目，需要用下面的命令来指定 <code>workspace</code> 和 <code>scheme</code>：</p>
+
+<pre><code>xcodebuild -workspace {workspace}.xcworkspace -scheme {scheme} -sdk iphonesimulator ONLY_ACTIVE_ARCH=NO
+</code></pre>
+
+<p>schemes 是由 Xcode 自动生成的，但这在服务器上不会发生。确保所有的 scheme 都被设为 <code>shared</code> 并加入到仓库中。否则它只会在本地工作而不会被 Travis CI 识别。</p>
+
+<p><img src="http://img.objccn.io/issue-6/objc_shared_schemes.jpg"></p>
+
+<p>我们示例项目下的 <code>.travis.yml</code> 文件现在看起来应该像这样：</p>
+
+<pre><code>language: objective-c
+script: xcodebuild -workspace TravisExample.xcworkspace -scheme TravisExample -sdk iphonesimulator ONLY_ACTIVE_ARCH=NO
+</code></pre>
+
+<h2 id="">运行测试</h2>
+
+<p>对于测试来说，通常使用如下这个命令 (注意 <code>test</code> 属性)：</p>
+
+<pre><code>xcodebuild test -workspace {workspace}.xcworkspace -scheme {test_scheme} -sdk iphonesimulator ONLY_ACTIVE_ARCH=NO
+</code></pre>
+
+<p>不幸的是，<code>xcodebuild</code> 对于 iOS 来说，并不能正确支持 target 和应用程序的测试。<a href="http://www.raingrove.com/2012/03/28/running-ocunit-and-specta-tests-from-command-line.html">这里有一些解决方案</a>，不过我建议使用 Xctool。</p>
+
+<h3 id="xctool">Xctool</h3>
+
+<p><a href="https://github.com/facebook/xctool">Xctool</a> 是来自 Facebook 的命令行工具，它可以简化程序的编译和测试。它的彩色输出信息比 <code>xcodebuild</code> 更加简洁直观。同时还添加了对逻辑测试，应用测试的支持。</p>
+
+<p>Travis 中已经预装了 xctool。要在本地测试的话，需要用 <a href="http://brew.sh/">Homebrew</a> 安装 xctool：</p>
+
+<pre><code>brew update
+brew install xctool
+</code></pre>
+
+<p>xctool 用法非常简单，它使用的参数跟 <code>xcodebuild</code> 相同：</p>
+
+<pre><code>xctool test -workspace TravisExample.xcworkspace -scheme TravisExampleTests -sdk iphonesimulator ONLY_ACTIVE_ARCH=NO
+</code></pre>
+
+<p>一旦相关命令在本地能正常工作，那么就是时候把它们添加到 <code>.travis.yml</code> 中了：</p>
+
+<pre><code>language: objective-c
+script:
+  - xctool -workspace TravisExample.xcworkspace -scheme TravisExample -sdk iphonesimulator ONLY_ACTIVE_ARCH=NO
+  - xctool test -workspace TravisExample.xcworkspace -scheme TravisExampleTests -sdk iphonesimulator ONLY_ACTIVE_ARCH=NO
+</code></pre>
+
+<p>到此为止，介绍的内容对于使用 Travis 的 library 工程来说，已经足够了。我们可以确保项目正常编译并测试通过。但对于 iOS 应用来说，我们希望能在真实的物理设备上进行测试。也就是说我们需要将应用部署到我们的所有测试设备上。当然，我们希望 Travis 能自动完成这项任务。首先，我们需要给程序签名。</p>
+
+<h2 id="">应用程序的签名</h2>
+
+<p>为了在 Travis 中能给程序签名，我们需要准备好所有必须的证书和配置文件。就像每个 iOS 开发人员知道的那样，这可能是最困难的一步。后面，我将写一些脚本在服务器上给应用程序签名。</p>
+
+<h3 id="">证书和配置文件</h3>
+
+<p><strong>1. 苹果全球开发者关系认证</strong></p>
+
+<p>从<a href="http://developer.apple.com/certificationauthority/AppleWWDRCA.cer">苹果官网</a>下载证书，或者从钥匙串中导出。并将其保存到项目的目录 <code>scripts/certs/apple.cer</code> 中。</p>
+
+<p><strong>2. iPhone 发布证书 + 私钥</strong></p>
+
+<p>如果还没有发布证书的话，先创建一个。登录<a href="https://developer.apple.com/account/overview.action">苹果开发者账号</a>，按照步骤，创建一个新的生产环境证书 (<code>Certificates</code> > <code>Production</code> > <code>Add</code> > <code>App Store and Ad Hoc</code>)。然后下载并安装证书。之后，可以在钥匙串中找到它。打开 Mac 中的 <code>钥匙串</code> 应用程序：</p>
+
+<p><img src="http://img.objccn.io/issue-6/dist_cert_keychain.jpg"></p>
+
+<p>右键单击证书，选择 <code>Export...</code> 将证书导出至 <code>scripts/certs/dist.cer</code>。然后导出私钥并保存至 <code>scripts/certs/dist.p12</code>。记得输入私钥的密码。</p>
+
+<p>由于 Travis 需要知道私钥密码，因此我们要把这个密码存储在某个地方。当然，我们不希望以明文的形式存储。我们可以用 <a href="http://about.travis-ci.org/docs/user/build-configuration/#Secure-environment-variables">Travis 的安全环境变量</a>。打开终端，并定位到包含 <code>.travis.yml</code> 文件所在目录。首先用 <code>gem install travis</code> 命令安装 Travis gem。之后，用下面的命令添加密钥密码：</p>
+
+<pre><code>travis encrypt "KEY_PASSWORD={password}" --add
+</code></pre>
+
+<p>上面的命令会安装一个叫做 <code>KEY_PASSWORD</code> 的加密环境变量到 <code>.travis.yml</code> 配置文件中。这样就可以在被 Travis CI 执行的脚本中使用这个变量。</p>
+
+<p><strong>3. iOS 配置文件 (发布)</strong></p>
+
+<p>如果还没有用于发布的配置文件，那么也创建一个新的。根据开发者账号类型，可以选择创建 <a href="https://developer.apple.com/library/ios/documentation/IDEs/Conceptual/AppDistributionGuide/TestingYouriOSApp/TestingYouriOSApp.html">Ad Hoc</a> 或 <a href="https://developer.apple.com/programs/ios/enterprise/gettingstarted/">In House</a> 配置文件 (<code>Provisioning Profiles</code> > <code>Distribution</code> > <code>Add</code> > <code>Ad Hoc</code> or <code>In House</code>)。然后将其下载保存至 <code>scripts/profile/</code> 目录。</p>
+
+<p>由于 Travis 需要访问这个配置文件，所以我们需要将这个文件的名字存储为一个全局环境变量。并将其添加至 <code>.travis.yml</code> 文件的全局环境变量 section 中。例如，如果配置文件的名字是 <code>TravisExample_Ad_Hoc.mobileprovision</code>，那么按照如下进行添加：</p>
+
+<pre><code>env:
+  global:
+  - APP_NAME="TravisExample"
+  - 'DEVELOPER_NAME="iPhone Distribution: {your_name} ({code})"'
+  - PROFILE_NAME="TravisExample_Ad_Hoc"
+</code></pre>
+
+<p>上面还声明了两个环境变量。第三行中的 <code>APP_NAME</code> 通常为项目默认 target 的名字。第四行的 <code>DEVELOPER_NAME</code> 是 Xcode 中，默认 target 里面 <code>Build Settings</code> 的 <code>Code Signing Identity</code> > <code>Release</code> 对应的名字。然后搜索程序的 <code>Ad Hoc</code> 或 <code>In House</code> 配置文件，将其中黑体文字取出。根据设置的不同，括弧中可能不会有任何信息。</p>
+
+<h2 id="">加密证书和配置文件</h2>
+
+<p>如果你的 GitHub 仓库是公开的，你可能希望对证书和配置文件 (里面包含了敏感数据) 进行加密。如果你用的是私有仓库，可以跳至下一节。</p>
+
+<p>首先，我们需要一个密码来对所有的文件进行加密。在我们的示例中，密码为 “foo”，记住在你的工程中设置的密码应该更加复杂。在命令行中，我们使用 <code>openssl</code> 加密所有的敏感文件：</p>
+
+<pre><code>openssl aes-256-cbc -k "foo" -in scripts/profile/TravisExample_Ad_Hoc.mobileprovision -out scripts/profile/TravisExample_Ad_Hoc.mobileprovision.enc -a
+openssl aes-256-cbc -k "foo" -in scripts/certs/dist.cer -out scripts/certs/dist.cer.enc -a
+openssl aes-256-cbc -k "foo" -in scripts/certs/dist.p12 -out scripts/certs/dist.cer.p12 -a
+</code></pre>
+
+<p>通过上面的命令，可以创建出以 <code>.enc</code> 结尾的加密文件。之后可以把原始文件忽略或者移除掉。至少不要把原始文件提交到 GitHub 中，否则原始文件会显示在 GitHub 中。如果你不小心把原始文件提交上去了，那么请看这里<a href="https://help.github.com/articles/remove-sensitive-data">如何解决</a>。</p>
+
+<p>现在，我们的文件已经被加密了，接下来需要告诉 Travis 对文件进行解密。解密过程，需要用到密码。具体使用方法跟之前创建的 <code>KEY_PASSWORD</code> 变量一样：</p>
+
+<pre><code>travis encrypt "ENCRYPTION_SECRET=foo" --add
+</code></pre>
+
+<p>最后，我们需要告诉 Travis 哪些文件需要进行解密。将下面的命令添加到 <code>.travis.yml</code> 文件中的 <code>before-script</code> 部分：</p>
+
+<pre><code>before_script:
+- openssl aes-256-cbc -k "$ENCRYPTION_SECRET" -in scripts/profile/TravisExample_Ad_Hoc.mobileprovision.enc -d -a -out scripts/profile/TravisExample_Ad_Hoc.mobileprovision
+- openssl aes-256-cbc -k "$ENCRYPTION_SECRET" -in scripts/certs/dist.p12.enc -d -a -out scripts/certs/dist.p12
+- openssl aes-256-cbc -k "$ENCRYPTION_SECRET" -in scripts/certs/dist.p12.enc -d -a -out scripts/certs/dist.p12
+</code></pre>
+
+<p>就这样，在 GitHub 上面的文件就安全了，并且 Travis 依旧能读取并使用这些加密后的文件。但是有一个安全问题你需要知道：在 Travis 的编译日志中可能会显示出解密环境变量。不过对 pull 请求来说不会出现。</p>
+
+<h3 id="">添加脚本</h3>
+
+<p>现在我们需要确保证书都导入至 Travis CI 的钥匙串中。为此，我们需要在 <code>scripts</code> 文件夹中添加一个名为 <code>add-key.sh</code> 的文件：</p>
+
+<pre><code>#!/bin/sh
+security create-keychain -p travis ios-build.keychain
+security import ./scripts/certs/apple.cer -k ~/Library/Keychains/ios-build.keychain -T /usr/bin/codesign
+security import ./scripts/certs/dist.cer -k ~/Library/Keychains/ios-build.keychain -T /usr/bin/codesign
+security import ./scripts/certs/dist.p12 -k ~/Library/Keychains/ios-build.keychain -P $KEY_PASSWORD -T /usr/bin/codesign
+mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+cp ./scripts/profile/$PROFILE_NAME.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
+</code></pre>
+
+<p>通过上面的命令创建了一个名为 <code>ios-build</code> 的临时钥匙串，里面包含了所有证书。注意，这里我们使用了 <code>$KEY_PASSWORD</code> 来导入私钥。最后一步是将配置文件拷贝至 <code>Library</code> 文件夹。</p>
+
+<p>创建好文件之后，确保给其授予了可执行的权限：在命令行输入：<code>chmod a+x scripts/add-key.sh</code> 即可。为了正常使用脚本，必须要这样处理一下。</p>
+
+<p>至此，已经导入了所有的证书和配置文件，我们可以开始给应用程序签名了。注意，在给程序签名之前必须对程序进行编译。由于我们需要知道编译结果存储在磁盘的具体位置，我建议在编译命令中使用 <code>OBJROOT</code> 和 <code>SYMROOT</code> 来指定输出目录。另外，为了创建 release 版本，还需要把 SDK 设置为 <code>iphoneos</code>，以及将 configuration 修改为 <code>Release</code>：</p>
+
+<pre><code>xctool -workspace TravisExample.xcworkspace -scheme TravisExample -sdk iphoneos -configuration Release OBJROOT=$PWD/build SYMROOT=$PWD/build ONLY_ACTIVE_ARCH=NO 'CODE_SIGN_RESOURCE_RULES_PATH=$(SDKROOT)/ResourceRules.plist'
+</code></pre>
+
+<p>如果运行了上面的命令，那么编译完成之后，可以在 <code>build/Release-iphoneos</code> 目录找到应用程序的二进制文件。接下来，就可以对其签名，并创建 <code>IPA</code> 文件了。为此，我们创建一个新的脚本：</p>
+
+<pre><code>#!/bin/sh
+if [[ "$TRAVIS_PULL_REQUEST" != "false" ]]; then
+  echo "This is a pull request. No deployment will be done."
+  exit 0
+fi
+if [[ "$TRAVIS_BRANCH" != "master" ]]; then
+  echo "Testing on a branch other than master. No deployment will be done."
+  exit 0
+fi
+
+PROVISIONING_PROFILE="$HOME/Library/MobileDevice/Provisioning Profiles/$PROFILE_NAME.mobileprovision"
+OUTPUTDIR="$PWD/build/Release-iphoneos"
+
+xcrun -log -sdk iphoneos PackageApplication "$OUTPUTDIR/$APPNAME.app" -o "$OUTPUTDIR/$APPNAME.ipa" -sign "$DEVELOPER_NAME" -embed "$PROVISIONING_PROFILE"
+</code></pre>
+
+<p>第二行至第九行非常重要。我们并不希望在某个特性分支上创建新的 release。对 pull 请求也一样的。由于安全环境变量<a href="http://about.travis-ci.org/docs/user/build-configuration/#Secure-environment-variables">被禁用</a>，所以 pull 请求也不会编译。</p>
+
+<p>第十四行，才是真正的签名操作。这个命令会在 <code>build/Release-iphoneos</code> 目录生成 2 个文件：<code>TravisExample.ipa</code> 和 <code>TravisExample.app.dsym</code>。第一个文件包含了分发至手机上的应用程序。<code>dsym</code> 文件包含了二进制文件的调试信息。这个文件对于记录设备上的 crash 信息非常重要。之后当我们部署应用程序的时候，会用到这两个文件。</p>
+
+<p>最后一个脚本是移除之前创建的临时钥匙串，并删除配置文件。虽然这不是必须的，不过这有助于进行本地测试。</p>
+
+<pre><code>#!/bin/sh
+security delete-keychain ios-build.keychain
+rm -f ~/Library/MobileDevice/Provisioning\ Profiles/$PROFILE_NAME.mobileprovision
+</code></pre>
+
+<p>最后一步，我们必须告诉 Travis 什么时候执行这三个脚本。在应用程序编译、签名和清除等之前，需要先添加私钥。在 <code>.travis.yml</code> 文件中添加如下内容： </p>
+
+<pre><code>before_script:
+- ./scripts/add-key.sh
+- ./scripts/update-bundle.sh
+script:
+- xctool -workspace TravisExample.xcworkspace -scheme TravisExample -sdk iphoneos -configuration Release OBJROOT=$PWD/build SYMROOT=$PWD/build ONLY_ACTIVE_ARCH=NO
+after_success:
+- ./scripts/sign-and-upload.sh
+after_script:
+- ./scripts/remove-key.sh
+</code></pre>
+
+<p>完成上面的所有操作之后，我们就可以将所有内容 push 到 GitHub 上，等待 Travis 对应用程序进行签名。我们可以在工程页面下的 Travis 控制台验证是否一切正常。如果一切正常的话，下面来看看如何将签好名的应用程序部署给测试人员。</p>
+
+<h2 id="">部署应用程序</h2>
+
+<p>这里有两个知名的服务可以帮助你发布应用程序：<a href="http://testflightapp.com">TestFlight</a> 和 <a href="http://hockeyapp.net">HockeyApp</a>。不管选择哪个都能够满足需求。就我个人来说，推荐使用 HockeyApp，不过这里我会对这两个服务都做介绍。</p>
+
+<p>首先我们对 <code>sign-and-build.sh</code> 脚本做一个扩充 -- 在里面添加一些 release 记录：</p>
+
+<pre><code>RELEASE_DATE=`date '+%Y-%m-%d %H:%M:%S'`
+RELEASE_NOTES="Build: $TRAVIS_BUILD_NUMBER\nUploaded: $RELEASE_DATE"
+</code></pre>
+
+<p>注意这里使用了一个 Travis 的全局变量 <code>TRAVIS_BUILD_NUMBER</code>。</p>
+
+<h3 id="testflight">TestFlight</h3>
+
+<p>创建一个 <a href="https://testflightapp.com/register/">TestFlight 账号</a>，并配置好应用程序。为了使用 TestFlight 的 API，首先需要获得 <a href="https://testflightapp.com/account/#api">api<em>token</a> 和 <a href="https://testflightapp.com/dashboard/team/edit/?next=/api/doc/">team</em>token</a>。再强调一下，我们需要确保它们是加密的。在命令行中执行如下命令：</p>
+
+<pre><code>travis encrypt "TESTFLIGHT_API_TOKEN={api_token}" --add
+travis encrypt "TESTFLIGHT_TEAM_TOKEN={team_token}" --add
+</code></pre>
+
+<p>现在我们可以调用相应的 API 了。并将下面的内容添加到 <code>sign-and-build.sh</code>:</p>
+
+<pre><code>curl http://testflightapp.com/api/builds.json \
+  -F file="@$OUTPUTDIR/$APPNAME.ipa" \
+  -F dsym="@$OUTPUTDIR/$APPNAME.app.dSYM.zip" \
+  -F api_token="$TESTFLIGHT_API_TOKEN" \
+  -F team_token="$TESTFLIGHT_TEAM_TOKEN" \
+  -F distribution_lists='Internal' \
+  -F notes="$RELEASE_NOTES"
+</code></pre>
+
+<p>千万不要使用 verbose 标记 (<code>-v</code>) -- 这会暴露加密 tokens。</p>
+
+<h3 id="hockeyapp">HockeyApp</h3>
+
+<p>注册一个 <a href="http://hockeyapp.net/plans">HockeyApp 账号</a>，并创建一个新的应用程序。然后在概述页面获取一个 <code>App ID</code>。接下来，我们必须创建一个 API token。打开<a href="https://rink.hockeyapp.net/manage/auth_tokens">这个页面</a>，并创建一个。如果你希望自动的将新版本部署给所有的测试人员，那么请选择 <code>Full Access</code> 版本。</p>
+
+<p>对 App ID 和 token 进行加密：</p>
+
+<pre><code>travis encrypt "HOCKEY_APP_ID={app_id}" --add
+travis encrypt "HOCKEY_APP_TOKEN={api_token}" --add
+</code></pre>
+
+<p>然后在 <code>sign-and-build.sh</code> 文件中调用相关的 API：</p>
+
+<pre><code>curl https://rink.hockeyapp.net/api/2/apps/$HOCKEY_APP_ID/app_versions \
+  -F status="2" \
+  -F notify="0" \
+  -F notes="$RELEASE_NOTES" \
+  -F notes_type="0" \
+  -F ipa="@$OUTPUTDIR/$APPNAME.ipa" \
+  -F dsym="@$OUTPUTDIR/$APPNAME.app.dSYM.zip" \
+  -H "X-HockeyAppToken: $HOCKEY_APP_TOKEN"
+</code></pre>
+
+<p>注意我们还上传了 <code>dsym</code> 文件。如果集成了 <a href="https://testflightapp.com/sdk/ios/doc/">TestFlight</a> 或 <a href="http://hockeyapp.net/releases/">HockeyApp SDK</a>，可以立即收集到易读的 crash 报告。</p>
+
+<h2 id="travis">Travis 故障排除</h2>
+
+<p>使用 Travis 一个月以来，并不总是那么顺畅。知道如何不通过直接访问编译环境就能找出问题是非常重要的。</p>
+
+<p>在写本文的时候，还没有可以下载的虚拟机映像 (VM images) 。如果 Travis 不能正常编译，首先试着在本地重现问题。在本地执行跟 Travis 相同的编译命令：</p>
+
+<pre><code>xctool ...
+</code></pre>
+
+<p>为了调试 shell 脚本，首先需要定义环境变量。我的做法是创建一个新的 shell 脚本来设置所有的环境变量。记得将这个脚本添加到 <code>.gitignore</code> 文件中 -- 因为我们并不希望将该文件公开暴露出去。针对示例工程来说， <code>config.sh</code> 脚本文件看起来是这样的：</p>
+
+<pre><code>#!/bin/bash
+
+# Standard app config
+export APP_NAME=TravisExample
+export DEVELOPER_NAME=iPhone Distribution: Mattes Groeger
+export PROFILE_NAME=TravisExample_Ad_Hoc
+export INFO_PLIST=TravisExample/TravisExample-Info.plist
+export BUNDLE_DISPLAY_NAME=Travis Example CI
+
+# Edit this for local testing only, DON'T COMMIT it:
+export ENCRYPTION_SECRET=...
+export KEY_PASSWORD=...
+export TESTFLIGHT_API_TOKEN=...
+export TESTFLIGHT_TEAM_TOKEN=...
+export HOCKEY_APP_ID=...
+export HOCKEY_APP_TOKEN=...
+
+# This just emulates Travis vars locally
+export TRAVIS_PULL_REQUEST=false
+export TRAVIS_BRANCH=master
+export TRAVIS_BUILD_NUMBER=0
+</code></pre>
+
+<p>为了暴露出所有的环境变量，执行如下命令(确保 <code>config.sh</code> 是可执行的)：</p>
+
+<pre><code>. ./config.sh
+</code></pre>
+
+<p>然后试着运行 <code>echo $APP_NAME</code>，以此检查脚本是否正确。如果正确的话，那么现在我们不用做任何修改，就能在本地运行所有的 shell 脚本了。</p>
+
+<p>如果在本地得到的是不同的编译信息，那么可能是使用了不同的库和 gems。尽量试着将配置信息设置为与 Travis VM 相同的信息。Travis 在<a href="http://about.travis-ci.org/docs/user/osx-ci-environment/">这里</a>列出了其所有安装的软件版本。你也可以在 Travis 的配置文件中添加调试信息得到所有库文件的版本：</p>
+
+<pre><code>gem cocoapod --version
+brew --version
+xctool -version
+xcodebuild -version -sdk
+</code></pre>
+
+<p>在本地安装好与服务器完全相同的软件之后，再重新编译项目。</p>
+
+<p>如果获取到的编译信息仍然不一样，试着将项目 check out 到一个新的目录。并确保所有的缓存都已清空。每次编译程序时，Travis 都会创建一个全新的虚拟机，所以不存在缓存的问题，但在你的本地机器上可能会出现。</p>
+
+<p>一旦在本地重现出和服务器上相同的错误，就可以开始调查具体问题了。当然导致问题的原因取决于具体问题。一般来说，通过 Google 都能找到引起问题的根源。</p>
+
+<p>如果一个问题影响到了 Travis 上其它的项目，那么可能是 Travis 环境配置的原因。我曾经遇到过几次这样的问题 (特别是刚开始时)。如果发生这样的情况试着联系 Travis，取得支持，以我的经验来说，他们的响应非常迅速。</p>
+
+<h2 id="">点评</h2>
+
+<p>Travis CI 跟市面上同类产品相比还是有一些限制。因为 Travis 运行在一个预先配置好的虚拟机上，因此必须为每次编译都安装一遍所有的依赖。这会花费一些额外的时间。不过 Travis 团队已经在着手<a href="http://about.travis-ci.org/docs/user/caching/">提供一种缓存机制</a>解决这个问题了。</p>
+
+<p>在一定程度上，你会依赖于 Travis 所提供的配置。比如你只能使用 Travis 内置的 Xcode 版本进行编译。如果你本地使用的 Xcode 版本较新，你的项目在服务器上可能无法编译通过。如果 Travis 能够为不同的 Xcode 版本都分别设置一个对应虚拟机会就好了。</p>
+
+<p>对于复杂的项目来说，你可能希望把整个编译任务分为编译应用，运行集成测试等等。这样你可以快速获得编译信息而不用等所有的测试都完成。目前 Travis 还<a href="https://github.com/travis-ci/travis-ci/issues/249">没有直接支持</a>有依赖的编译。</p>
+
+<p>当项目被 push 到 GitHub 上时，Travis 会自动触发。不过编译动作不会立即触发，你的项目会被放到一个根据项目所用语言不同而不同的一个<a href="http://about.travis-ci.org/blog/2012-07-27-improving-the-quality-of-service-on-travis-ci/">全局编译队列</a>，不过专业版允许并发编译。</p>
+
+<h2 id="">总结</h2>
+
+<p>Travis CI 提供了一个功能完整的持续集成环境，以进行应用程序的编译、测试和部署。对于开源项目来说，这项服务是完全免费的。很多社区项目都得益于 GitHub 强大的持续集成能力。你可能已经看过如下这样的<a href="http://about.travis-ci.org/docs/user/status-images/">按钮</a>：</p>
+
+<p><img src="https://travis-ci.org/MattesGroeger/TravisExample-iOS.png?branch=master"></p>
+
+<p>对于商业项目，Travis 专业版也能为私有仓库提供快捷、简便的持续集成支持。</p>
+
+<p>如果你还没有用过 Travis，赶紧去试试吧，它棒极了！</p>
+
+<h2 id="">更多链接</h2>
+
+<ul>
+<li><a href="https://github.com/objcio/issue-6-travis-ci">示例工程</a></li>
+<li><a href="http://www.travis-ci.com/">Travis CI</a></li>
+<li><a href="https://magnum.travis-ci.com/">Travis CI 专业版</a></li>
+<li><a href="https://github.com/facebook/xctool">Xctool</a></li>
+<li><a href="http://hockeyapp.net/">HockeyApp</a></li>
+<li><a href="https://testflightapp.com/">TestFlight</a></li>
+</ul>
+
+<hr />
+
+<p><a href="../issue-6/index.html">话题 #6 下的更多文章</a></p>
+
+<p>原文: <a href="http://www.objc.io/issue-6/travis-ci.html">Travis CI for iOS</a></p>
+
+<p>译文 <a href="http://blog.jobbole.com/52116/">objc.io 第6期 为 iOS 建立 Travis CI</a></p>
+
+<p>精细校对 <a href="http://beyondvincent.com/">@BeyondVincent</a></p>
+                    </div>
+                    <h3>关于译者</h3>
+                    <div class="at_author">
+                        <div class="row">
+                            <div class="medium-2 columns show-for-medium-up">
+                                <div class="at_author_image">
+                                    <img src="../content/images/2014/Apr/jason.jpg" alt="袁欣">
+                                </div>
+                            </div>
+                            <div class="medium-10 columns">
+                                <div class="at_author_name">
+                                    <h3>袁欣</h3>
+                                </div>
+                                <div class="at_author_bio">
+                                    <p>关注移动开发；玩一点萨克斯，架子鼓 ；游泳与网球入门者</p>
+                                    <p><a href="http://weibo.com/u/1883102275">http://weibo.com/u/1883102275</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+
+<div id="at_footer">
+	<div class="row">
+		<div class="large-12 columns text-center">
+			<div class="at_block">
+				<div class="copyright">
+					<span>&copy; 2015 <a href="../index.html">objc中国</a><br />本站由 <a href="http://im.onevcat.com">@onevcat</a> 创建，文章源自 <a href="http://objc.io">objc.io</a>，由 <a href="https://github.com/objccn">objc中国 项目组</a>整理维护</span>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+        </div>
+    </div>
+
+    
+    <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.1.0.min.js"></script>
+    <script>window.jQuery || document.write('<script src="../assets/js/jquery-2.1.0.min.js"><\/script>')</script>
+
+    <script>
+        var ghostionConfig = {
+            site_url:                       "objccn.io",
+            google_fonts_family:            "Open+Sans:400,400italic,700,700italic",
+            google_analytics_tracking_id:   "UA-49045539-1",
+            disqus_shortname:               "objccn"
+        };
+    </script>
+    <script src="../assets/js/ghostion.min.js"></script>
+    
+</body>
+</html>

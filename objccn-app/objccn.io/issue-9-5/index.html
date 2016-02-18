@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    
+    <title>字符串渲染</title>
+    <meta name="description" content="" />
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <meta name="google-site-verification" content="m9cRSZABM-v4ZnQ2oia-QgKq1TvTqbZPkFxzYmi31Jc" />
+    <meta name="baidu-site-verification" content="q04WZj6EQE" />
+
+    <link rel="shortcut icon" href="../assets/images/favicon.png" />
+    
+    <link rel="stylesheet" href="../assets/css/ghostion.min.css" />
+
+    
+    <link rel="stylesheet" href="../assets/css/ghostion.custom.css" />
+
+    
+    <meta name="generator" content="Ghost 0.4" />
+<link rel="alternate" type="application/rss+xml" title="objc中国" href="../rss/index.html">
+<link rel="canonical" href="index.html" />
+</head>
+<body class="post-template page">
+    <div id="at_page_surround">
+        <div id="at_body">
+            
+
+
+<div id="at_header">
+    <div class="row">
+        <div class="medium-4 columns">
+            <div class="at_logo_container">
+                
+                    <a href="../index.html"><img class="at_logo_img" src="../content/images/2014/Mar/logo-1.png" alt="objc中国" />
+                    
+                    <span class="at_logo_text">objc中国</span></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="at_showcase">
+	<div class="at_blog_cover" >
+	    <div class="at_showcase_overlay ">
+			<div class="row">
+				<div class="large-12 large-centered columns">
+					<div class="at_block">
+						<div class="text-center">
+				            
+				            <div class="at_block">
+				                <article class="post page">
+				                    <div class="at_post_header">
+				                        <h1 class="at_post_title">字符串渲染</h1>
+				                    </div>
+				                    <div class="at_post_meta">
+				                        <span class="at_featured_post"><span class="fa fa-bookmark"></span> <span>Featured</span></span>
+				                        <span class="at_post_author"><span class="fa fa-user"></span> answer-huang</span>
+				                        <time class="at_post_time" datetime="2014-03-30"><span class="fa fa-calendar"></span> 30 Mar 2014</time>
+				                        <span class="at_post_tags"> </span>
+				                    </div>
+					                <div class="at_post_share">
+					                    <h6 class="at_post_share_title">分享文章</h6>
+					                    <a class="at_post_share_icon" href="http://twitter.com/share?text=%23objc%E4%B8%AD%E5%9B%BD%20%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%B8%B2%E6%9F%93&url=http://objccn.io/issue-9-5/"
+					                        onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+					                        <span class="fa fa-twitter-square"></span>
+					                    </a>
+					                    <a class="at_post_share_icon" href="https://www.facebook.com/sharer/sharer.php?u=http://objccn.io/issue-9-5/"
+					                        onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+					                        <span class="fa fa-facebook-square"></span>
+					                    </a>
+					                    <a class="at_post_share_icon" href="http://service.weibo.com/share/share.php?url=http://objccn.io/issue-9-5/&appkey=&title=%23objc%E4%B8%AD%E5%9B%BD%23%20%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%B8%B2%E6%9F%93&pic=&ralateUid=&language=zh_cn"
+					                        onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+					                        <span class="fa fa-weibo"></span>
+					                    </a>
+					                </div>
+				                </article>
+				            </div>
+				            
+						</div>
+					</div>
+				</div>
+			</div>
+	    </div>
+	</div>
+</div>
+
+
+<div id="at_mainbody" class="at_post" role="main">
+    <div class="row">
+        <div class="large-12 columns">
+            
+            <div class="at_block">
+                <article class="post page">
+                    <div class="at_post_content">
+                        <p>在本期中我们已经讨论了很多关于字符串不同的话题，从编码到本地化再到语法分析。但多数情况下，字符串最终还是需要被绘制到屏幕上供用户查看、交互。这篇文章涵盖了最基本、最好的练习，以及在用户界面上呈现字符串可能遇到的常见陷阱。</p>
+
+<h2 id="">如何将字符串绘制到屏幕上</h2>
+
+<p>简单起见，我们先看看 UIKit 在字符串渲染方面为我们提供了哪些控件。之后我们将讨论一下对于字符串的渲染，iOS 和 OS X 系统中有哪些相似和不同。</p>
+
+<p>UIKit 提供了很多可以在屏幕上显示和编辑文本的类。每一个类都是为特定使用情况准备的，所以为了避免不必要的问题，为你手上的任务挑选正确的工具是非常重要的。</p>
+
+<h2 id="uilabel">UILabel</h2>
+
+<p><a href="https://developer.apple.com/library/ios/documentation/userexperience/conceptual/UIKitUICatalog/UILabel.html"><code>UILabel</code></a> 是将文本绘制到屏幕上最简单的方式。它是 <code>UIView</code> 的一个子类，用来显示少量的<strong>只读</strong>文本。文本可以被展示在一行或多行，如果文本不能适应指定的空间我们还可以使用不同的方式裁剪。尽管 label 使用的方式很简单，但是这里有几个技巧还是值得提一提的。</p>
+
+<p>label 默认只显示一行，但是你可以将 <code>numberOfLines</code> 属性设为其他值来改变这一行为。将它设置为一个大于 <code>1</code> 的值，文本的行数将会被限制为这个指定的值；如果设置为 <code>0</code>，则是告诉 label 不管文本占多少行都显示出来。</p>
+
+<p>通过设置 <code>text</code> 属性，Label 可以显示简单的纯文本，而设置 <code>attributedText</code> 属性则可以让 label 显示富文本。当使用纯文本的时候，你可以使用 label 的 <code>font</code>，<code>textColor</code>，<code>textAlignment</code>，<code>shadowColor</code> 和 <code>shadowOffset</code> 属性改变它的外观，如果你希望改变程序内所有 Label 的风格，你也可以使用 <code>[UILabel appearance]</code> 这个方法来进行全局的更改。</p>
+
+<p>Attributed strings 提供了更加灵活的格式，字符串的不同部分可以使用不同的格式。让我们看看常见布局部分，下面给出  attributed strings 一些示例。（下文“常见布局”那一节给出了具体的关于  Attributed String 的一些例子。）</p>
+
+<p>除了通过上文提到的那些属性来调整 <code>UILabel</code> 的显示风格外，你还可以通过设置 <code>UILabel</code> 的 <code>adjustsFontSizeToWidth</code>，<code>minimumScaleFactor</code>，<code>adjustsLetterSpacingToFitWidth</code> 这 3 个 <code>BOOL</code> 值的属性让 <code>UILabel</code> 根据所显示的文本的内容自动地进行调整。如果你非常在意用户界面的美观，那么你就不要开启这些属性，因为这会使文字的显示效果变得不那么美观，但是有的时候，比如在进行程序不同语言本土化的时候，你会遇到一些很棘手的问题，除了使用这些选项外很难找到别的解决办法。不信的话，你可以打开 iPhone，在设置中把系统语言改为德语，然后你就会发现苹果官方出品的程序里到处都是被压扁变了形的丑陋不堪的文本。这种处理方法并不完美，但有时却很有用。</p>
+
+<p>如果你使用这些选项让 UIKit 压缩你的文本以适配，如果压缩的时候想让文本保持在同一条基线上或需要对齐到左上角，那么你可以定义 <code>baselineAdjustment</code> 属性。然而，这个选项只对单行 label 起作用。</p>
+
+<p>当你使用上述方法让文本自动缩放以适配  UILabel 时，你可以使用 baselineAdjustment 这个属性来调整缩放时文本是水平对齐还是对齐到 Label 的左上角。注意，这个属性仅在单行的  Lable （即  numberOfLines 属性值为1时）中生效。</p>
+
+<h2 id="uitextfield">UITextField</h2>
+
+<p>像 label 一样，<a href="https://developer.apple.com/library/ios/documentation/userexperience/conceptual/UIKitUICatalog/UITextField.html#//apple_ref/doc/uid/TP40012857-UITextField-SW1">text fields</a> 可以处理纯文本或带属性的文本。但 label 只能<strong>显示</strong>文本而已，text field 还可以处理用户的<strong>输入</strong>。然而 text field 只限于单行文本。<code>UITextField</code> 是 <code>UIControl</code> 的一个子类，它会<strong>挂钩 （hook into）</strong>到响应链，并且当用户开始或结束编辑时<strong>分发（deliver）</strong>这些行为消息，如果想要得到更多的控制权，你可以实现 text field 的<a href="https://developer.apple.com/library/ios/documentation/UIKit/Reference/UITextFieldDelegate_Protocol/UITextFieldDelegate/UITextFieldDelegate.html#//apple_ref/occ/intf/UITextFieldDelegate">代理</a>。</p>
+
+<p>Text field 有一系列控制文本输入行为的选项。<code>UITextField</code> 实现了 <a href="https://developer.apple.com/library/ios/documentation/uikit/reference/UITextInputTraits_Protocol/Reference/UITextInputTraits.html"><code>UITextInputTraits</code></a> 协议，这个协议需要你指定键盘外观和操作的各种细节，比如，需要显示哪种键盘，返回按钮的响应事件是什么。</p>
+
+<p>当没有文本输入的时候 Text field 还可以显示一个占位符，在右手边显示一个标准的清除按钮，控制任意左右两个辅助视图。你还可以为其设置一个背景图片，这样我们就可以用一个可变大小的图片为  text field 自定义边框风格了。</p>
+
+<p>但每当你需要输入多行文本的时候，你就需要使用到 <code>UITextField</code> 的大哥了...</p>
+
+<h2 id="uitextview">UITextView</h2>
+
+<p><a href="https://developer.apple.com/library/ios/documentation/userexperience/conceptual/UIKitUICatalog/UITextView.html">Text view</a> 是显示或编辑大量文本的理想选择。 <code>UITextView</code> 是 <code>UIScrollView</code> 的一个子类，所以它能允许用户前后滚动达到处理溢出文本的目的。和 text field 一样， text view 也能处理纯文本和带属性的文本。Text view 也实现了 <a href="https://developer.apple.com/library/ios/documentation/uikit/reference/UITextInputTraits_Protocol/Reference/UITextInputTraits.html"><code>UITextInputTraits</code></a> 协议来控制键盘的行为和外观。</p>
+
+<p>text view 除了处理多行文本的能力外，它最大的卖点就是你可以使用、定制整个 <a href="https://developer.apple.com/Library/ios/documentation/StringsTextFonts/Conceptual/TextAndWebiPhoneOS/CustomTextProcessing/CustomTextProcessing.html">Text Kit</a> 堆栈。你可以为 <a href="https://developer.apple.com/library/ios/documentation/uikit/reference/NSLayoutManager_Class_TextKit/Reference/Reference.html">layout manager</a>、<a href="https://developer.apple.com/library/ios/documentation/uikit/reference/NSTextContainer_Class_TextKit/Reference/Reference.html">text container</a> 或 <a href="https://developer.apple.com/library/ios/documentation/uikit/reference/NSTextStorage_Class_TextKit/Reference/Reference.html">text storage</a> 自定义行为或者替换为你自定义的子类。你可以看看 Max 的这篇 <a href="http://www.objccn.io/issue-5-1/">Text Kit 方面的文章</a>。</p>
+
+<p>不幸的是，<code>UITextView</code> 在 iOS 7 中还有些问题，目前还是 1.0 版本。它是基于 OS X Text Kit 从头开始重新实现的。在 iOS 7 之前，它是基于 Webkit 的，并且功能很少。我们可以看看 <a href="http://petersteinberger.com/blog/2014/fixing-uitextview-on-ios-7/">Peter</a> 和 <a href="http://inessential.com/2014/01/07/uitextview_the_solution">Brent</a> 关于这方面的文章。</p>
+
+<h2 id="mac">Mac中又是什么情况呢？</h2>
+
+<p>现在我们已经讨论过了 UIKit 中基本的 text 类，下面继续解释一下这些类在 AppKit 中结构的不同之处。</p>
+
+<p>首先，AppKit 中并没有类似 <code>UILabel</code> 的控件。而显示文本最基本的类是 <code>NSTextField</code>。我们将 text field 设为不可编辑、不可选择，这样便等同于 iOS 中的 <code>UILabel</code> 了。虽然 <code>NSTextField</code> 听起来类似于 <code>UITextField</code>，但 <code>NSTextField</code> 并不限制于单行文本。</p>
+
+<p><code>NSTextView</code>，换句话说，就是等同于 <code>UITextView</code>，它也为我们揭露了整个 <a href="https://developer.apple.com/library/mac/documentation/TextFonts/Conceptual/CocoaTextArchitecture/Introduction/Introduction.html">Cocoa Text System</a> 堆栈。但它还包含了很多额外的功能。很大的原因是因为 Mac 是一个具有指针设备（鼠标）的电脑。最值得注意的是包含了设置、编辑制表符的标尺。</p>
+
+<h2 id="coretext">Core Text</h2>
+
+<p>上面我们讨论的所有类最终都使用 <a href="https://developer.apple.com/library/mac/documentation/StringsTextFonts/Conceptual/CoreText_Programming/Introduction/Introduction.html">Core Text</a> 布局、绘制真实的符号。Core Text 是一个非常强大的 framework ，它已经超出我们这篇文章讨论的范围。但是如果你曾经需要通过完全自定义的方式绘制文本（例如，贝塞尔曲线），那你需要详细的了解一下。</p>
+
+<p>Core Text 在任何绘图方面都为你提供了充分的灵活性。然而，Core Text 非常难于操作。它是一个复杂的 Core Foundation / C API。Core Text 在排版方面给了你充分的访问权限。</p>
+
+<h2 id="tableview">在 Table View 中显示动态文本</h2>
+
+<p>可能和所有人都打过交道的字符串绘制就是最常见的可变高度的 table view cells。你能在社交媒体应用中见到这种。 table view 的 delegate 有一个方法：<code>tableView:heightForRowAtIndexPath:</code>，这便是用来计算高度的。iOS 7之前，很难通过一种可靠的方式使用它。</p>
+
+<p>在我们的示例中，我们将会在 table view 中显示一列语录：</p>
+
+<p><img src="http://img.objccn.io/issue-9/uitableview-finished.png" alt="Table view with quotes" /></p>
+
+<p>首先，为了实现完全的自定义，我们创建一个 <code>UITableViewCell</code> 的子类。在这个子类中，我们需要亲自为我们的 label 布局：</p>
+
+<pre><code>- (void)layoutSubviews
+{
+    [super layoutSubviews];
+    self.textLabel.frame = CGRectInset(self.bounds, 
+                                       MyTableViewCellInset,
+                                       MyTableViewCellInset);
+}
+</code></pre>
+
+<p><code>MyTableViewCellInset</code> 被定义为一个常量，所以我们可以将它用在 table view 的 delegate 的高度计算中。最简单、准确计算高度的方法是将字符串转换成带属性的字符串，然后计算出带属性字符串的高度。我们使用 table view 的宽度减去两倍的 <code>MyTableViewCellInset</code> 常量（前面和后面的空间）。为了计算真实的高度，我们需要使用  <code>boundingRectWithSize:options:context:</code> 这个方法。</p>
+
+<p>第一个参数是限制 text 大小的。我们只需要关心宽度的限制，因此我们为高度传一个最大值常量 <code>CGFLOAT_MAX</code>。第二个参数是非常重要的：如果你传一个其他值，bounding rect 无疑会出错。如果你想要调整字体缩放或进行追踪，你可以使用第三个参数。最终，一旦我们得到 <code>boundingRect</code>，我们需要再次加上 inset：</p>
+
+<pre><code>- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    CGFloat labelWidth = self.tableView.bounds.size.width - MyTableViewCellInset*2;
+    NSAttributedString *text = [self attributedBodyTextAtIndexPath:indexPath];
+    NSStringDrawingOptions options = NSStringDrawingUsesLineFragmentOrigin |
+                                     NSStringDrawingUsesFontLeading;
+    CGRect boundingRect = [text boundingRectWithSize:CGSizeMake(labelWidth, CGFLOAT_MAX)
+                                             options:options
+                                             context:nil];
+
+    return (CGFloat) (ceil(boundingRect.size.height) + MyTableViewCellInset*2);    
+}
+</code></pre>
+
+<p>对于 bounding rect 的结果还有两件敏感的事情，除非你读了文档，不然这两件事你不一定会知道：返回值 size 是小数，文档中让我们使用 ceil 将结果四舍五入。最终的结果可能是会比实际的大一点。</p>
+
+<p>请注意，因为我们的 text 是纯文本，我们创建的 <code>attributedBodyTextAtIndexPath:</code> 方法也会在 <code>tableView:cellForRowAtIndexPath:</code> 中用到。这样，我们需要确保他们保持同步。</p>
+
+<p>还有，通过阅读文档（如下截图），我们发现 iOS 7 发布后，很多方法都被弃用了。如果你通过查找网页或 StackOverflow，你会发现很多测量字符高度的变通方法。因为苹果对文本框架进行了重大检修（在内部实现中，所有的东西都使用 TextKit 进行绘制了，而不是 WebKit），所以请使用新方法。</p>
+
+<p><img src="http://img.objccn.io/issue-9/deprecated-methods.png" alt="Deprecated string measuring methods" /></p>
+
+<p>另一个动态调整 table view cell 大小的选择就是使用 Auto Layout，你可以在<a href="http://blog.amyworrall.com/post/66085151655/using-auto-layout-to-calculate-table-cell-height">这篇博文</a>中找到更详细的说明。然后你可以利用 contained lables 的 <code>intrinsicContentSize</code>。然而，现在自动布局比手动计算要慢很多。可是对于原型开发，这很完美：它允许你快速调整 constraints 并且移动事物（特别当你 cell 中不止一个控件时这显得特别重要）。一旦你完成产品的设计迭代，然后你就可以用手动布局的方式重新编写代码。</p>
+
+<h2 id="textkitnsattributedstring">使用 Text Kit 和 NSAttributedString 进行布局</h2>
+
+<p>使用 Text Kit，你将会拥有令人惊讶的灵活性来创建专业级别的文本布局。随着这些灵活性带来的是如何组合为数众多的选项来完成复杂的布局。</p>
+
+<p>我们准备给出几个示例并强调一些常见的布局问题，同时给出解决方案。</p>
+
+<h2 id="">经典的文本</h2>
+
+<p>首先，让我们看一些经典的文本。我们将会使用 Jacomy-Régnier 的 <a href="http://www.gutenberg.org/ebooks/27936">Histoire des nombres et de la numération mécanique</a>，并设为 <a href="http://www.myfonts.com/fonts/itc/bodoni-seventy-two/">Bodoni</a> 字体。最终截屏效果如下所示:</p>
+
+<p><img src="http://img.objccn.io/issue-9/Layout-Example-1.png" alt="Layout-Example-1" /></p>
+
+<p>这些都是由 Text Kit 完成的。两段文字之间的装饰也是文本，使用的是 <a href="http://www.myfonts.com/fonts/itc/bodoni-ornaments/">Bodoni Ornaments</a> 字体。</p>
+
+<p>我们为文体风格使用调整好的 text。第一段从最左边开始，接下来的段落都会插入<a href="https://en.wikipedia.org/wiki/Em_space">空格</a>.</p>
+
+<p>这有三种不同的风格：<strong>文体</strong>风格，首行缩进的变化文体风格，装饰物风格。</p>
+
+<p>让我们先设置 <code>body1stAttributes</code>：</p>
+
+<pre><code>CGFloat const fontSize = 15;
+
+NSMutableDictionary *body1stAttributes = [NSMutableDictionary dictionary];
+body1stAttributes[NSFontAttributeName] = [UIFont fontWithName:@"BodoniSvtyTwoITCTT-Book" 
+                                                         size:fontSize];
+NSMutableParagraphStyle *body1stParagraph = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
+body1stParagraph.alignment = NSTextAlignmentJustified;
+body1stParagraph.minimumLineHeight = fontSize + 3;
+body1stParagraph.maximumLineHeight = body1stParagraph.minimumLineHeight;
+body1stParagraph.hyphenationFactor = 0.97;
+body1stAttributes[NSParagraphStyleAttributeName] = body1stParag
+raph;
+</code></pre>
+
+<p>将字体设置为 <code>BodoniSvtyTwoITCTT</code>。这是字体的 PostScript 名。如果想寻找字体名，我们可以使用 <code>+[UIFont familyNames]</code> 首先得到可用的字体系列集合。一个字体系列就是我们所熟知的字型。每个字型或字体系列有一个或多个字体。为了得到这些字体的名字，我们可以使用 <code>+[UIFont fontNamesForFamilyName:]</code>。注意一下，当你处理多样字体时，<code>UIFontDescriptor</code> 类非常有用，比如，当你想要知道一个给定的字体是什么版本的斜体。</p>
+
+<p>许多设置位于 <code>NSParagraphStyle</code>。我们创建一个默认风格的可变拷贝并做些调整。在我们的例子中，我们将会为字体大小加上 3 <a href="https://en.wikipedia.org/wiki/Point_%28typography%29">pt</a>。</p>
+
+<p>接着，我们会为这些段落的属性创建一个拷贝并修改他们来创建 <code>boddyAttributes</code>，（注意，这是我们段落的属性，跟上文的 <code>body1stParagraph</code> 已经不是同一个了）：</p>
+
+<pre><code>NSMutableDictionary *bodyAttributes = [body1stAttributes mutableCopy];
+NSMutableParagraphStyle *bodyParagraph = 
+  [bodyAttributes[NSParagraphStyleAttributeName] mutableCopy];
+bodyParagraph.firstLineHeadIndent = fontSize;
+bodyAttributes[NSParagraphStyleAttributeName] = bodyParagraph;
+</code></pre>
+
+<p>我们简单的创建了一个属性字典的可变拷贝，同时为了改变段落风格我们也需要创建一个可变拷贝。将  <code>firstLineHeadIndent</code> 设为和字体大小一样，我们便会得到想要的<a href="https://en.wikipedia.org/wiki/Em_space">空格缩进</a>。</p>
+
+<p>接着，装饰段落风格：</p>
+
+<pre><code>NSMutableDictionary *ornamentAttributes = [NSMutableDictionary dictionary];
+ornamentAttributes[NSFontAttributeName] = [UIFont fontWithName:@"BodoniOrnamentsITCTT"
+                                                          size:36];
+NSMutableParagraphStyle *ornamentParagraph = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
+ornamentParagraph.alignment = NSTextAlignmentCenter;
+ornamentParagraph.paragraphSpacingBefore = fontSize;
+ornamentParagraph.paragraphSpacing = fontSize;
+ornamentAttributes[NSParagraphStyleAttributeName] = ornamentParagraph;
+</code></pre>
+
+<p>这个很容易理解。我们使用装饰字体并将文本居中对齐。此外，在装饰字符的前后我们都要加空白段落。</p>
+
+<h2 id="">数据表格</h2>
+
+<p>接下来是显示数字的 table。我们想要将分数的小数点对齐显示，即英语中的 “.”：</p>
+
+<p><img src="http://img.objccn.io/issue-9/Layout-Example-2.png" alt="Layout-Example-2" /></p>
+
+<p>为了达到这个目的，我们需要指定  table 将中心停在分隔符上。</p>
+
+<p>对于上面这个示例，我们简单的做一下：</p>
+
+<pre><code>NSCharacterSet *decimalTerminator = [NSCharacterSet 
+  characterSetWithCharactersInString:decimalFormatter.decimalSeparator];
+NSTextTab *decimalTab = [[NSTextTab alloc] 
+   initWithTextAlignment:NSTextAlignmentCenter
+                location:100
+                 options:@{NSTabColumnTerminatorsAttributeName:decimalTerminator}];
+NSTextTab *percentTab = [[NSTextTab alloc] initWithTextAlignment:NSTextAlignmentRight
+                                                        location:200
+                                                         options:nil];
+NSMutableParagraphStyle *tableParagraphStyle = 
+  [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
+tableParagraphStyle.tabStops = @[decimalTab, percentTab];
+</code></pre>
+
+<h2 id="">列表</h2>
+
+<p>另一个常见的使用情况就像 list 这样：</p>
+
+<p><img src="http://img.objccn.io/issue-9/Layout-Example-3.png" alt="Layout-Example-3" /></p>
+
+<p>（图片来自 <a href="http://www.gutenberg.org/ebooks/9097">Robert's Rules of Order</a>，作者为 Henry M. Robert）</p>
+
+<p>缩进相对容易设置。我们需要确保序列号 “(1)” 和 text 或者着重号和 text 之间有一个制表符。然后我们像这样调整段落的风格：</p>
+
+<pre><code>NSMutableDictionary *listAttributes = [bodyAttributes mutableCopy];
+NSMutableParagraphStyle *listParagraph = 
+  [listAttributes[NSParagraphStyleAttributeName] mutableCopy];
+listParagraph.headIndent = fontSize * 3;
+listParagraph.firstLineHeadIndent = fontSize;
+NSTextTab *listTab = [[NSTextTab alloc] initWithTextAlignment:NSTextAlignmentNatural
+                                                     location:fontSize * 3 
+                                                      options:nil];
+listParagraph.tabStops = @[listTab];
+listAttributes[NSParagraphStyleAttributeName] = listParagraph;
+</code></pre>
+
+<p>我们将 <code>headIndent</code> 设置为真实文本的缩进，将 <code>firstLineHeadIndent</code> 设置为我们希望着重号具有的缩进。最终，和 <code>headIndent</code> 一样，我们需要在相同的位置增加一个制表符。着重号后的制表符会确保这行文本从正确的位置开始绘制。</p>
+
+<hr />
+
+<p><a href="../issue-9.1.html">话题 #9 下的更多文章</a></p>
+
+<p>原文 <a href="http://www.objc.io/issue-9/string-rendering.html">String Rendering</a></p>
+
+<p>译文 <a href="http://answerhuang.duapp.com/index.php/2014/03/07/string-rendering/">字符串渲染 - answer_huang</a></p>
+                    </div>
+                    <h3>关于译者</h3>
+                    <div class="at_author">
+                        <div class="row">
+                            <div class="medium-2 columns show-for-medium-up">
+                                <div class="at_author_image">
+                                    <img src="../content/images/2014/Mar/answer_huang.jpg" alt="answer-huang">
+                                </div>
+                            </div>
+                            <div class="medium-10 columns">
+                                <div class="at_author_name">
+                                    <h3>answer-huang</h3>
+                                </div>
+                                <div class="at_author_bio">
+                                    <p>iOS开发者，Python爱好者，创业公司创业中(康大预诊)。个人博客：</p>
+                                    <p><a href="http://answerhuang.duapp.com/">http://answerhuang.duapp.com/</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+
+<div id="at_footer">
+	<div class="row">
+		<div class="large-12 columns text-center">
+			<div class="at_block">
+				<div class="copyright">
+					<span>&copy; 2015 <a href="../index.html">objc中国</a><br />本站由 <a href="http://im.onevcat.com">@onevcat</a> 创建，文章源自 <a href="http://objc.io">objc.io</a>，由 <a href="https://github.com/objccn">objc中国 项目组</a>整理维护</span>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+        </div>
+    </div>
+
+    
+    <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.1.0.min.js"></script>
+    <script>window.jQuery || document.write('<script src="../assets/js/jquery-2.1.0.min.js"><\/script>')</script>
+
+    <script>
+        var ghostionConfig = {
+            site_url:                       "objccn.io",
+            google_fonts_family:            "Open+Sans:400,400italic,700,700italic",
+            google_analytics_tracking_id:   "UA-49045539-1",
+            disqus_shortname:               "objccn"
+        };
+    </script>
+    <script src="../assets/js/ghostion.min.js"></script>
+    
+</body>
+</html>

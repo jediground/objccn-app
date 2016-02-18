@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    
+    <title>MVVM 介绍</title>
+    <meta name="description" content="" />
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <meta name="google-site-verification" content="m9cRSZABM-v4ZnQ2oia-QgKq1TvTqbZPkFxzYmi31Jc" />
+    <meta name="baidu-site-verification" content="q04WZj6EQE" />
+
+    <link rel="shortcut icon" href="../assets/images/favicon.png" />
+    
+    <link rel="stylesheet" href="../assets/css/ghostion.min.css" />
+
+    
+    <link rel="stylesheet" href="../assets/css/ghostion.custom.css" />
+
+    
+    <meta name="generator" content="Ghost 0.4" />
+<link rel="alternate" type="application/rss+xml" title="objc中国" href="../rss/index.html">
+<link rel="canonical" href="index.html" />
+</head>
+<body class="post-template page">
+    <div id="at_page_surround">
+        <div id="at_body">
+            
+
+
+<div id="at_header">
+    <div class="row">
+        <div class="medium-4 columns">
+            <div class="at_logo_container">
+                
+                    <a href="../index.html"><img class="at_logo_img" src="../content/images/2014/Mar/logo-1.png" alt="objc中国" />
+                    
+                    <span class="at_logo_text">objc中国</span></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="at_showcase">
+	<div class="at_blog_cover" >
+	    <div class="at_showcase_overlay ">
+			<div class="row">
+				<div class="large-12 large-centered columns">
+					<div class="at_block">
+						<div class="text-center">
+				            
+				            <div class="at_block">
+				                <article class="post page">
+				                    <div class="at_post_header">
+				                        <h1 class="at_post_title">MVVM 介绍</h1>
+				                    </div>
+				                    <div class="at_post_meta">
+				                        <span class="at_featured_post"><span class="fa fa-bookmark"></span> <span>Featured</span></span>
+				                        <span class="at_post_author"><span class="fa fa-user"></span> 朱宏旭</span>
+				                        <time class="at_post_time" datetime="2014-06-10"><span class="fa fa-calendar"></span> 10 Jun 2014</time>
+				                        <span class="at_post_tags"> </span>
+				                    </div>
+					                <div class="at_post_share">
+					                    <h6 class="at_post_share_title">分享文章</h6>
+					                    <a class="at_post_share_icon" href="http://twitter.com/share?text=%23objc%E4%B8%AD%E5%9B%BD%20MVVM%20%E4%BB%8B%E7%BB%8D&url=http://objccn.io/issue-13-1/"
+					                        onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+					                        <span class="fa fa-twitter-square"></span>
+					                    </a>
+					                    <a class="at_post_share_icon" href="https://www.facebook.com/sharer/sharer.php?u=http://objccn.io/issue-13-1/"
+					                        onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+					                        <span class="fa fa-facebook-square"></span>
+					                    </a>
+					                    <a class="at_post_share_icon" href="http://service.weibo.com/share/share.php?url=http://objccn.io/issue-13-1/&appkey=&title=%23objc%E4%B8%AD%E5%9B%BD%23%20MVVM%20%E4%BB%8B%E7%BB%8D&pic=&ralateUid=&language=zh_cn"
+					                        onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+					                        <span class="fa fa-weibo"></span>
+					                    </a>
+					                </div>
+				                </article>
+				            </div>
+				            
+						</div>
+					</div>
+				</div>
+			</div>
+	    </div>
+	</div>
+</div>
+
+
+<div id="at_mainbody" class="at_post" role="main">
+    <div class="row">
+        <div class="large-12 columns">
+            
+            <div class="at_block">
+                <article class="post page">
+                    <div class="at_post_content">
+                        <p>我于 2011 年在 500px 找到自己的第一份 iOS 开发工作。虽然我已经在大学里做了好几年 iOS 外包开发，但这才是我的一个真正的 iOS 开发工作。我被作为唯一的 iOS 开发者被招聘去实现拥有漂亮设计的 iPad 应用。在短短七周里，我们就发布了 1.0 并持续迭代，添加了更多特性，但从本质上，代码库也变得更加复杂了。</p>
+
+<p>有时我感觉就像我不知道在做什么。虽然我知道自己的设计模式——就像任何好的编程人员那样 —— 但我太接近我在做的产品以至于不能客观地衡量我的架构决策的有效性。当队伍中来了另外一位开发者时，我意识到我们陷入困境了。</p>
+
+<p>从没听过 MVC ？有人称之为 Massive View Controller（重量级视图控制器），这就是我们那时候的感觉。我不打算介绍令人汗颜的细节，但说实在的，如果我不得不再次重来一次，我绝对会做出不同的决策。</p>
+
+<p>我会修改一个关键架构，并将其带入我从那时起就在开发的各种应用，即使用一种叫做 Model-View-ViewModel 的架构替换 Model-View-Controller。</p>
+
+<p>所以，MVVM 到底是什么？与其专注于说明 MVVM 的来历，不如让我们看一个典型的 iOS 是如何构建的，并从那里了解 MVVM：</p>
+
+<p><img src="http://img.objccn.io/issue-13/mvvm1.png" alt="Typical Model-View-Controller setup" /></p>
+
+<p>我们看到的是一个典型的 MVC 设置。Model 呈现数据，View 呈现用户界面，而 View Controller 调节它两者之间的交互。Cool！</p>
+
+<p>稍微考虑一下，虽然 View 和 View Controller 是技术上不同的组件，但它们几乎总是手牵手在一起，成对的。你什么时候看到一个 View 能够与不同 View Controller 配对？或者反过来？所以，为什么不正规化它们的连接呢？</p>
+
+<p><img src="http://img.objccn.io//issue-13/intermediate.png" alt="Intermediate" /></p>
+
+<p>这更准确地描述了你可能已经编写的 MVC 代码。但它并没有做太多事情来解决 iOS 应用中日益增长的重量级视图控制器的问题。在典型的 MVC 应用里，<em>许多</em>逻辑被放在 View Controller 里。它们中的一些确实属于 View Controller，但更多的是所谓的“表示逻辑（presentation logic）”，以 MVVM 属术语来说，就是那些将 Model 数据转换为 View 可以呈现的东西的事情，例如将一个 <code>NSDate</code> 转换为一个格式化过的 <code>NSString</code>。</p>
+
+<p>我们的图解里缺少某些东西，那些使我们可以把所有表示逻辑放进去的东西。我们打算将其称为 “View Model” —— 它位于 View/Controller 与 Model 之间：</p>
+
+<p><img src="http://img.objccn.io//issue-13/mvvm.png" alt="Model-View-ViewModel" /></p>
+
+<p>看起好多了！这个图解准确地描述了什么是 MVVM：一个 MVC 的增强版，我们正式连接了视图和控制器，并将表示逻辑从 Controller 移出放到一个新的对象里，即 View Model。MVVM 听起来很复杂，但它本质上就是一个精心优化的 MVC 架构，而 MVC 你早已熟悉。</p>
+
+<p>现在我们知道了<em>什么</em>是 MVVM，但<em>为什么</em>我们会想要去使用它呢？在 iOS 上使用 MVVM 的动机，对我来说，无论如何，就是它能减少 View Controller 的复杂性并使得表示逻辑更易于测试。通过一些例子，我们将看到它如何达到这些目标。</p>
+
+<p>此处有三个重点是我希望你看完本文能带走的：</p>
+
+<ul>
+<li>MVVM 可以兼容你当下使用的 MVC 架构。</li>
+<li>MVVM 增加你的应用的可测试性。</li>
+<li>MVVM 配合一个绑定机制效果最好。</li>
+</ul>
+
+<p>如我们之前所见，MVVM 基本上就是 MVC 的改进版，所以很容易就能看到它如何被整合到现有使用典型 MVC 架构的应用中。让我们看一个简单的 <code>Person</code> Model 以及相应的 View Controller：</p>
+
+<pre><code>@interface Person : NSObject
+
+- (instancetype)initwithSalutation:(NSString *)salutation firstName:(NSString *)firstName lastName:(NSString *)lastName birthdate:(NSDate *)birthdate;
+
+@property (nonatomic, readonly) NSString *salutation;
+@property (nonatomic, readonly) NSString *firstName;
+@property (nonatomic, readonly) NSString *lastName;
+@property (nonatomic, readonly) NSDate *birthdate;
+
+@end
+</code></pre>
+
+<p>Cool！现在我们假设我们有一个 <code>PersonViewController</code> ，在 <code>viewDidLoad</code> 里，只需要基于它的 <code>model</code> 属性设置一些 Label 即可。</p>
+
+<pre><code>- (void)viewDidLoad {
+    [super viewDidLoad];
+
+    if (self.model.salutation.length &gt; 0) {
+        self.nameLabel.text = [NSString stringWithFormat:@"%@ %@ %@", self.model.salutation, self.model.firstName, self.model.lastName];
+    } else {
+        self.nameLabel.text = [NSString stringWithFormat:@"%@ %@", self.model.firstName, self.model.lastName];
+    }
+
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"EEEE MMMM d, yyyy"];
+    self.birthdateLabel.text = [dateFormatter stringFromDate:model.birthdate];
+}
+</code></pre>
+
+<p>这全都直截了当，标准的 MVC。现在来看看我们如何用一个 View Model 来增强它。</p>
+
+<pre><code>@interface PersonViewModel : NSObject
+
+- (instancetype)initWithPerson:(Person *)person;
+
+@property (nonatomic, readonly) Person *person;
+
+@property (nonatomic, readonly) NSString *nameText;
+@property (nonatomic, readonly) NSString *birthdateText;
+
+@end
+</code></pre>
+
+<p>我们的 View Model 的实现大概如下：</p>
+
+<pre><code>@implementation PersonViewModel
+
+- (instancetype)initWithPerson:(Person *)person {
+    self = [super init];
+    if (!self) return nil;
+
+    _person = person;
+    if (person.salutation.length &gt; 0) {
+        _nameText = [NSString stringWithFormat:@"%@ %@ %@", self.person.salutation, self.person.firstName, self.person.lastName];
+    } else {
+        _nameText = [NSString stringWithFormat:@"%@ %@", self.person.firstName, self.person.lastName];
+    }
+
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"EEEE MMMM d, yyyy"];
+    _birthdateText = [dateFormatter stringFromDate:person.birthdate];
+
+    return self;
+}
+
+@end
+</code></pre>
+
+<p>Cool！我们已经将 <code>viewDidLoad</code> 中的表示逻辑放入我们的 View Model 里了。此时，我们新的 <code>viewDidLoad</code> 就会非常轻量：</p>
+
+<pre><code>- (void)viewDidLoad {
+    [super viewDidLoad];
+
+    self.nameLabel.text = self.viewModel.nameText;
+    self.birthdateLabel.text = self.viewModel.birthdateText;
+}
+</code></pre>
+
+<p>所以，如你所见，并没有对我们的 MVC 架构做太多改变。还是同样的代码，只不过移动了位置。它与 MVC 兼容，带来<a href="../issue-1.1.html">更轻量的 View Controllers</a>。</p>
+
+<p>可测试，嗯？是怎样？好吧，View Controller 是出了名的难以测试，因为它们做了太多事情。在 MVVM 里，我们试着尽可能多的将代码移入 View Model 里。测试 View Controller 就变得容易多了，因为它们不再做一大堆事情，并且 View Model 也非常易于测试。让我们来看看：</p>
+
+<pre><code>SpecBegin(Person)
+    NSString *salutation = @"Dr.";
+    NSString *firstName = @"first";
+    NSString *lastName = @"last";
+    NSDate *birthdate = [NSDate dateWithTimeIntervalSince1970:0];
+
+    it (@"should use the salutation available. ", ^{
+        Person *person = [[Person alloc] initWithSalutation:salutation firstName:firstName lastName:lastName birthdate:birthdate];
+        PersonViewModel *viewModel = [[PersonViewModel alloc] initWithPerson:person];
+        expect(viewModel.nameText).to.equal(@"Dr. first last");
+    });
+
+    it (@"should not use an unavailable salutation. ", ^{
+        Person *person = [[Person alloc] initWithSalutation:nil firstName:firstName lastName:lastName birthdate:birthdate];
+        PersonViewModel *viewModel = [[PersonViewModel alloc] initWithPerson:person];
+        expect(viewModel.nameText).to.equal(@"first last");
+    });
+
+    it (@"should use the correct date format. ", ^{
+        Person *person = [[Person alloc] initWithSalutation:nil firstName:firstName lastName:lastName birthdate:birthdate];
+        PersonViewModel *viewModel = [[PersonViewModel alloc] initWithPerson:person];
+        expect(viewModel.birthdateText).to.equal(@"Thursday January 1, 1970");
+    });
+SpecEnd
+</code></pre>
+
+<p>如果我们没有将这个逻辑移入 View Model，我们将不得不实例化一个完整的 View Controller 以及伴随的 View，然后去比较我们 View 中 Lable 的值。这样做不只是会变成一个麻烦的间接层，而且它只代表了一个十分脆弱的测试。现在，我们可以按意愿自由地修改视图层级而不必担心破坏我们的单元测试。使用 MVVM 带来的对于测试的好处非常清晰，甚至从这个简单的例子来看也可见一斑，而在有更复杂的表示逻辑的情况下，这个好处会更加明显。</p>
+
+<p>注意到在这个简单的例子中， Model 是不可变的，所以我们可以只在初始化的时候指定我们 View Model 的属性。对于可变 Model，我们还需要使用一些绑定机制，这样 View Model 就能在背后的 Model 改变时更新自身的属性。此外，一旦 View Model 上的 Model 发生改变，那 View 的属性也需要更新。Model 的改变应该级联向下通过 View Model 进入 View。</p>
+
+<p>在 OS X 上，我们可以使用 Cocoa 绑定，但在 iOS 上我们并没有这样好的配置可用。我们想到了 KVO（Key-Value Observation），而且它确实做了很伟大的工作。然而，对于一个简单的绑定都需要很大的样板代码，更不用说有许多属性需要绑定了。作为替代，我个人喜欢使用 ReactiveCocoa，但 MVVM 并未强制我们使用 ReactiveCocoa。MVVM 是一个伟大的典范，它自身独立，只是在有一个良好的绑定框架时做得更好。</p>
+
+<p>我们覆盖了不少内容：从普通的 MVC 派生出 MVVM，看它们是如何相兼容的范式，从一个可测试的例子观察 MVVM，并看到 MVVM 在有一个配对的绑定机制时工作得更好。如果你有兴趣学习更多关于 MVVM 的知识，你可以看看<a href="http://www.teehanlax.com/blog/model-view-viewmodel-for-ios/">这篇博客</a>，它用更多细节解释了 MVVM 的好处，或者<a href="http://www.teehanlax.com/blog/krush-ios-architecture/">这一篇</a>关于我们如何在最近的项目里使用 MVVM 获得巨大的成功的文章。我同样还有一个经过完整测试，基于 MVVM 的应用，叫做 <a href="https://github.com/AshFurrow/C-41">C-41</a> ，它是开源的。去看看吧，如果你有任何疑问，请<a href="https://twitter.com/ashfurrow">告诉我</a>。</p>
+
+<hr />
+
+<p><a href="../issue-13.1.html">话题 #13 下的更多文章</a></p>
+
+<p>原文 <a href="http://www.objc.io/issue-13/mvvm.html">Introduction to MVVM</a></p>
+                    </div>
+                    <h3>关于译者</h3>
+                    <div class="at_author">
+                        <div class="row">
+                            <div class="medium-2 columns show-for-medium-up">
+                                <div class="at_author_image">
+                                    <img src="../content/images/2014/Mar/nix.jpg" alt="朱宏旭">
+                                </div>
+                            </div>
+                            <div class="medium-10 columns">
+                                <div class="at_author_name">
+                                    <h3>朱宏旭</h3>
+                                </div>
+                                <div class="at_author_bio">
+                                    <p>留着长发的NIX，用过几年Linux，目前做 iOS 开发。喜欢科幻小说和科幻电影，因为幻想和梦境能带给我异世界体验。偶尔半梦半醒之间会质疑人生的意义，不知活着的所谓。</p>
+                                    <p><a href="https://twitter.com/nixzhu">https://twitter.com/nixzhu</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+
+<div id="at_footer">
+	<div class="row">
+		<div class="large-12 columns text-center">
+			<div class="at_block">
+				<div class="copyright">
+					<span>&copy; 2015 <a href="../index.html">objc中国</a><br />本站由 <a href="http://im.onevcat.com">@onevcat</a> 创建，文章源自 <a href="http://objc.io">objc.io</a>，由 <a href="https://github.com/objccn">objc中国 项目组</a>整理维护</span>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+        </div>
+    </div>
+
+    
+    <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.1.0.min.js"></script>
+    <script>window.jQuery || document.write('<script src="../assets/js/jquery-2.1.0.min.js"><\/script>')</script>
+
+    <script>
+        var ghostionConfig = {
+            site_url:                       "objccn.io",
+            google_fonts_family:            "Open+Sans:400,400italic,700,700italic",
+            google_analytics_tracking_id:   "UA-49045539-1",
+            disqus_shortname:               "objccn"
+        };
+    </script>
+    <script src="../assets/js/ghostion.min.js"></script>
+    
+</body>
+</html>

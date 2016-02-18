@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    
+    <title>View Controller 转场</title>
+    <meta name="description" content="" />
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <meta name="google-site-verification" content="m9cRSZABM-v4ZnQ2oia-QgKq1TvTqbZPkFxzYmi31Jc" />
+    <meta name="baidu-site-verification" content="q04WZj6EQE" />
+
+    <link rel="shortcut icon" href="assets/images/favicon.png" />
+    
+    <link rel="stylesheet" href="assets/css/ghostion.min.css" />
+
+    
+    <link rel="stylesheet" href="assets/css/ghostion.custom.css" />
+
+    
+    <meta name="generator" content="Ghost 0.4" />
+<link rel="alternate" type="application/rss+xml" title="objc中国" href="rss/index.html">
+<link rel="canonical" href="issue-5-3.1.html" />
+</head>
+<body class="post-template page">
+    <div id="at_page_surround">
+        <div id="at_body">
+            
+
+
+<div id="at_header">
+    <div class="row">
+        <div class="medium-4 columns">
+            <div class="at_logo_container">
+                
+                    <a href="index.html"><img class="at_logo_img" src="content/images/2014/Mar/logo-1.png" alt="objc中国" />
+                    
+                    <span class="at_logo_text">objc中国</span></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="at_showcase">
+	<div class="at_blog_cover" >
+	    <div class="at_showcase_overlay ">
+			<div class="row">
+				<div class="large-12 large-centered columns">
+					<div class="at_block">
+						<div class="text-center">
+				            
+				            <div class="at_block">
+				                <article class="post page">
+				                    <div class="at_post_header">
+				                        <h1 class="at_post_title">View Controller 转场</h1>
+				                    </div>
+				                    <div class="at_post_meta">
+				                        <span class="at_featured_post"><span class="fa fa-bookmark"></span> <span>Featured</span></span>
+				                        <span class="at_post_author"><span class="fa fa-user"></span> 方一雄</span>
+				                        <time class="at_post_time" datetime="2014-04-06"><span class="fa fa-calendar"></span> 06 Apr 2014</time>
+				                        <span class="at_post_tags"> </span>
+				                    </div>
+					                <div class="at_post_share">
+					                    <h6 class="at_post_share_title">分享文章</h6>
+					                    <a class="at_post_share_icon" href="http://twitter.com/share?text=%23objc%E4%B8%AD%E5%9B%BD%20View%20Controller%20%E8%BD%AC%E5%9C%BA&url=http://objccn.io/issue-5-3/"
+					                        onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+					                        <span class="fa fa-twitter-square"></span>
+					                    </a>
+					                    <a class="at_post_share_icon" href="https://www.facebook.com/sharer/sharer.php?u=http://objccn.io/issue-5-3/"
+					                        onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+					                        <span class="fa fa-facebook-square"></span>
+					                    </a>
+					                    <a class="at_post_share_icon" href="http://service.weibo.com/share/share.php?url=http://objccn.io/issue-5-3/&appkey=&title=%23objc%E4%B8%AD%E5%9B%BD%23%20View%20Controller%20%E8%BD%AC%E5%9C%BA&pic=&ralateUid=&language=zh_cn"
+					                        onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+					                        <span class="fa fa-weibo"></span>
+					                    </a>
+					                </div>
+				                </article>
+				            </div>
+				            
+						</div>
+					</div>
+				</div>
+			</div>
+	    </div>
+	</div>
+</div>
+
+
+<div id="at_mainbody" class="at_post" role="main">
+    <div class="row">
+        <div class="large-12 columns">
+            
+            <div class="at_block">
+                <article class="post page">
+                    <div class="at_post_content">
+                        <h2 id="">自定义转场动画</h2>
+
+<p>iOS 7 中最让我激动的特性之一就是提供了新的 API 来支持自定义 view contrioller 之间的转场动画。iOS 7 发布之前，我自己写过一些 view controller 之间的转场动画，这是一个比较头疼的过程，而且这种做法并不被苹果完全地支持，尤其是如果你想让这个转场动画有交互式的效果就更难了。</p>
+
+<p>在继续阅读之前，我需要先声明一下：这个 API 是新近才发布的，目前还没有所谓的最佳实践。通常来说，开发者需要探索几个月才能得出关于新 API 的最佳实践。因此请将本文看做对一个新 API 的探索，而非关于这个新 API 的最佳实践介绍。如果您有更好的关于这个 API 的实践，请不吝赐教，我们会把您的实践更新到这篇文章中。</p>
+
+<p>在开始研究新的 API 之间，我们先来看看在 iOS 7 中 navigation controller 之间的默认的行为发生了那些改变：在 navigation controller 中，切换两个 view controller 的动画变得更有交互性。比方说你想要 pop 一个 view controller 出去，你可以用手指从屏幕的左边缘开始拖动，慢慢地把当前的 view controller 向右拖出屏幕去。</p>
+
+<p>接下来，我们来看看这个新 API。很有趣的一个现象是，这部分 API 大量的使用了协议而不是具体的对象。这初看起来有点奇怪，但我个人更喜欢这样的 API 设计，因为这种设计给了我们这些开发者更大的灵活性。下面，让我们来做件简单的事情：在 Navigation Controller 中，实现一个自定义的 push 动画效果（本文中的<a href="https://github.com/objcio/issue5-view-controller-transitions">示例代码</a>托管在 Github）。为了完成这个任务，需要实现 <code>UINavigationControllerDelegate</code> 中的新方法：</p>
+
+<blockquote>
+  <p><span class="secondary radius label">编者注</span> 原文的作者在 Github 上面的示例代码和文章中的代码有一些出入（比如下面这里是 Push，但是在示例代码中是 Pop）。如果需要，您也可以参考这个<a href="https://github.com/FangYiXiong/ViewControllerTransitionsDemo/tree/master/issue5-demo1（Fixed）">修正版示例代码</a>，和文章的代码差异要小一点。</p>
+</blockquote>
+
+<pre><code>- (id&lt;UIViewControllerAnimatedTransitioning&gt;)
+                   navigationController:(UINavigationController *)navigationController
+        animationControllerForOperation:(UINavigationControllerOperation)operation
+                     fromViewController:(UIViewController*)fromVC
+                       toViewController:(UIViewController*)toVC
+{
+    if (operation == UINavigationControllerOperationPush) {
+        return self.animator;
+    }
+    return nil;
+}
+</code></pre>
+
+<p>从上面的代码可以看出，我们可以根据不同的 operation（Push 或 Pop）返回不同的 animator。我们可以把 animator 存到一个属性中，从而在多个 operation 之间实现共享，或者我们也可以为每个 operation 都创建一个新的 animator 对象，这里的灵活性很大。</p>
+
+<p>为了让动画运行起来，我们创建一个自定义类，并且实现 <code>UIViewControllerContextTransitioning</code> 这个协议：</p>
+
+<pre><code>@interface Animator : NSObject &lt;UIViewControllerAnimatedTransitioning&gt;
+
+@end
+</code></pre>
+
+<p>这个协议要求我们实现两个方法，其中一个定义了动画的持续时间：</p>
+
+<pre><code>- (NSTimeInterval)transitionDuration:(id &lt;UIViewControllerContextTransitioning&gt;)transitionContext
+{
+    return 0.25;
+}
+</code></pre>
+
+<p>另一个方法描述整个动画的执行效果：</p>
+
+<pre><code>- (void)animateTransition:(id&lt;UIViewControllerContextTransitioning&gt;)transitionContext
+{
+    UIViewController* toViewController = [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];
+    UIViewController* fromViewController = [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
+    [[transitionContext containerView] addSubview:toViewController.view];
+    toViewController.view.alpha = 0;
+
+    [UIView animateWithDuration:[self transitionDuration:transitionContext] animations:^{
+        fromViewController.view.transform = CGAffineTransformMakeScale(0.1, 0.1);
+        toViewController.view.alpha = 1;
+    } completion:^(BOOL finished) {
+        fromViewController.view.transform = CGAffineTransformIdentity;
+        [transitionContext completeTransition:![transitionContext transitionWasCancelled]];
+
+    }];
+
+}
+</code></pre>
+
+<p>从上面的例子中，你可以看到如何运用协议的：这个方法中通过接受一个类型为 <code>id&lt;UIViewControllerContextTransitioning&gt;</code> 的参数，来获取 transition context。值得注意的是，执行完动画之后，我们需要调用 transitionContext 的 <code>completeTransition:</code> 这个方法来更新 view controller 的状态。剩下的代码和 iOS 7 之前的一样了，我们从 transition context 中得到了需要做转场的两个 view controller，然后使用最简单的 <code>UIView</code> animation 来实现了转场动画。这就是全部代码了，我们已经实现了一个缩放效果的转场动画。</p>
+
+<p>注意，这里只是为 Push 操作实现了自定义效果的转场动画，对于 Pop 操作，还是会使用默认的滑动效果，另外，上面我们实现的转场动画无法交互，下面我们就来看看解决这个问题。</p>
+
+<h2 id="">交互式的转场动画</h2>
+
+<p>想要动画变地可以交互非常简单，我们只需要覆盖另一个 <code>UINavigationControllerDelegate</code> 的方法：</p>
+
+<pre><code>- (id &lt;UIViewControllerInteractiveTransitioning&gt;)navigationController:(UINavigationController*)navigationController
+                          interactionControllerForAnimationController:(id &lt;UIViewControllerAnimatedTransitioning&gt;)animationController
+{
+    return self.interactionController;
+}
+</code></pre>
+
+<p>注意，在非交互式动画效果中，该方法返回 nil。</p>
+
+<p>这里返回的 interaction controller 是 <code>UIPercentDrivenInteractionTransition</code> 类的一个实例，开发者不需要任何配置就可工作。我们创建了一个<strong>拖动手势（Pan Recognizer）</strong>，下面是处理该手势的代码：</p>
+
+<pre><code>if (panGestureRecognizer.state == UIGestureRecognizerStateBegan) {
+    if (location.x &gt;  CGRectGetMidX(view.bounds)) {
+        navigationControllerDelegate.interactionController = [[UIPercentDrivenInteractiveTransition alloc] init];
+        [self performSegueWithIdentifier:PushSegueIdentifier sender:self];
+    }
+} 
+</code></pre>
+
+<blockquote>
+  <p><span class="secondary radius label">编者注</span> 这里的代码有一点示意的意思，和实际代码有些出入，为了尊重原作者，我们没有进行修改，您可以参考原文在 Github 上的<a href="https://github.com/objcio/issue5-view-controller-transitions">示例代码</a>进行对比，也可以参考这个<a href="https://github.com/FangYiXiong/ViewControllerTransitionsDemo/tree/master/issue5-demo1（Fixed）">修正版示例代码</a>。</p>
+</blockquote>
+
+<p>只有当用户从屏幕右半部分开始触摸的时候，我们才把下一次动画效果设置为交互式的（通过设置 <code>interactionController</code> 这个属性来实现），然后执行方法 <code>performSegueWithIdentifier:</code>（如果你不是使用的 storyboards，那么就直接调用 <code>pushViewController...</code> 这类方法）。为了让转场动画持续进行，我们需要调用 interaction controller 的一个方法：</p>
+
+<pre><code>else if (panGestureRecognizer.state == UIGestureRecognizerStateChanged) {
+    CGFloat d = (translation.x / CGRectGetWidth(view.bounds)) * -1;
+    [interactionController updateInteractiveTransition:d];
+} 
+</code></pre>
+
+<p>该方法会根据用户手指拖动的距离计算一个百分比，切换的动画效果也随着这个百分比来走。最酷的是，interaction controller 会和 animation controller 一起协作，我们只使用了简单的 <code>UIView</code> animation 的动画效果，但是interaction controller 却控制了动画的执行进度，我们并不需要把 interaction controller 和 animation controller 关联起来，因为所有这些系统都以一种解耦的方式自动地替我们完成了。</p>
+
+<p>最后，我们需要根据用户手势的停止状态来判断该操作是结束还是取消，并调用 interaction controller 中对应的方法：</p>
+
+<pre><code>else if (panGestureRecognizer.state == UIGestureRecognizerStateEnded) {
+    if ([panGestureRecognizer velocityInView:view].x &lt; 0) {
+        [interactionController finishInteractiveTransition];
+    } else {
+        [interactionController cancelInteractiveTransition];
+    }
+    navigationControllerDelegate.interactionController = nil;
+}
+</code></pre>
+
+<p>注意，当切换完成或者取消的时候，记得把 interaction controller 设置为 nil。因为如果下一次的转场是非交互的， 我们不应该返回这个旧的 interaction controller。</p>
+
+<p>现在我们已经实现了一个完全自定义的可交互的转场动画了。通过简单的手势识别和 UIKit 提供的一个类，用几行代码就达到完成了。对于大部分的应用场景，你读到这儿就够用了，使用上面提到的方法就可以达到你想要的动画效果了。但如果你想更对转场动画或者交互效果进行深度定制，请继续阅读下面一节。</p>
+
+<h3 id="gpuimage">使用 GPUImage 定制动画</h3>
+
+<p>下面我们就来看看如何真正的，彻底的定制动画效果。这一次我们不使用 UIView animation，甚至连 Core Animation 也不用，完全自己来实现所有的动画效果。在 <a href="http://www.macstories.net/featured/a-conversation-with-loren-brichter">Letterpress-style</a> 这个项目中，刚开始我尝试使用 Core Image 来做动画效果，但是在我的 iPhone 4 上，动画的渲染最高只能达到 9 帧/秒，离我想要的 60 帧/秒差得很远。</p>
+
+<p>但是当我使用了 <a href="https://github.com/BradLarson/GPUImage">GPUImage</a> 之后，实现一个非常漂亮的动画变的异常简单。这里我们要实现的转场效果是：两个 view controller 像素化，然后相互消融在一起。实现方法是先对两个 view controller 进行截屏，然后再用 GPUImage 的图片<strong>滤镜（filter）</strong>处理这两张截图。</p>
+
+<p>首先，我们先创建一个自定义类，这个类实现了 <code>UIViewControllerAnimatedTransitioning</code> 和 <code>UIViewControllerInteractiveTransitioning</code> 这两个协议：</p>
+
+<pre><code>@interface GPUImageAnimator : NSObject
+  &lt;UIViewControllerAnimatedTransitioning,
+   UIViewControllerInteractiveTransitioning&gt;
+
+@property (nonatomic) BOOL interactive;
+@property (nonatomic) CGFloat progress;
+
+- (void)finishInteractiveTransition;
+- (void)cancelInteractiveTransition;
+
+@end
+</code></pre>
+
+<p>为了加速动画的运行，我们可以把图片一次加载到 GPU 中，然后所有的处理和绘图都直接在 GPU 上执行，不需要再传送到 CPU 处理（这种数据传输非常慢）。通过使用 GPUImageView，我们就可以直接使用 OpenGL 画图（我们不需要手写 OpenGL 这种底层的代码，只要继续使用 GPUImage 封装好的接口就可以）。</p>
+
+<p>创建<strong>滤镜链（filter chain）</strong>也非常的直观，我们可以直接在样例代码的 <code>setup</code> 方法中看到如何构造它。比较有挑战的是如何让滤镜也“动”起来。GPUImage 没有直接提供给我们动画效果，因此我们需要每渲染一帧就更新一下滤镜来实现动态的滤镜效果。使用 <code>CADisplayLink</code> 可以完成这个工作：</p>
+
+<blockquote>
+  <p><span class="secondary radius label">编者注</span> 原文中的示例代码中缺少了这一章的内容，我在原作者的 Github Gist 上找到了相关的源码，整理之后放到了 Github 上，您可以在<a href="https://github.com/FangYiXiong/ViewControllerTransitionsDemo/tree/master/issue5-demo2（GPUImage）">这里</a>找到它。</p>
+</blockquote>
+
+<pre><code>self.displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(frame:)];
+[self.displayLink addToRunLoop:[NSRunLoop mainRunLoop] forMode:NSRunLoopCommonModes];
+</code></pre>
+
+<p>在 <code>frame</code> 方法中，我们可以根据时间来更新动画进度，并相应地更新滤镜：</p>
+
+<pre><code>- (void)frame:(CADisplayLink*)link
+{
+    self.progress = MAX(0, MIN((link.timestamp - self.startTime) / duration, 1));
+    self.blend.mix = self.progress;
+    self.sourcePixellateFilter.fractionalWidthOfAPixel = self.progress *0.1;
+    self.targetPixellateFilter.fractionalWidthOfAPixel = (1- self.progress)*0.1;
+    [self triggerRenderOfNextFrame];
+}
+</code></pre>
+
+<p>好了，基本上这样就完成了。如果你想要实现交互式的转场效果，那么在这里，就不能使用时间，而是要根据手势来更新动画进度，其他的代码基本差不多。</p>
+
+<p>这个功能非常强大，你可以使用 GPUImage 中任何已有的滤镜，或者写一个自己的 OpenGL <strong>着色器（shader）</strong>来达到你想要的效果。</p>
+
+<h2 id="">结论</h2>
+
+<p>本文只探讨了在 navigation controller 中的两个 view controller 之间的转场动画，但是这些做法在 tab bar controller 或者任何你自己定义的 view controller 容器中也是通用的。另外，在 iOS 7 中，<code>UICollectionViewController</code> 也进行了扩展，现在你可以在布局之间进行自动以及交互的动画切换，背后使用的也是同样的机制。这真是太强大了。</p>
+
+<p>在和 <a href="https://twitter.com/orta">Orta</a> 讨论这个 API 的时候，他提到他已经在大量地使用这些机制以创建更轻量的 view controller。与其在一个 view controller 中维护各种状态，不如再创建一个新的 view controller，使用自定义的转场动画，然后在这个转场动画中来移动你的各种 view。</p>
+
+<h2 id="">扩展阅读</h2>
+
+<ul>
+<li><a href="http://asciiwwdc.com/2013/sessions/218">WWDC: Custom Transitions using View Controllers</a></li>
+<li><a href="http://www.teehanlax.com/blog/custom-uiviewcontroller-transitions/">Custom UIViewController transitions</a></li>
+<li><a href="http://www.doubleencore.com/2013/09/ios-7-custom-transitions/">iOS 7: Custom Transitions</a></li>
+<li><a href="http://whoisryannystrom.com/2013/10/01/View-Controller-Transition-Orientation/">Custom View Controller Transitions with Orientation</a></li>
+</ul>
+
+<hr />
+
+<p><a href="issue-5.1.html">话题 #5 下的更多文章</a></p>
+
+<p>原文 <a href="http://www.objc.io/issue-5/view-controller-transitions.html">View Controller Transitions</a></p>
+                    </div>
+                    <h3>关于译者</h3>
+                    <div class="at_author">
+                        <div class="row">
+                            <div class="medium-2 columns show-for-medium-up">
+                                <div class="at_author_image">
+                                    <img src="content/images/2014/Mar/fangyixiongb__sHeaderImage-1.JPG" alt="方一雄">
+                                </div>
+                            </div>
+                            <div class="medium-10 columns">
+                                <div class="at_author_name">
+                                    <h3>方一雄</h3>
+                                </div>
+                                <div class="at_author_bio">
+                                    <p>iOS程序员，iOS init站长</p>
+                                    <p><a href="http://weibo.com/fangyixiong">http://weibo.com/fangyixiong</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+
+<div id="at_footer">
+	<div class="row">
+		<div class="large-12 columns text-center">
+			<div class="at_block">
+				<div class="copyright">
+					<span>&copy; 2015 <a href="index.html">objc中国</a><br />本站由 <a href="http://im.onevcat.com">@onevcat</a> 创建，文章源自 <a href="http://objc.io">objc.io</a>，由 <a href="https://github.com/objccn">objc中国 项目组</a>整理维护</span>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+        </div>
+    </div>
+
+    
+    <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.1.0.min.js"></script>
+    <script>window.jQuery || document.write('<script src="assets/js/jquery-2.1.0.min.js"><\/script>')</script>
+
+    <script>
+        var ghostionConfig = {
+            site_url:                       "objccn.io",
+            google_fonts_family:            "Open+Sans:400,400italic,700,700italic",
+            google_analytics_tracking_id:   "UA-49045539-1",
+            disqus_shortname:               "objccn"
+        };
+    </script>
+    <script src="assets/js/ghostion.min.js"></script>
+    
+</body>
+</html>

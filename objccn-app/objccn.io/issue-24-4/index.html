@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    
+    <title>音频 API 一览</title>
+    <meta name="description" content="" />
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <meta name="google-site-verification" content="m9cRSZABM-v4ZnQ2oia-QgKq1TvTqbZPkFxzYmi31Jc" />
+    <meta name="baidu-site-verification" content="q04WZj6EQE" />
+
+    <link rel="shortcut icon" href="../assets/images/favicon.png" />
+    
+    <link rel="stylesheet" href="../assets/css/ghostion.min.css" />
+
+    
+    <link rel="stylesheet" href="../assets/css/ghostion.custom.css" />
+
+    
+    <meta name="generator" content="Ghost 0.4" />
+<link rel="alternate" type="application/rss+xml" title="objc中国" href="../rss/index.html">
+<link rel="canonical" href="../issue-24-4.1.html" />
+</head>
+<body class="post-template page">
+    <div id="at_page_surround">
+        <div id="at_body">
+            
+
+
+<div id="at_header">
+    <div class="row">
+        <div class="medium-4 columns">
+            <div class="at_logo_container">
+                
+                    <a href="../index.html"><img class="at_logo_img" src="../content/images/2014/Mar/logo-1.png" alt="objc中国" />
+                    
+                    <span class="at_logo_text">objc中国</span></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="at_showcase">
+	<div class="at_blog_cover" >
+	    <div class="at_showcase_overlay ">
+			<div class="row">
+				<div class="large-12 large-centered columns">
+					<div class="at_block">
+						<div class="text-center">
+				            
+				            <div class="at_block">
+				                <article class="post page">
+				                    <div class="at_post_header">
+				                        <h1 class="at_post_title">音频 API 一览</h1>
+				                    </div>
+				                    <div class="at_post_meta">
+				                        <span class="at_featured_post"><span class="fa fa-bookmark"></span> <span>Featured</span></span>
+				                        <span class="at_post_author"><span class="fa fa-user"></span> Draveness</span>
+				                        <time class="at_post_time" datetime="2015-05-13"><span class="fa fa-calendar"></span> 13 May 2015</time>
+				                        <span class="at_post_tags"> </span>
+				                    </div>
+					                <div class="at_post_share">
+					                    <h6 class="at_post_share_title">分享文章</h6>
+					                    <a class="at_post_share_icon" href="http://twitter.com/share?text=%23objc%E4%B8%AD%E5%9B%BD%20%E9%9F%B3%E9%A2%91%20API%20%E4%B8%80%E8%A7%88&url=http://objccn.io/issue-24-4/"
+					                        onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+					                        <span class="fa fa-twitter-square"></span>
+					                    </a>
+					                    <a class="at_post_share_icon" href="https://www.facebook.com/sharer/sharer.php?u=http://objccn.io/issue-24-4/"
+					                        onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+					                        <span class="fa fa-facebook-square"></span>
+					                    </a>
+					                    <a class="at_post_share_icon" href="http://service.weibo.com/share/share.php?url=http://objccn.io/issue-24-4/&appkey=&title=%23objc%E4%B8%AD%E5%9B%BD%23%20%E9%9F%B3%E9%A2%91%20API%20%E4%B8%80%E8%A7%88&pic=&ralateUid=&language=zh_cn"
+					                        onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+					                        <span class="fa fa-weibo"></span>
+					                    </a>
+					                </div>
+				                </article>
+				            </div>
+				            
+						</div>
+					</div>
+				</div>
+			</div>
+	    </div>
+	</div>
+</div>
+
+
+<div id="at_mainbody" class="at_post" role="main">
+    <div class="row">
+        <div class="large-12 columns">
+            
+            <div class="at_block">
+                <article class="post page">
+                    <div class="at_post_content">
+                        <p>iOS 和 OS X 平台都有一系列操作音频的 API，其中涵盖了从低到高的全部层级。随着时间的推移、平台的增长以及改变，不同 API 的数量可以说有着非常巨大的变化。本文对当前可以使用的 API 以及它们使用的不同目的进行简要的概括。</p>
+
+<h2 id="mediaplayer">Media Player 框架</h2>
+
+<p>Media Player 框架是 iOS 平台上一个用于音频和视频播放的高层级接口，它包含了一个你可以在应用中直接使用的默认的用户界面。你可以使用它来播放用户在 iPod 库中的项目，或者播放本地文件以及网络流。</p>
+
+<p>另外，这个框架也包括了查找用户媒体库中内容的 API，同时还可以配置像是在锁屏界面或者控制中心里的音频控件。</p>
+
+<h2 id="avfoundation">AVFoundation</h2>
+
+<p><code>AVFoundation</code> 是苹果的现代媒体框架，它包含了一些不同的用途的 API 和不同层级的抽象。其中有一些是现代 Objective-C 对于底层 C 语言接口的封装。除了少数的例外情况，<code>AVFoundation</code> 可以同时在 iOS 和 OS X 中使用。</p>
+
+<h3 id="avaudiosession">AVAudioSession</h3>
+
+<p><code>AVAudioSession</code> 是用于 iOS 系统中协调应用程序之间的音频播放的 API 的。例如，当有电话打进来时，音频的播放就会被暂停；在用户启动电影时，音乐的播放就会停止。我们需要使用这些 API 来确保一个应用程序能够正确响应并处理这类事件。</p>
+
+<h3 id="avaudioplayer">AVAudioPlayer</h3>
+
+<p>这个高层级的 API 为你提供一个简单的接口，用来播放本地或者内存中的音频。这是一个无界面的音频播放器 (也就是说没有提供 UI 元素)，使用起来也很直接简单。它不适用于网络音频流或者低延迟的实时音频播放。如果这些问题都不需要担心，那么 <code>AVAudioPlayer</code> 可能就是正确的选择。音频播放器的 API 也为我们带来了一些额外的功能，比如循环播放、获取音频的音量强度等等。</p>
+
+<h3 id="avaudiorecorder">AVAudioRecorder</h3>
+
+<p>作为与 <code>AVAudioPlayer</code> 相对应的 API，<code>AVAudioRecorder</code> 是将音频录制为文件的最简单的方法。除了用一个音量计接受音量的峰值和平均值以外，这个 API 简单粗暴，但要是你的使用场景很简单的话，这可能恰恰就是你想要的方法。</p>
+
+<h3 id="avplayer">AVPlayer</h3>
+
+<p><code>AVPlayer</code> 与上面提到的 API 相比，提供了更多的灵活性和可控性。它基于 <code>AVPlayerItem</code> 和 <code>AVAsset</code>，为你提供了颗粒度更细的权限来获取资源，比如选择指定的音轨。它还通过 <code>AVQueuePlayer</code> 子类支持播放列表，而且你可以控制这些资源是否能够通过 AirPlay 发送。</p>
+
+<p>与 <code>AVAudioPlayer</code> 最主要的区别是，<code>AVPlayer</code> 对来自网络的流媒体资源的 “开箱即用” 支持。这增加了处理播放状态的复杂性，但是你可以使用 KVO 来观测所有的状态参数来解决这个问题。</p>
+
+<h3 id="avaudioengine">AVAudioEngine</h3>
+
+<p><code>AVAudioEngine</code> 是播放和录制的 Objective-C 接口。它提供了以前需要深入到 Audio Toolbox 框架的 C API 才能做的控制 (例如一些实时音频任务)。该音频引擎 API 对底层的 API 建立了优秀的接口。如果你不得不处理底层的问题，你仍然可以使用 Audio Toolbox 框架。</p>
+
+<p>这个 API 的基本概念是建立一个音频的节点图，从源节点 (播放器和麦克风) 以及过处理 (overprocessing) 节点 (混音器和效果器) 到目标节点 (硬件输出)。每一个节点都具有一定数量的输入和输出总线，同时这些总线也有良好定义的数据格式。这种结构使得它非常的灵活和强大。而且它集成了音频单元 (audio unit)。</p>
+
+<h2 id="audiounit">Audio Unit 框架</h2>
+
+<p>Audio Unit 框架是一个底层的 API；所有 iOS 中的音频技术都构建在 Audio Unit 这个框架之上。音频单元是用来加工音频数据的插件。一个音频单元链叫做音频处理图。</p>
+
+<p>如果你需要非常低的延迟 (如 VoIP 或合成乐器)、回声消除、混音或者音调均衡的话，你可能需要直接使用音频单元，或者自己写一个音频单元。但是其中的大部分工作可以使用 <code>AVAudioEngine</code> 的 API 来完成。如果你不得不写自己的音频单元的话，你可以将它们与 <code>AVAudioUnit</code> 节点一起集成在 <code>AVAudioEngine</code> 处理图中。</p>
+
+<h3 id="">跨应用程序音频</h3>
+
+<p>Audio Unit 的 API 可以在 iOS 中进行跨应用音频。音频流 (和 MIDI 命令) 可以在应用程序之间发送。比如说：一个应用程序可以提供音频的效果器或者滤波器。另一个应用程序可以将它的音频发送到第一个应用程序中，并使用其中的音频效果器处理音频。被过滤的音频又会被实时地发送回原来的应用程序中。 CoreAudioKit 提供了一个简单的跨应用程序的音频界面。</p>
+
+<h2 id="apis">其他 APIs</h2>
+
+<h3 id="openal">OpenAL</h3>
+
+<p><a href="https://en.wikipedia.org/wiki/OpenAL">OpenAL</a> 是一个跨平台的 API。它提供了位置 (3D) 和低延迟的音频服务。它主要用于跨平台游戏的开发。它有意地模仿了 OpenGL 中 API 的风格。</p>
+
+<h3 id="midi">MIDI</h3>
+
+<p>在 iOS 上，Core MIDI 和 CoreAudioKit 可以被用来使应用程序表现为 MIDI 设备。在 OS X 上，Music Sequencing 服务提供了基于 MIDI 的控制和对音乐数据访问的权限。Core MIDI 服务为服务器和驱动程序提供了支持。</p>
+
+<h3 id="">更多</h3>
+
+<ul>
+<li>在 OS X 中，最基本的音频接口就是 <code>NSBeep()</code>，它能够简单地播放系统中的声音。</li>
+<li><code>NSSound</code> 类为 OS X 提供了用于播放声音的简单接口，与 iOS 中的 <code>AVAudioPlayer</code> 在概念上基本类似。</li>
+<li>所有的通知 API，包括 iOS 中的本地通知或者推送通知、OS X 中的 <code>NSUserNotification</code> 以及 CloudKit 通知，都可以播放声音。</li>
+<li>Audio Toolbox 框架是强大的，但是它的层级却非常的低。在过去，它基于 C++ 所编写，但是其大多数的功能现在都可以通过 <code>AVFoundation</code> 实现。</li>
+<li>QTKit 和 QuickTime 框架现在已经过时了，它们不应该被用在以后的开发中。我们应该使用 <code>AVFoundation</code> (和 AVKit) 来代替它们。</li>
+</ul>
+
+<hr />
+
+<p><a href="http://www.objccn.io/issue-24">话题 #24 下的更多文章</a></p>
+
+<p>原文 <a href="http://www.objc.io/issue-24/audio-api-overview.html">Audio API Overview</a></p>
+                    </div>
+                    <h3>关于译者</h3>
+                    <div class="at_author">
+                        <div class="row">
+                            <div class="medium-2 columns show-for-medium-up">
+                                <div class="at_author_image">
+                                    <img src="../content/images/2015/May/Draveness.jpg" alt="Draveness">
+                                </div>
+                            </div>
+                            <div class="medium-10 columns">
+                                <div class="at_author_name">
+                                    <h3>Draveness</h3>
+                                </div>
+                                <div class="at_author_bio">
+                                    <p>一直都在填坑</p>
+                                    <p><a href="http://deltax.me">http://deltax.me</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+
+<div id="at_footer">
+	<div class="row">
+		<div class="large-12 columns text-center">
+			<div class="at_block">
+				<div class="copyright">
+					<span>&copy; 2015 <a href="../index.html">objc中国</a><br />本站由 <a href="http://im.onevcat.com">@onevcat</a> 创建，文章源自 <a href="http://objc.io">objc.io</a>，由 <a href="https://github.com/objccn">objc中国 项目组</a>整理维护</span>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+        </div>
+    </div>
+
+    
+    <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.1.0.min.js"></script>
+    <script>window.jQuery || document.write('<script src="../assets/js/jquery-2.1.0.min.js"><\/script>')</script>
+
+    <script>
+        var ghostionConfig = {
+            site_url:                       "objccn.io",
+            google_fonts_family:            "Open+Sans:400,400italic,700,700italic",
+            google_analytics_tracking_id:   "UA-49045539-1",
+            disqus_shortname:               "objccn"
+        };
+    </script>
+    <script src="../assets/js/ghostion.min.js"></script>
+    
+</body>
+</html>

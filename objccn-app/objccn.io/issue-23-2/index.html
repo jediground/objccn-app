@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    
+    <title>Core Image 和视频</title>
+    <meta name="description" content="" />
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <meta name="google-site-verification" content="m9cRSZABM-v4ZnQ2oia-QgKq1TvTqbZPkFxzYmi31Jc" />
+    <meta name="baidu-site-verification" content="q04WZj6EQE" />
+
+    <link rel="shortcut icon" href="../assets/images/favicon.png" />
+    
+    <link rel="stylesheet" href="../assets/css/ghostion.min.css" />
+
+    
+    <link rel="stylesheet" href="../assets/css/ghostion.custom.css" />
+
+    
+    <meta name="generator" content="Ghost 0.4" />
+<link rel="alternate" type="application/rss+xml" title="objc中国" href="../rss/index.html">
+<link rel="canonical" href="index.html" />
+</head>
+<body class="post-template page">
+    <div id="at_page_surround">
+        <div id="at_body">
+            
+
+
+<div id="at_header">
+    <div class="row">
+        <div class="medium-4 columns">
+            <div class="at_logo_container">
+                
+                    <a href="../index.html"><img class="at_logo_img" src="../content/images/2014/Mar/logo-1.png" alt="objc中国" />
+                    
+                    <span class="at_logo_text">objc中国</span></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="at_showcase">
+	<div class="at_blog_cover" >
+	    <div class="at_showcase_overlay ">
+			<div class="row">
+				<div class="large-12 large-centered columns">
+					<div class="at_block">
+						<div class="text-center">
+				            
+				            <div class="at_block">
+				                <article class="post page">
+				                    <div class="at_post_header">
+				                        <h1 class="at_post_title">Core Image 和视频</h1>
+				                    </div>
+				                    <div class="at_post_meta">
+				                        <span class="at_featured_post"><span class="fa fa-bookmark"></span> <span>Featured</span></span>
+				                        <span class="at_post_author"><span class="fa fa-user"></span> 高考这件小事</span>
+				                        <time class="at_post_time" datetime="2015-04-16"><span class="fa fa-calendar"></span> 16 Apr 2015</time>
+				                        <span class="at_post_tags"> </span>
+				                    </div>
+					                <div class="at_post_share">
+					                    <h6 class="at_post_share_title">分享文章</h6>
+					                    <a class="at_post_share_icon" href="http://twitter.com/share?text=%23objc%E4%B8%AD%E5%9B%BD%20Core%20Image%20%E5%92%8C%E8%A7%86%E9%A2%91&url=http://objccn.io/issue-23-2/"
+					                        onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+					                        <span class="fa fa-twitter-square"></span>
+					                    </a>
+					                    <a class="at_post_share_icon" href="https://www.facebook.com/sharer/sharer.php?u=http://objccn.io/issue-23-2/"
+					                        onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+					                        <span class="fa fa-facebook-square"></span>
+					                    </a>
+					                    <a class="at_post_share_icon" href="http://service.weibo.com/share/share.php?url=http://objccn.io/issue-23-2/&appkey=&title=%23objc%E4%B8%AD%E5%9B%BD%23%20Core%20Image%20%E5%92%8C%E8%A7%86%E9%A2%91&pic=&ralateUid=&language=zh_cn"
+					                        onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+					                        <span class="fa fa-weibo"></span>
+					                    </a>
+					                </div>
+				                </article>
+				            </div>
+				            
+						</div>
+					</div>
+				</div>
+			</div>
+	    </div>
+	</div>
+</div>
+
+
+<div id="at_mainbody" class="at_post" role="main">
+    <div class="row">
+        <div class="large-12 columns">
+            
+            <div class="at_block">
+                <article class="post page">
+                    <div class="at_post_content">
+                        <p>在这篇文章中，我们将研究如何将 Core Image 应用到实时视频上去。我们会看两个例子：首先，我们把这个效果加到相机拍摄的影片上去。之后，我们会将这个影响作用于拍摄好的视频文件。它也可以做到离线渲染，它会把渲染结果返回给视频，而不是直接显示在屏幕上。两个例子的完整源代码，请点击<a href="https://github.com/objcio/core-image-video">这里</a>。</p>
+
+<h2 id="">总览</h2>
+
+<p>当涉及到处理视频的时候，性能就会变得非常重要。而且了解黑箱下的原理 —— 也就是 Core Image 是如何工作的 —— 也很重要，这样我们才能达到足够的性能。在 GPU 上面做尽可能多的工作，并且最大限度的减少 GPU 和 CPU 之间的数据传送是非常重要的。之后的例子中，我们将看看这个细节。</p>
+
+<p>想对 Core Image 有个初步认识的话，可以读读 Warren 的这篇文章 <a href="../issue-21-6/index.html">Core Image 介绍</a>。我们将使用 <a href="../issue-16-4/index.html">Swift 的函数式 API</a> 中介绍的基于 <code>CIFilter</code> 的 API 封装。想要了解更多关于 AVFoundation 的知识，可以看看本期话题中 <a href="../issue-23-1/index.html">Adriaan 的文章</a>，还有话题 #21 中的 <a href="../issue-21-3/index.html">iOS 上的相机捕捉</a>。</p>
+
+<h2 id="opengles">优化资源的 OpenGL ES</h2>
+
+<p>CPU 和 GPU 都可以运行 Core Image，我们将会在 <a href="index.html#cpuvsgpu">下面</a> 详细介绍这两个的细节。在这个例子中，我们要使用 GPU，我们做如下几样事情。</p>
+
+<p>我们首先创建一个自定义的 <code>UIView</code>，它允许我们把 Core Image 的结果直接渲染成 OpenGL。我们可以新建一个 <code>GLKView</code> 并且用一个 <code>EAGLContext</code> 来初始化它。我们需要指定 OpenGL ES 2 作为渲染 API，在这两个例子中，我们要自己触发 drawing 事件 (而不是在 <code>-drawRect:</code> 中触发)，所以在初始化 GLKView 的时候，我们将 <code>enableSetNeedsDisplay</code> 设置为 false。之后我们有可用新图像的时候，我们需要主动去调用 <code>-display</code>。</p>
+
+<p>在这个视图里，我们保持一个对 <code>CIContext</code> 的引用，它提供一个桥梁来连接我们的 Core Image 对象和 OpenGL 上下文。我们创建一次就可以一直使用它。这个上下文允许 Core Image 在后台做优化，比如缓存和重用纹理之类的资源等。重要的是这个上下文我们一直在重复使用。</p>
+
+<p>上下文中有一个方法，<code>-drawImage:inRect:fromRect:</code>，作用是绘制出来一个 <code>CIImage</code>。如果你想画出来一个完整的图像，最容易的方法是使用图像的 <code>extent</code>。但是请注意，这可能是无限大的，所以一定要事先裁剪或者提供有限大小的矩形。一个警告：因为我们处理的是 Core Image，绘制的目标以像素为单位，而不是点。由于大部分新的 iOS 设备配备 Retina 屏幕，我们在绘制的时候需要考虑这一点。如果我们想填充整个视图，最简单的办法是获取视图边界，并且按照屏幕的 scale 来缩放图片 (Retina 屏幕的 scale 是 2)。</p>
+
+<p>完整的代码示例在这里：<a href="https://github.com/objcio/core-image-video/blob/master/CoreImageVideo/CoreImageView.swift">CoreImageView.swift</a></p>
+
+<h2 id="">从相机获取像素数据</h2>
+
+<p>对于 AVFoundation 如何工作的概述，请看 <a href="../issue-23-1/index.html">Adriaan 的文章</a> 和 Matteo 的文章 <a href="../issue-21-3/index.html">iOS 上的相机捕捉</a>。对于我们而言，我们想从镜头获得 raw 格式的数据。我们可以通过创建一个 <code>AVCaptureDeviceInput</code> 对象来选定一个摄像头。使用 <code>AVCaptureSession</code>，我们可以把它连接到一个 <code>AVCaptureVideoDataOutput</code>。这个 data output 对象有一个遵守 <code>AVCaptureVideoDataOutputSampleBufferDelegate</code> 协议的代理对象。这个代理每一帧将接收到一个消息：</p>
+
+<pre><code class="swift">func captureOutput(captureOutput: AVCaptureOutput!,  
+                   didOutputSampleBuffer: CMSampleBuffer!,
+                   fromConnection: AVCaptureConnection!) {
+</code></pre>
+
+<p>我们将用它来驱动我们的图像渲染。在我们的示例代码中，我们已经将配置，初始化以及代理对象都打包到了一个叫做 <code>CaptureBufferSource</code> 的简单接口中去。我们可以使用前置或者后置摄像头以及一个回调来初始化它。对于每个样本缓存区，这个回调都会被调用，并且参数是缓冲区和对应摄像头的 transform：</p>
+
+<pre><code class="swift">source = CaptureBufferSource(position: AVCaptureDevicePosition.Front) {  
+   (buffer, transform) in
+   ...
+}
+</code></pre>
+
+<p>我们需要对相机返回的数据进行变换。无论你如何转动 iPhone，相机的像素数据的方向总是相同的。在我们的例子中，我们将 UI 锁定在竖直方向，我们希望屏幕上显示的图像符合照相机拍摄时的方向，为此我们需要后置摄像头拍摄出的图片旋转 -π/2。前置摄像头需要旋转 -π/2 并且加一个镜像效果。我们可以用一个 <code>CGAffineTransform</code> 来表达这种变换。请注意如果 UI 是不同的方向 (比如横屏)，我们的变换也将是不同的。还要注意，这种变换的代价其实是非常小的，因为它是在 Core Image 渲染管线中完成的。</p>
+
+<p>接着，要把 <code>CMSampleBuffer</code> 转换成 <code>CIImage</code>，我们首先需要将它转换成一个 <code>CVPixelBuffer</code>。我们可以写一个方便的初始化方法来为我们做这件事：</p>
+
+<pre><code class="swift">extension CIImage {  
+    convenience init(buffer: CMSampleBuffer) {
+        self.init(CVPixelBuffer: CMSampleBufferGetImageBuffer(buffer))
+    }
+}
+</code></pre>
+
+<p>现在我们可以用三个步骤来处理我们的图像。首先，把我们的 <code>CMSampleBuffer</code> 转换成 <code>CIImage</code>，并且应用一个形变，使图像旋转到正确的方向。接下来，我们用一个 <code>CIFilter</code> 滤镜来得到一个新的 <code>CIImage</code> 输出。我们使用了 <a href="../issue-16-4/index.html">Florian 的文章</a> 提到的创建滤镜的方式。在这个例子中，我们使用色调调整滤镜，并且传入一个依赖于时间而变化的调整角度。最终，我们使用之前定义的 View，通过 <code>CIContext</code> 来渲染 <code>CIImage</code>。这个流程非常简单，看起来是这样的：</p>
+
+<pre><code class="swift">source = CaptureBufferSource(position: AVCaptureDevicePosition.Front) {  
+  [unowned self] (buffer, transform) in
+    let input = CIImage(buffer: buffer).imageByApplyingTransform(transform)
+    let filter = hueAdjust(self.angleForCurrentTime)
+    self.coreImageView?.image = filter(input)
+}
+</code></pre>
+
+<p>当你运行它时，你可能会因为如此低的 CPU 使用率感到吃惊。这其中的奥秘是 GPU 做了几乎所有的工作。尽管我们创建了一个 <code>CIImage</code>，应用了一个滤镜，并输出一个 <code>CIImage</code>，最终输出的结果是一个 <em>promise</em>：直到实际渲染才会去进行计算。一个 <code>CIImage</code> 对象可以是黑箱里的很多东西，它可以是 GPU 算出来的像素数据，也可以是如何创建像素数据的一个说明 (比如使用一个滤镜生成器)，或者它也可以是直接从 OpenGL 纹理中创建出来的图像。</p>
+
+<p>下面是演示视频</p>
+
+<p><video style="display:block;max-width:100%;height:auto;border:0;" controls="1"> <br />
+  <source src="http://img.objccn.io/issue-23/camera.m4v"></source>
+</video></p>
+
+<h2 id="">从影片中获取像素数据</h2>
+
+<p>我们可以做的另一件事是通过 Core Image 把这个滤镜加到一个视频中。和实时拍摄不同，我们现在从影片的每一帧中生成像素缓冲区，在这里我们将采用略有不同的方法。对于相机，它会推送每一帧给我们，但是对于已有的影片，我们使用拉取的方式：通过 display link，我们可以向 AVFoundation 请求在某个特定时间的一帧。</p>
+
+<p>display link 对象负责在每帧需要绘制的时候给我们发送消息，这个消息是按照显示器的刷新频率同步进行发送的。这通常用来做 <a href="../issue-12-6/index.html">自定义动画</a>，但也可以用来播放和操作视频。我们要做的第一件事就是创建一个 <code>AVPlayer</code> 和一个视频输出：</p>
+
+<pre><code class="swift">player = AVPlayer(URL: url)  
+videoOutput = AVPlayerItemVideoOutput(pixelBufferAttributes: pixelBufferDict)  
+player.currentItem.addOutput(videoOutput)  
+</code></pre>
+
+<p>接下来，我们要创建 display link。方法很简单，只要创建一个 <code>CADisplayLink</code> 对象，并将其添加到 run loop。</p>
+
+<pre><code class="swift">let displayLink = CADisplayLink(target: self, selector: "displayLinkDidRefresh:")  
+displayLink.addToRunLoop(NSRunLoop.mainRunLoop(), forMode: NSRunLoopCommonModes)  
+</code></pre>
+
+<p>现在，唯一剩下的就是在 <code>displayLinkDidRefresh:</code> 调用的时候获取视频每一帧。首先，我们获取当前的时间，并且将它转换成当前播放项目里的时间比。然后我们询问 <code>videoOutput</code>，如果当前时间有一个可用的新的像素缓存区，我们把它复制一下并且调用回调方法：</p>
+
+<pre><code class="swift">func displayLinkDidRefresh(link: CADisplayLink) {  
+    let itemTime = videoOutput.itemTimeForHostTime(CACurrentMediaTime())
+    if videoOutput.hasNewPixelBufferForItemTime(itemTime) {
+        let pixelBuffer = videoOutput.copyPixelBufferForItemTime(itemTime, itemTimeForDisplay: nil)
+        consumer(pixelBuffer)
+    }
+}
+</code></pre>
+
+<p>我们从一个视频输出获得的像素缓冲是一个 <code>CVPixelBuffer</code>，我们可以把它直接转换成 <code>CIImage</code>。正如上面的例子，我们会加上一个滤镜。在这个例子里，我们将组合多个滤镜：我们使用一个万花筒的效果，然后用渐变遮罩把原始图像和过滤图像相结合，这个操作是非常轻量级的。</p>
+
+<p><video style="display:block;max-width:100%;height:auto;border:0;" controls="1"> <br />
+  <source src="http://img.objccn.io/issue-23/video.m4v"></source>
+</video></p>
+
+<h2 id="">创意地使用滤镜</h2>
+
+<p>大家都知道流行的照片效果。虽然我们可以将这些应用到视频，但 Core Image 还可以做得更多。</p>
+
+<p>Core Image 里所谓的滤镜有不同的类别。其中一些是传统的类型，输入一张图片并且输出一张新的图片。但有些需要两个 (或者更多) 的输入图像并且混合生成一张新的图像。另外甚至有完全不输入图片，而是基于参数的生成图像的滤镜。</p>
+
+<p>通过混合这些不同的类型，我们可以创建意想不到的效果。</p>
+
+<h3 id="">混合图片</h3>
+
+<p>在这个例子中，我们使用这些东西：</p>
+
+<p><img src="http://img.objccn.io/issue-23/combining-filters.svg" alt="Combining filters" width="620px" height="186px"></p>
+
+<p>上面的例子可以将图像的一个圆形区域像素化。</p>
+
+<p>它也可以创建交互，我们可以使用触摸事件来改变所产生的圆的位置。</p>
+
+<p><a href="https://developer.apple.com/library/mac/documentation/GraphicsImaging/Reference/CoreImageFilterReference/index.html">Core Image Filter Reference</a> 按类别列出了所有可用的滤镜。请注意，有一部分只能用在 OS X。</p>
+
+<p>生成器和渐变滤镜可以不需要输入就能生成图像。它们很少自己单独使用，但是作为蒙版的时候会非常强大，就像我们例子中的 <code>CIBlendWithMask</code> 那样。</p>
+
+<p>混合操作和 <code>CIBlendWithAlphaMask</code> 还有 <code>CIBlendWithMask</code> 允许将两个图像合并成一个。</p>
+
+<p><a name="cpuvsgpu"></a>  </p>
+
+<h2 id="cpuvsgpu">CPU vs. GPU</h2>
+
+<p>我们在话题 #3 的文章，<a href="../issue-3-1.1.html">绘制像素到屏幕上</a>里，介绍了 iOS 和 OS X 的图形栈。需要注意的是 CPU 和 GPU 的概念，以及两者之间数据的移动方式。</p>
+
+<p>在处理实时视频的时候，我们面临着性能的挑战。</p>
+
+<p>首先，我们需要能在每一帧的时间内处理完所有的图像数据。我们的样本中采用 24 帧每秒的视频，这意味着我们有 41 毫秒 (1/24 秒) 的时间来解码，处理以及渲染每一帧中的百万像素。</p>
+
+<p>其次，我们需要能够从 CPU 或者 GPU 上面得到这些数据。我们从视频文件读取的字节数最终会到达 CPU 里。但是这个数据还需要移动到 GPU 上，以便在显示器上可见。</p>
+
+<h3 id="">避免转移</h3>
+
+<p>一个非常致命的问题是，在渲染管线中，代码可能会把图像数据在 CPU 和 GPU 之间来回移动好几次。确保像素数据仅在一个方向移动是很重要的，应该保证数据只从 CPU 移动到 GPU，如果能让数据完全只在 GPU 上那就更好。</p>
+
+<p>如果我们想渲染 24 fps 的视频，我们有 41 毫秒；如果我们渲染 60 fps 的视频，我们只有 16 毫秒，如果我们不小心从 GPU 下载了一个像素缓冲到 CPU 里，然后再上传回 GPU，对于一张全屏的 iPhone 6 图像来说，我们在每个方向将要移动 3.8 MB 的数据，这将使帧率无法达标。</p>
+
+<p>当我们使用 <code>CVPixelBuffer</code> 时，我们希望这样的流程：</p>
+
+<p><img src="http://img.objccn.io/issue-23/flow.svg" alt="Flow of image data" width="620px" height="232px"></p>
+
+<p><code>CVPixelBuffer</code> 是基于 CPU 的 (见下文)，我们用 <code>CIImage</code> 来包装它。构建滤镜链不会移动任何数据；它只是建立了一个流程。一旦我们绘制图像，我们使用了基于 EAGL 上下文的 Core Image 上下文，而这个 EAGL 上下文也是 GLKView 进行图像显示所使用的上下文。EAGL 上下文是基于 GPU 的。请注意，我们是如何只穿越 GPU-CPU 边界一次的，这是至关重要的部分。</p>
+
+<h3 id="">工作和目标</h3>
+
+<p>Core Image 的图形上下文可以通过两种方式创建：使用 <code>EAGLContext</code> 的 GPU 上下文，或者是基于 CPU 的上下文。</p>
+
+<p>这个定义了 Core Image 工作的地方，也就是像素数据将被处理的地方。与工作区域无关，基于 GPU 和基于 CPU 的图形上下文都可以通过执行 <code>createCGImage(…)</code>，<code>render(_, toBitmap, …)</code> 和 <code>render(_, toCVPixelBuffer, …)</code>，以及相关的命令来向 CPU 进行渲染。</p>
+
+<p>重要的是要理解如何在 CPU 和 GPU 之间移动像素数据，或者是让数据保持在 CPU 或者 GPU 里。将数据移过这个边界是需要很大的代价的。</p>
+
+<h3 id="">缓冲区和图像</h3>
+
+<p>在我们的例子中，我们使用了几个不同的<strong>缓冲区</strong>和<strong>图像</strong>。这可能有点混乱。这样做的原因很简单，不同的框架对于这些“图像”有不同的用途。下面有一个快速总览，以显示哪些是以基于 CPU 或者基于 GPU 的：</p>
+
+<table><thead>  
+<tr>  
+<th>类</th>  
+<th>描述</th>  
+</tr>  
+</thead><tbody>  
+<tr>  
+<td>CIImage</td>  
+<td>它们可以代表两种东西：图像数据或者生成图像数据的流程。</td>  
+</tr>  
+<tr>  
+<td></td>  
+<td>CIFilter 的输出非常轻量。它只是如何被创建的描述，并不包含任何实际的像素数据。</td>  
+</tr>  
+<tr>  
+<td></td>  
+<td>如果输出时图像数据的话，它可能是纯像素的 <code>NSData</code>，一个 <code>CGImage</code>， 一个 <code>CVPixelBuffer</code>，或者是一个 OpenGL 纹理</td>  
+</tr>  
+<tr>  
+<td>CVImageBuffer</td>  
+<td>这是 <code>CVPixelBuffer</code> (CPU) 和 <code>CVOpenGLESTexture</code> (GPU) 的抽象父类.</td>  
+</tr>  
+<tr>  
+<td>CVPixelBuffer</td>  
+<td>Core Video 像素缓冲 (Pixel Buffer) 是基于 CPU 的。</td>  
+</tr>  
+<tr>  
+<td>CMSampleBuffer</td>  
+<td>Core Media 采样缓冲 (Sample Buffer) 是 <code>CMBlockBuffer</code> 或者 <code>CVImageBuffer</code> 的包装，也包括了元数据。</td>  
+</tr>  
+<tr>  
+<td>CMBlockBuffer</td>  
+<td>Core Media 区块缓冲 (Block Buffer) 是基于 GPU 的</td>  
+</tr>  
+</tbody></table>
+
+<p>需要注意的是 <code>CIImage</code> 有很多方便的方法，例如，从 JPEG 数据加载图像或者直接加载一个 <code>UIImage</code> 对象。在后台，这些将会使用一个基于 <code>CGImage</code> 的 <code>CIImage</code> 来进行处理。</p>
+
+<h2 id="">结论</h2>
+
+<p>Core Image 是操纵实时视频的一大利器。只要你适当的配置下，性能将会是强劲的 —— 只要确保 CPU 和 GPU 之间没有数据的转移。创意地使用滤镜，你可以实现一些非常炫酷的效果，神马简单色调，褐色滤镜都弱爆啦。所有的这些代码都很容易抽象出来，深入了解下不同的对象的作用区域 (GPU 还是 CPU) 可以帮助你提高代码的性能。</p>
+
+<hr />
+
+<p><a href="http://www.objccn.io/issue-23">话题 #23 下的更多文章</a></p>
+
+<p>原文 <a href="http://www.objc.io/issue-23/core-image-video.html">Core Image and Video</a></p>
+                    </div>
+                    <h3>关于译者</h3>
+                    <div class="at_author">
+                        <div class="row">
+                            <div class="medium-2 columns show-for-medium-up">
+                                <div class="at_author_image">
+                                    <img src="../content/images/2015/Apr/pupboss.jpg" alt="高考这件小事">
+                                </div>
+                            </div>
+                            <div class="medium-10 columns">
+                                <div class="at_author_name">
+                                    <h3>高考这件小事</h3>
+                                </div>
+                                <div class="at_author_bio">
+                                    <p>爱 Coding，爱旅行，爱摄影。iOS, Python, WP &amp; Web Developer</p>
+                                    <p><a href="http://pupboss.com">http://pupboss.com</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+
+<div id="at_footer">
+	<div class="row">
+		<div class="large-12 columns text-center">
+			<div class="at_block">
+				<div class="copyright">
+					<span>&copy; 2015 <a href="../index.html">objc中国</a><br />本站由 <a href="http://im.onevcat.com">@onevcat</a> 创建，文章源自 <a href="http://objc.io">objc.io</a>，由 <a href="https://github.com/objccn">objc中国 项目组</a>整理维护</span>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+        </div>
+    </div>
+
+    
+    <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.1.0.min.js"></script>
+    <script>window.jQuery || document.write('<script src="../assets/js/jquery-2.1.0.min.js"><\/script>')</script>
+
+    <script>
+        var ghostionConfig = {
+            site_url:                       "objccn.io",
+            google_fonts_family:            "Open+Sans:400,400italic,700,700italic",
+            google_analytics_tracking_id:   "UA-49045539-1",
+            disqus_shortname:               "objccn"
+        };
+    </script>
+    <script src="../assets/js/ghostion.min.js"></script>
+    
+</body>
+</html>

@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    
+    <title>自定义 Core Data 迁移</title>
+    <meta name="description" content="" />
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <meta name="google-site-verification" content="m9cRSZABM-v4ZnQ2oia-QgKq1TvTqbZPkFxzYmi31Jc" />
+    <meta name="baidu-site-verification" content="q04WZj6EQE" />
+
+    <link rel="shortcut icon" href="assets/images/favicon.png" />
+    
+    <link rel="stylesheet" href="assets/css/ghostion.min.css" />
+
+    
+    <link rel="stylesheet" href="assets/css/ghostion.custom.css" />
+
+    
+    <meta name="generator" content="Ghost 0.4" />
+<link rel="alternate" type="application/rss+xml" title="objc中国" href="rss/index.html">
+<link rel="canonical" href="issue-4-7.1.html" />
+</head>
+<body class="post-template page">
+    <div id="at_page_surround">
+        <div id="at_body">
+            
+
+
+<div id="at_header">
+    <div class="row">
+        <div class="medium-4 columns">
+            <div class="at_logo_container">
+                
+                    <a href="index.html"><img class="at_logo_img" src="content/images/2014/Mar/logo-1.png" alt="objc中国" />
+                    
+                    <span class="at_logo_text">objc中国</span></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="at_showcase">
+	<div class="at_blog_cover" >
+	    <div class="at_showcase_overlay ">
+			<div class="row">
+				<div class="large-12 large-centered columns">
+					<div class="at_block">
+						<div class="text-center">
+				            
+				            <div class="at_block">
+				                <article class="post page">
+				                    <div class="at_post_header">
+				                        <h1 class="at_post_title">自定义 Core Data 迁移</h1>
+				                    </div>
+				                    <div class="at_post_meta">
+				                        <span class="at_featured_post"><span class="fa fa-bookmark"></span> <span>Featured</span></span>
+				                        <span class="at_post_author"><span class="fa fa-user"></span> 朱宏旭</span>
+				                        <time class="at_post_time" datetime="2014-04-18"><span class="fa fa-calendar"></span> 18 Apr 2014</time>
+				                        <span class="at_post_tags"> </span>
+				                    </div>
+					                <div class="at_post_share">
+					                    <h6 class="at_post_share_title">分享文章</h6>
+					                    <a class="at_post_share_icon" href="http://twitter.com/share?text=%23objc%E4%B8%AD%E5%9B%BD%20%E8%87%AA%E5%AE%9A%E4%B9%89%20Core%20Data%20%E8%BF%81%E7%A7%BB&url=http://objccn.io/issue-4-7/"
+					                        onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+					                        <span class="fa fa-twitter-square"></span>
+					                    </a>
+					                    <a class="at_post_share_icon" href="https://www.facebook.com/sharer/sharer.php?u=http://objccn.io/issue-4-7/"
+					                        onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+					                        <span class="fa fa-facebook-square"></span>
+					                    </a>
+					                    <a class="at_post_share_icon" href="http://service.weibo.com/share/share.php?url=http://objccn.io/issue-4-7/&appkey=&title=%23objc%E4%B8%AD%E5%9B%BD%23%20%E8%87%AA%E5%AE%9A%E4%B9%89%20Core%20Data%20%E8%BF%81%E7%A7%BB&pic=&ralateUid=&language=zh_cn"
+					                        onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+					                        <span class="fa fa-weibo"></span>
+					                    </a>
+					                </div>
+				                </article>
+				            </div>
+				            
+						</div>
+					</div>
+				</div>
+			</div>
+	    </div>
+	</div>
+</div>
+
+
+<div id="at_mainbody" class="at_post" role="main">
+    <div class="row">
+        <div class="large-12 columns">
+            
+            <div class="at_block">
+                <article class="post page">
+                    <div class="at_post_content">
+                        <p>自定义 Core Data 迁移似乎是一个不太起眼的话题。苹果在这方面只提供了很少的文档，若是初次涉足此方面内容，很可能会变成一个可怕的经历。鉴于客户端程序的性质，你无法测试你的用户所生成的数据集的所有可能排列。此外，解决迁移过程中出现的问题会很困难，而因为极有可能你的代码依赖于最新的数据模型，所以回退并不是一个可选的处理办法。</p>
+
+<p>在本文中，我们将走一遍搭建自定义 Core Data 迁移的过程，并着重于数据模型的重构。我们将探讨从旧模型中提取数据并使用这些数据来填充具有新的实体和关系的目标模型。此外，会有一个包含单元测试的<a href="https://github.com/objcio/issue-4-core-data-migration">示例项目</a>用于演示两个自定义迁移。</p>
+
+<p>需要注意的是，如果对数据模型的修改只有增加一个实体或可选属性，轻量级的迁移是一个很好的选择。它们非常易于设置，所以本文只会稍稍提及它们。若想知道轻量级迁移的应用场合，请查看<a href="https://developer.apple.com/library/ios/documentation/cocoa/conceptual/CoreDataVersioning/Articles/vmLightweightMigration.html">官方文档</a>。</p>
+
+<p>这就是说，如果你需要快速地在你的数据模型上进行相对复杂的改变，那么自定义迁移就是为你准备的。</p>
+
+<h2 id="mappingmodels">映射模型 (Mapping Models)</h2>
+
+<p>当你要升级你的数据模型到新版，你将先选择一个基准模型。对于轻量级迁移，持久化存储会为你自动推断一个<em>映射模型</em>。然而，如果你对新模型所做的修改并不被轻量级迁移所支持，那么你就需要创建一个映射模型。一个映射模型需要一个源数据模型和一个目标数据模型。 <code>NSMigrationManager</code> 能够推断这两个模型间的映射模型。这使得它很诱人，可用来一路创建每一个以前的模型到最新模型之间的映射模型，但这很快就会变成一团乱麻。对于每一个新版模型，你需要创建的映射模型的量将线性增长。这可能看起来不是个大问题，但随之而来的是测试这些映射模型的复杂度大大提高了。</p>
+
+<p>想像一下你刚刚部署一个包含版本 3 的数据模型的更新。你的某个用户已经有一段时间没有更新你的应用了，这个用户还在版本 1 的数据模型上。那么现在你就需要一个从版本 1 到版本 3 的映射模型。同时你也需要版本 2 到版本 3 的映射模型。当你添加了版本 4 的数据模型后，那你就需要创建三个新的映射模型。显然这样做的扩展性很差，那就来试试渐进式迁移吧。</p>
+
+<h2 id="progressivemigrations">渐进式迁移 (Progressive Migrations)</h2>
+
+<p>与其为每个之前的数据模型到最新的模型间都建立映射模型，还不如在每两个连续的数据模型之间创建映射模型。以前面的例子来说，版本 1 和版本 2 之间需要一个映射模型，版本 2 和版本 3 之间需要一个映射模型。这样就可以从版本 1 迁移到版本 2 再迁移到版本 3。显然，使用这种迁移的方式时，若用户在较老的版本上迁移过程就会比较慢，但它能节省开发时间并保证健壮性，因为你只需要确保从之前一个模型到新模型的迁移工作正常即可，而更前面的映射模型都已经经过了测试。</p>
+
+<p>总的想法就是手动找出当前版本 v 和版本 v+1 之间的映射模型，在这两者间迁移，接着继续递归，直到持久化存储与当前的数据模型兼容。</p>
+
+<p>这一过程看起来像下面这样（完整版可以在<a href="https://github.com/objcio/issue-4-core-data-migration">示例项目</a>里找到）：</p>
+
+<pre><code>- (BOOL)progressivelyMigrateURL:(NSURL *)sourceStoreURL
+                         ofType:(NSString *)type
+                        toModel:(NSManagedObjectModel *)finalModel
+                          error:(NSError **)error
+{
+    NSDictionary *sourceMetadata = [NSPersistentStoreCoordinator metadataForPersistentStoreOfType:type
+                                                                                              URL:sourceStoreURL
+                                                                                            error:error];
+    if (!sourceMetadata) {
+        return NO;
+    }
+    if ([finalModel isConfiguration:nil
+        compatibleWithStoreMetadata:sourceMetadata]) {
+        if (NULL != error) {
+            *error = nil;
+        }
+        return YES;
+    }
+    NSManagedObjectModel *sourceModel = [self sourceModelForSourceMetadata:sourceMetadata];
+    NSManagedObjectModel *destinationModel = nil;
+    NSMappingModel *mappingModel = nil;
+    NSString *modelName = nil;
+    if (![self getDestinationModel:&amp;destinationModel
+                      mappingModel:&amp;mappingModel
+                         modelName:&amp;modelName
+                    forSourceModel:sourceModel
+                             error:error]) {
+        return NO;
+    }
+    // 我们现在有了一个映射模型，开始迁移
+    NSURL *destinationStoreURL = [self destinationStoreURLWithSourceStoreURL:sourceStoreURL
+                                                                   modelName:modelName];
+    NSMigrationManager *manager = [[NSMigrationManager alloc] initWithSourceModel:sourceModel
+                                                                 destinationModel:destinationModel];
+    if (![manager migrateStoreFromURL:sourceStoreURL
+                                 type:type
+                              options:nil
+                     withMappingModel:mappingModel
+                     toDestinationURL:destinationStoreURL
+                      destinationType:type
+                   destinationOptions:nil
+                                error:error]) {
+        return NO;
+    }
+    // 现在迁移成功了，把文件备份一下以防不测
+    if (![self backupSourceStoreAtURL:sourceStoreURL
+          movingDestinationStoreAtURL:destinationStoreURL
+                                error:error]) {
+        return NO;
+    }
+    // 现在数据模型可能还不是“最新”版，所以接着递归
+    return [self progressivelyMigrateURL:sourceStoreURL
+                                  ofType:type
+                                 toModel:finalModel
+                                   error:error];
+}
+</code></pre>
+
+<p>这段代码主要来源于 <a href="https://twitter.com/mzarra">Marcus Zarra</a>，他写了一本很棒的关于 Core Data 的书，<a href="http://pragprog.com/book/mzcd2/core-data">查看这里</a>。</p>
+
+<p>自 iOS 7 和 OS Mavericks以来，Apple 将 SQLite 的日志模式改写为预写式日志 (Write-Ahead Logging)， 这意味着数据库事务都被依附到一个 -wal 文件中。这有可能导致数据丢失和异常。为了数据的安全，我们会将日志模式改写为回溯模式。而如果我们想要迁移数据（或者为了以后备份），我们可以将一个字典传递给 <code>-addPersistentStoreWithType:configuration:URL:options:error:</code> 来完成改写。</p>
+
+<pre><code>@{ NSSQLitePragmasOption: @{ @"journal_mode": @"DELETE” } }
+</code></pre>
+
+<p>与 <code>NSPersistentStoreCoordinator</code> 相关的代码可以在<a href="https://github.com/objcio/issue-4-core-data-migration/blob/master/BookMigration/MHWCoreDataController.m#L73-L84">这里</a>找到。</p>
+
+<h2 id="">迁移策略</h2>
+
+<p><code>NSEntityMigrationPolicy</code> 是自定义迁移过程的核心。 <a href="https://developer.apple.com/library/ios/documentation/cocoa/Reference/NSEntityMigrationPolicy_class/NSEntityMigrationPolicy.html">苹果的文档</a>中有这么一句话: </p>
+
+<blockquote>
+  <p><code>NSEntityMigrationPolicy</code> 的实例为一个实体映射自定义的迁移策略。</p>
+</blockquote>
+
+<p>简单的说，这个类让我们不仅仅能修改实体的属性和关系，而且还能任意添加一些自定义的操作来完成每个实体的迁移。</p>
+
+<h3 id="">迁移示例</h3>
+
+<p>假设我们有一个带有简单的数据模型的<a href="https://github.com/objcio/issue-4-core-data-migration">书籍应用</a>。这个模型有两个实体： <code>User</code> 和 <code>Book</code> 。<code>Book</code> 实体有一个属性叫做 <code>authorName</code>。我们想改善这个模型，添加一个新的实体： <code>Author</code>。同时我们想为 <code>Book</code> 和 <code>Author</code> 建立一个多对多的关系，因为一本书籍可有多个作者，而一个作者也可写多本书籍。我们将从 <code>Book</code> 对象里取出 <code>authorName</code> 用于填充一个新的实体并建立关系。</p>
+
+<p>一开始我们要做的是基于第一个数据模型增加一个新版模型。在这个例子里，我们添加了一个 <code>Author</code> 实体，它与 <code>Book</code> 还有多对多的关系。</p>
+
+<p><img src="http://img.objccn.io/issue-4/cdm-model-2.png" width="416" height="291"></p>
+
+<p>现在数据模型已经是我们所需要的，但我们还需要迁移所有已存在的数据，这就该 <code>NSEntityMigrationPolicy</code> 出场了。我们创建 <code>NSEntityMigrationPolicy</code> 的一个子类---- <code>MHWBookToBookPolicy</code> 。在映射模型里，我们选择 <code>Book</code> 实体并设置它作为公共部分（Utilities section）中的自定义策略。</p>
+
+<p><img src="http://img.objccn.io/issue-4/cdm-book-to-book-policy.png" name="Custom NSEntityMigrationPolicy subclass" width="260" height="308"></p>
+
+<p>同时我们使用 user info 字典来设置一个 <code>modelVersion</code> ，它将在未来的迁移中派上用场。</p>
+
+<p>在 <a href="https://github.com/hwaxxer/BookMigration/blob/master/BookMigration/MHWBookToBookPolicy.m"><code>MHWBookToBookPolicy</code></a> 中，我们将重载 <code>-createDestinationInstancesForSourceInstance:entityMapping:manager:error:</code> 方法，它允许我们自定义如何迁移每个 Book  实例。如果 <code>modelVersion</code> 的值不是 2，我们将调用父类的实现，否则我们就要做自定义迁移。我们插入基于映射的目标实体的新 <code>NSManagedObject</code> 对象到目标上下文。然后我们遍历目标实例的属性键值并与来自源实例的值一起填充它们。这将保证我们保留现存数据并避免设置任何我们已经在目标实例中移除的值。</p>
+
+<pre><code>NSNumber *modelVersion = [mapping.userInfo valueForKey:@"modelVersion"];
+if (modelVersion.integerValue == 2) {
+    NSMutableArray *sourceKeys = [sourceInstance.entity.attributesByName.allKeys mutableCopy];
+    NSDictionary *sourceValues = [sourceInstance dictionaryWithValuesForKeys:sourceKeys];
+    NSManagedObject *destinationInstance = [NSEntityDescription insertNewObjectForEntityForName:mapping.destinationEntityName
+                                                                         inManagedObjectContext:manager.destinationContext];
+    NSArray *destinationKeys = destinationInstance.entity.attributesByName.allKeys;
+    for (NSString *key in destinationKeys) {
+        id value = [sourceValues valueForKey:key];
+        // 避免value为空
+        if (value &amp;&amp; ![value isEqual:[NSNull null]]) {
+            [destinationInstance setValue:value forKey:key];
+        }
+    }
+}
+</code></pre>
+
+<p>然后我们将基于源实例的值创建一个 <code>Author</code> 实体。但若多本书有同一个作者会发生什么呢？我们将使用 <code>NSMigrationManager</code>  的一个 category 方法来创建一个查找字典，确保对于同一个名字的作者，我们只会创建一个 <code>Author</code>。</p>
+
+<pre><code>NSMutableDictionary *authorLookup = [manager lookupWithKey:@"authors"];
+// 检查该作者是否已经被创建了
+NSString *authorName = [sourceInstance valueForKey:@"author"];
+NSManagedObject *author = [authorLookup valueForKey:authorName];
+if (!author) {
+    // 创建作者
+    // ...
+
+    // 更新避免重复
+    [authorLookup setValue:author forKey:authorName];
+}
+[destinationInstance performSelector:@selector(addAuthorsObject:) withObject:author];
+</code></pre>
+
+<p>最后，我们需要告诉迁移管理器在源存储与目的存储之间关联数据：</p>
+
+<pre><code>[manager associateSourceInstance:sourceInstance
+         withDestinationInstance:destinationInstance
+                forEntityMapping:mapping];
+return YES;
+</code></pre>
+
+<p><code>NSMigrationManager</code> 的 category 方法:</p>
+
+<pre><code>@implementation NSMigrationManager (Lookup)
+
+- (NSMutableDictionary *)lookupWithKey:(NSString *)lookupKey
+{
+    NSMutableDictionary *userInfo = (NSMutableDictionary *)self.userInfo;
+    // 这里检查一下是否已经建立了 userInfo 的字典
+    if (!userInfo) {
+        userInfo = [@{} mutableCopy];
+        self.userInfo = userInfo;
+    }
+    NSMutableDictionary *lookup = [userInfo valueForKey:lookupKey];
+    if (!lookup) {
+        lookup = [@{} mutableCopy];
+        [userInfo setValue:lookup forKey:lookupKey];
+    }
+    return lookup;
+}
+
+@end
+</code></pre>
+
+<h3 id="">一个更复杂的迁移</h3>
+
+<p>过了一会，我们又想把 <code>fileURL</code> 这个属性从 <code>Book</code> 实体里提出来，放入一个叫做 <code>File</code> 的新实体里。同时我们还想修改实体之间的关系，以便 <code>User</code> 可与 <code>File</code> 有一对多的关系，而反过来 <code>File</code> 和 <code>Book</code> 有多对一的关系。</p>
+
+<p><img name="Our 3rd model" src="http://img.objccn.io/issue-4/cdm-model-3.png" width="552" height="260"></p>
+
+<p>在之前的迁移中，我们只迁移了一个实体。而现在当我们添加了 <code>File</code> 后，事情变得有些复杂了。我们不能简单地在迁移一个 <code>Book</code>  时插入一个 <code>File</code> 实体并设置它与 <code>User</code> 的对应关系，因为此时 <code>User</code> 实体还没有被迁移，之间的关系也无从谈起。<em>我们必须考虑迁移的执行顺序</em>。在映射模型中，是可以改变实体映射的顺序的。具体到这里的例子，我们想将 <code>UserToUser</code> 映射放在 <code>BookToBook</code> 映射之上。这保证了 <code>User</code> 实体会比 <code>Book</code> 实体更早迁移。</p>
+
+<p><img name="Mapping model orders are important" src="http://img.objccn.io/issue-4/cdm-mapping-order.png"></p>
+
+<p>添加一个 <code>File</code> 实体的途径和创建 <code>Author</code> 的过程相似。我们在 <code>MHWBookToBookPolicy</code> 中迁移 <code>Book</code> 实体时创建 <code>File</code> 对象。我们会查看源实例的 <code>User</code> 实体，为每个 <code>User</code> 实体创建一个新的 <code>File</code> 对象，并建立对应关系：</p>
+
+<pre><code>NSArray *users = [sourceInstance valueForKey:@"users"];
+for (NSManagedObject *user in users) {
+
+    NSManagedObject *file = [NSEntityDescription insertNewObjectForEntityForName:@"File"
+                                                          inManagedObjectContext:manager.destinationContext];
+    [file setValue:[sourceInstance valueForKey:@"fileURL"] forKey:@"fileURL"];
+    [file setValue:destinationInstance forKey:@"book"];
+
+    NSInteger userId = [[user valueForKey:@"userId"] integerValue];
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"User"];
+    request.predicate = [NSPredicate predicateWithFormat:@"userId = %d", userId];
+    NSManagedObject *user = [[manager.destinationContext executeFetchRequest:request error:nil] lastObject];
+    [file setValue:user forKey:@"user"];
+}
+</code></pre>
+
+<h3 id="">大数据集</h3>
+
+<p>如果你的存储包含了大量数据，以至到达一个临界点，迁移就会消耗过多内存，Core Data 提供了一个以数据块（chunks）的方式迁移的办法。<a href="https://developer.apple.com/library/ios/documentation/cocoa/Conceptual/CoreDataVersioning/Articles/vmCustomizing.html#//apple_ref/doc/uid/TP40004399-CH8-SW9">苹果的文档</a>有简要地提到这件事。解决办法是使用多映射模型分开你的迁移并为每个映射模型迁移一次。这要求你有一个对象图（object graph），在其中，迁移可被分为两个或多个部分。为了支持这一点而需要添加的代码其实很少。</p>
+
+<p>首先，我们更新迁移方法以支持使用多个映射模型来迁移。已知映射模型的顺序很重要，我们将通过代理方法请求它们：</p>
+
+<pre><code>NSArray *mappingModels = @[mappingModel]; // 我们之前建立的那个模型
+if ([self.delegate respondsToSelector:@selector(migrationManager:mappingModelsForSourceModel:)]) {
+    NSArray *explicitMappingModels = [self.delegate migrationManager:self
+                                         mappingModelsForSourceModel:sourceModel];
+    if (0 &lt; explicitMappingModels.count) {
+        mappingModels = explicitMappingModels;
+    }
+}
+for (NSMappingModel *mappingModel in mappingModels) {
+    didMigrate = [manager migrateStoreFromURL:sourceStoreURL
+                                         type:type
+                                      options:nil
+                             withMappingModel:mappingModel
+                             toDestinationURL:destinationStoreURL
+                              destinationType:type
+                           destinationOptions:nil
+                                        error:error];
+}
+</code></pre>
+
+<p>现在，我们如何知晓哪一个映射模型被用于这个特定的源模型呢？此处的 API 可能显得有些笨拙，但以下的解决方法确实完成了工作。在代理方法中，我们找出源模型的名字并返回相关的映射模型：</p>
+
+<pre><code>- (NSArray *)migrationManager:(MHWMigrationManager *)migrationManager 
+  mappingModelsForSourceModel:(NSManagedObjectModel *)sourceModel
+{
+    NSMutableArray *mappingModels = [@[] mutableCopy];
+    NSString *modelName = [sourceModel mhw_modelName];
+    if ([modelName isEqual:@"Model2"]) {
+        // 把该映射模型加入数组
+    }
+    return mappingModels;
+}
+</code></pre>
+
+<p>我们将为 <code>NSManagedObjectModel</code> 添加一个 category，以帮助我们找出它的文件名：
+We’ll add a category on <code>NSManagedObjectModel</code> that helps us figure out its filename:</p>
+
+<pre><code>- (NSString *)mhw_modelName
+{
+    NSString *modelName = nil;
+    NSArray *modelPaths = // get paths to all the mom files in the bundle
+    for (NSString *modelPath in modelPaths) {
+        NSURL *modelURL = [NSURL fileURLWithPath:modelPath];
+        NSManagedObjectModel *model = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
+        if ([model isEqual:self]) {
+            modelName = modelURL.lastPathComponent.stringByDeletingPathExtension;
+            break;
+        }
+    }
+    return modelName;
+}
+</code></pre>
+
+<p>由于 <code>User</code> 在前面的例子（没有源关系映射）中被从对象图中隔离，因此迁移 <code>User</code> 的过程将省事很多。我们将从第一个映射模型中移除 <code>UserToUser</code> 映射，然后创建一个仅有 <code>UserToUser</code> 的映射。不要忘记在映射模型列表中返回新的 <code>User</code> 映射模型，因为我们正在其它映射中设置新关系</p>
+
+<h2 id="">单元测试</h2>
+
+<p>为此应用建立单元测试异常简单：</p>
+
+<ol>
+<li>将相关数据填入旧存储*。  </li>
+<li>将产生的持久性存储文件复制到你的<em>测试目标</em>。  </li>
+<li>编写测试断言符合最新的数据模型。  </li>
+<li>运行测试，迁移数据到新的数据模型。</li>
+</ol>
+
+<p><em>*这很容易完成，只需在模拟器里运行一下你应用最新的版本（production version）即可</em></p>
+
+<p>步骤 1 和 2 很简单。步骤 3 留给读者作为练习，然后我会引导你通过第 4 步。 </p>
+
+<p>当持久化存储文件被添加到单元测试目标上时，我们需要告知迁移管理器把那个存储迁移至我们的目标存储。在示例项目中所示如下：</p>
+
+<pre><code>- (void)setUpCoreDataStackMigratingFromStoreWithName:(NSString *)name
+{
+    NSURL *storeURL = [self temporaryRandomURL];
+    [self copyStoreWithName:name toURL:storeURL];
+
+    NSURL *momURL = [[NSBundle mainBundle] URLForResource:@"Model" withExtension:@"momd"];
+    self.managedObjectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL:momURL];
+
+    NSString *storeType = NSSQLiteStoreType;
+
+    MHWMigrationManager *migrationManager = [MHWMigrationManager new];
+    [migrationManager progressivelyMigrateURL:storeURL
+                                       ofType:storeType
+                                      toModel:self.managedObjectModel
+                                        error:nil];
+
+    self.persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:self.managedObjectModel];
+    [self.persistentStoreCoordinator addPersistentStoreWithType:storeType
+                                                  configuration:nil
+                                                            URL:storeURL
+                                                        options:nil
+                                                          error:nil];
+
+    self.managedObjectContext = [[NSManagedObjectContext alloc] init];
+    self.managedObjectContext.persistentStoreCoordinator = self.persistentStoreCoordinator;
+}
+
+- (NSURL *)temporaryRandomURL
+{
+    NSString *uniqueName = [NSProcessInfo processInfo].globallyUniqueString;
+    return [NSURL fileURLWithPath:[NSTemporaryDirectory() stringByAppendingString:uniqueName]];
+}
+
+- (void)copyStoreWithName:(NSString *)name toURL:(NSURL *)url
+{
+    // 每次创建一个唯一的url以保证测试正常运行
+    NSBundle *bundle = [NSBundle bundleForClass:[self class]];
+    NSFileManager *fileManager = [NSFileManager new];
+    NSString *path = [bundle pathForResource:[name stringByDeletingPathExtension] ofType:name.pathExtension];
+    [fileManager copyItemAtPath:path
+                         toPath:url.path error:nil];
+}
+</code></pre>
+
+<p>把下面的代码放到一个父类，以便于在测试的类中复用：</p>
+
+<pre><code>- (void)setUp
+{
+    [super setUp];
+    [self setUpCoreDataStackMigratingFromStoreWithName:@"Model1.sqlite"];
+}
+</code></pre>
+
+<h2 id="">结论</h2>
+
+<p>轻量级迁移是直接在 SQLite 内部发生。这相对于自定义迁移来说非常快速且有效率。自定义迁移要把源对象读入到内存中，然后拷贝值到目标对象，重新建立关系，最后插入到新的存储中。这样做不仅很慢，而且当迁移大数据集时，由于内存大小的限制，它还会引起系统强制回收内存问题。</p>
+
+<h3 id="">添加数据前尽量考虑完全</h3>
+
+<p>在处理任何数据持久性问题时最重要的事情之一就是仔细思考你的模型。我们希望模型是可持续发展的。在最开始创建模型的时候尽量考虑完全。添加空属性或者空实体也比以后进行迁移时候创建好的多，因为迁移很容易出现错误，而未使用的数据就不会了。</p>
+
+<h3 id="">调试迁移</h3>
+
+<p>测试迁移时一个有用的启动参数是 <code>-com.apple.CoreData.MigrationDebug</code>。设置为 1 时，你会在控制台收到关于迁移数据时特殊情况的信息。如果你熟悉 SQL 但不了解 Core Data，设置 <code>-com.apple.CoreData.SQLDebug</code> 为 1 可在控制台看到实际操作的 SQL 语句。</p>
+
+<hr />
+
+<p><a href="issue-4.1.html">话题 #4 下的更多文章</a></p>
+
+<p>原文 <a href="http://www.objc.io/issue-4/core-data-migration.html">Custom Core Data Migrations</a></p>
+
+<p>译文 <a href="http://iosinit.com/?p=1019">Core Data 之自定义迁移策略</a></p>
+
+<p>校对 <a href="https://github.com/xinjixjz">xinjixjz</a></p>
+                    </div>
+                    <h3>关于译者</h3>
+                    <div class="at_author">
+                        <div class="row">
+                            <div class="medium-2 columns show-for-medium-up">
+                                <div class="at_author_image">
+                                    <img src="content/images/2014/Mar/nix.jpg" alt="朱宏旭">
+                                </div>
+                            </div>
+                            <div class="medium-10 columns">
+                                <div class="at_author_name">
+                                    <h3>朱宏旭</h3>
+                                </div>
+                                <div class="at_author_bio">
+                                    <p>留着长发的NIX，用过几年Linux，目前做 iOS 开发。喜欢科幻小说和科幻电影，因为幻想和梦境能带给我异世界体验。偶尔半梦半醒之间会质疑人生的意义，不知活着的所谓。</p>
+                                    <p><a href="https://twitter.com/nixzhu">https://twitter.com/nixzhu</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+
+<div id="at_footer">
+	<div class="row">
+		<div class="large-12 columns text-center">
+			<div class="at_block">
+				<div class="copyright">
+					<span>&copy; 2015 <a href="index.html">objc中国</a><br />本站由 <a href="http://im.onevcat.com">@onevcat</a> 创建，文章源自 <a href="http://objc.io">objc.io</a>，由 <a href="https://github.com/objccn">objc中国 项目组</a>整理维护</span>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+        </div>
+    </div>
+
+    
+    <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.1.0.min.js"></script>
+    <script>window.jQuery || document.write('<script src="assets/js/jquery-2.1.0.min.js"><\/script>')</script>
+
+    <script>
+        var ghostionConfig = {
+            site_url:                       "objccn.io",
+            google_fonts_family:            "Open+Sans:400,400italic,700,700italic",
+            google_analytics_tracking_id:   "UA-49045539-1",
+            disqus_shortname:               "objccn"
+        };
+    </script>
+    <script src="assets/js/ghostion.min.js"></script>
+    
+</body>
+</html>

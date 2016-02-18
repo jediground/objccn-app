@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    
+    <title>XCTest 测试实战</title>
+    <meta name="description" content="" />
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <meta name="google-site-verification" content="m9cRSZABM-v4ZnQ2oia-QgKq1TvTqbZPkFxzYmi31Jc" />
+    <meta name="baidu-site-verification" content="q04WZj6EQE" />
+
+    <link rel="shortcut icon" href="../assets/images/favicon.png" />
+    
+    <link rel="stylesheet" href="../assets/css/ghostion.min.css" />
+
+    
+    <link rel="stylesheet" href="../assets/css/ghostion.custom.css" />
+
+    
+    <meta name="generator" content="Ghost 0.4" />
+<link rel="alternate" type="application/rss+xml" title="objc中国" href="../rss/index.html">
+<link rel="canonical" href="index.html" />
+</head>
+<body class="post-template page">
+    <div id="at_page_surround">
+        <div id="at_body">
+            
+
+
+<div id="at_header">
+    <div class="row">
+        <div class="medium-4 columns">
+            <div class="at_logo_container">
+                
+                    <a href="../index.html"><img class="at_logo_img" src="../content/images/2014/Mar/logo-1.png" alt="objc中国" />
+                    
+                    <span class="at_logo_text">objc中国</span></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="at_showcase">
+	<div class="at_blog_cover" >
+	    <div class="at_showcase_overlay ">
+			<div class="row">
+				<div class="large-12 large-centered columns">
+					<div class="at_block">
+						<div class="text-center">
+				            
+				            <div class="at_block">
+				                <article class="post page">
+				                    <div class="at_post_header">
+				                        <h1 class="at_post_title">XCTest 测试实战</h1>
+				                    </div>
+				                    <div class="at_post_meta">
+				                        <span class="at_featured_post"><span class="fa fa-bookmark"></span> <span>Featured</span></span>
+				                        <span class="at_post_author"><span class="fa fa-user"></span> 黄宣冬</span>
+				                        <time class="at_post_time" datetime="2014-09-01"><span class="fa fa-calendar"></span> 01 Sep 2014</time>
+				                        <span class="at_post_tags"> </span>
+				                    </div>
+					                <div class="at_post_share">
+					                    <h6 class="at_post_share_title">分享文章</h6>
+					                    <a class="at_post_share_icon" href="http://twitter.com/share?text=%23objc%E4%B8%AD%E5%9B%BD%20XCTest%20%E6%B5%8B%E8%AF%95%E5%AE%9E%E6%88%98&url=http://objccn.io/issue-15-2/"
+					                        onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+					                        <span class="fa fa-twitter-square"></span>
+					                    </a>
+					                    <a class="at_post_share_icon" href="https://www.facebook.com/sharer/sharer.php?u=http://objccn.io/issue-15-2/"
+					                        onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+					                        <span class="fa fa-facebook-square"></span>
+					                    </a>
+					                    <a class="at_post_share_icon" href="http://service.weibo.com/share/share.php?url=http://objccn.io/issue-15-2/&appkey=&title=%23objc%E4%B8%AD%E5%9B%BD%23%20XCTest%20%E6%B5%8B%E8%AF%95%E5%AE%9E%E6%88%98&pic=&ralateUid=&language=zh_cn"
+					                        onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+					                        <span class="fa fa-weibo"></span>
+					                    </a>
+					                </div>
+				                </article>
+				            </div>
+				            
+						</div>
+					</div>
+				</div>
+			</div>
+	    </div>
+	</div>
+</div>
+
+
+<div id="at_mainbody" class="at_post" role="main">
+    <div class="row">
+        <div class="large-12 columns">
+            
+            <div class="at_block">
+                <article class="post page">
+                    <div class="at_post_content">
+                        <p>差不多四个月以前，我们团队 (Marco, Arne 和 Daniel) 开始着手为我们的新应用写模型层。我们想在开发中使用测试，经过一番讨论之后，我们选择 <a href="https://developer.apple.com/library/prerelease/ios/documentation/DeveloperTools/Conceptual/testing_with_xcode/Introduction/Introduction.html">XCTest</a> 作为我们的测试框架。</p>
+
+<p>目前为止，我们的编码库已经纵横 190 个文件和 18,000 行代码，达到了 544 kB。我们测试部分的代码现在差不多有1,200 kB，大概有被测试代码的两倍。虽然我们还没有完全结束这个项目，但是已经接近尾声。在这里我们想和大家分享在这过程中我们所学到的东西，包括一般性的测试和如何用 XCTest 来做测试。</p>
+
+<p>这里需要注意的是在文章中提到的一些模型类和方法已经被重命名了，因为这个项目还没有在 App Store 中上线。</p>
+
+<p>我们选择 XCTest 作为我们的测试框架是因为它非常简单并且与 Xcode 的 IDE 直接集成。通过这篇文章，我们想对于何时 XCTest 会是测试框架中的好的选择，以及何时你们可能会选择其他的框架这一问题作出一些阐释。</p>
+
+<p>我们还在文章中合适的地方添加了<a href="../issue-15.1.html">这个话题里</a>的其他文章的链接。</p>
+
+<h2 id="">为什么我们需要测试</h2>
+
+<p>就像<a href="../issue-15-4.1.html">这篇关于糟糕的测试的文章</a>中提到的那样，很多人都认为“只有当我们的改变代码时，测试才能产生回报。” 如果你有这样的想法，你应该仔细读读那篇文章，因为显然通过测试你所能获得的比这要多。有一点是非常重要的，就算我们在写代码的最早版本，我们还是会将大部分时间花在修改代码上 -- 随着项目的发展，越来越多的功能会被加进来，我们会发现很多地方都需要稍微改一下。所以即使你还没有在做 1.1 或 2.0 版本，但你还是要做大量的修改，而测试正是在这时为我们提供不可估量的帮助。</p>
+
+<p>我们依然还在完成我们框架的最初版本，在超过 10 个<a href="https://en.wikipedia.org/wiki/Man-hour">人月</a>的努力下，我们通过了将近 1,000 个测试。现在已经有一个比较清楚的架构，但是我们仍然需要沿着这个方向，去修改和调整我们的代码。这套不断增长的测试用例会帮我们做到这一点。</p>
+
+<p>测试用例使我们的代码质量变得可靠，同时让我们能够放心地重构或者修改代码，并保证我们的修改没有破坏其他部分。而且我们可以在项目开始的第一天就能运行我们的代码，而不用等到万事俱备。</p>
+
+<p><a name="xctest-basics"> </a></p>
+
+<h2 id="xctest">XCTest 如何工作</h2>
+
+<p>苹果提供了一些关于<a href="https://developer.apple.com/library/prerelease/ios/documentation/DeveloperTools/Conceptual/testing_with_xcode/Introduction/Introduction.html">如何使用 XCTest</a> 的官方文档。测试用例被分到继承 <code>XCTestCase</code> 的不同子类中去。每个以 <code>test</code> 为开头的方法都是一个测试用例。</p>
+
+<p>因为测试用例都是简单的类和方法，所以我们可以适当地添加一些 <code>@property</code> 和辅助方法。</p>
+
+<p>考虑到代码的重用性，我们的所有测试用例类都有一个共同的父类，也就是 <code>TestCase</code>，它也是 <code>XCTestCase</code> 的子类，所有的测试类都是我们的 <code>TestCase</code> 类的子类。</p>
+
+<p>然后我们把一些公用的辅助方法放在 <code>TestCase</code> 类中，并且加了一些属性作为每个测试的预置属性。</p>
+
+<p><a name="naming"> </a></p>
+
+<h2 id="">命名</h2>
+
+<p>因为测试用例仅仅只是一个以<code>test</code>为开头的方法，所以典型的测试用例方法看起来就像这样：</p>
+
+<pre><code>- (void)testThatItDoesURLEncoding
+{
+  // test code
+}
+</code></pre>
+
+<p>在我们的所有测试用例中都是以 “testThatIt” 为开头。而另外一个用的比较多的命名方式是 “test + 要测试的方法和类名”，比如像 <code>testHTTPRequest</code>。这些被测试的类和方法需要在测试用例中显而易见。</p>
+
+<p>“testThatIt” 这类命名方式将重点转移到期望的结果上，但是大多数情况下，这很难让我们一眼就能理解这个测试用例的意思。</p>
+
+<p>这里每一个测试用例类都对应一个产品代码类，而且测试用例类的名字是根据被测试代码的名字决定的，比如，<code>HTTPRequest</code> 和 <code>HTTPRequestTests</code>。如果一个类变得比较大的话，我们还可以使用 category 来将它们按主题分类。</p>
+
+<p>比如我们想要禁止一个测试用例，我们只需要在方法名字前加 <code>DISABLED</code>:</p>
+
+<pre><code>- (void)DISABLED_testThatItDoesURLEncoding
+</code></pre>
+
+<p>我们很容易就能找到这个方法，并且因为这个方法不再是以 test 为开头，所以 XCTest 在运行时也会跳过这个测试用例。</p>
+
+<p><a name="given-when-then"> </a></p>
+
+<h2 id="givenwhenthen">Given / When / Then</h2>
+
+<p>我们可以根据 <code>Given-When-Then</code> 模式来组织我们的测试用例，将测试用例拆分成三个部分。</p>
+
+<p>在 <strong>given</strong> 部分里，通过创建模型对象或将被测试的系统设置到指定的状态，来设定测试环境。<strong>when</strong> 这部分包含了我们要测试的代码。在大部分情况，这里只有一个方法调用。在 <strong>then</strong>  这部分中
+，我们需要检查我们行为的结果：是否得到了我们期望的结果？对象是否有改变？这部分主要包括一些断言。</p>
+
+<p>一个简单的测试用例看起来是这个样子的：</p>
+
+<pre><code>- (void)testThatItDoesURLEncoding
+{
+    // given
+    NSString *searchQuery = @"$&amp;?@";
+    HTTPRequest *request = [HTTPRequest requestWithURL:@"/search?q=%@", searchQuery];
+
+    // when
+    NSString *encodedURL = request.URL;
+
+    // then
+    XCTAssertEqualObjects(encodedURL, @"/search?q=%24%26%3F%40");
+}
+</code></pre>
+
+<p>这种简单的模式使我们能够更容易地书写和理解这些测试用例，因为它们都遵循了同样的模式。为了更快地浏览，我们甚至会在每个部分的代码上写上 “given”，“when”，“then” 的注释。通过这种方式，这个方法就能很快被理解。</p>
+
+<p><a name="reusable-code"> </a></p>
+
+<h2 id="">可重用代码</h2>
+
+<p>随着时间的流逝，我们注意到在我们的测试用例中有越来越多的重复代码，比如等待异步才能完成，或者设置一个内存中的 Core Data 堆栈等操作。为了避免代码重复，我们开始整理所有有用的代码片段，并将它们加入到一个公共类中，为所有的测试用例服务。</p>
+
+<p>结果证明这个公共类非常实用。这个测试基础类能够运行自己的 <code>-setUp</code> 和 <code>-tearDown</code> 方法来配置环境。我们大部分情况用它来初始化测试用的 Core Data 栈，来重新设置我们的具有确定性的 <code>NSUUID</code> (这是那些可以让调试简单得多的一些东西中的一个)，并且设置一些后台的魔法来简化异步测试。</p>
+
+<p>另外一个我们最近开始用的模式也很有用，就是在 <code>XCTestCase</code> 类中直接实现委托协议。通过这个方式，我们不用必须笨拙地 mock 这个 delegate。相反的，我们可以相当直接地与被测试的类互动。</p>
+
+<p><a name="mocking"> </a></p>
+
+<h2 id="mocking">Mocking</h2>
+
+<p>我们使用的 mock 框架是 <a href="http://ocmock.org/">OCMock</a>。就像在这篇关于 <a href="../issue-15-5.1.html">mock</a> 的文章中描述的那样，mock 是一个在方法调用时返回标准答案的对象。</p>
+
+<p>我们用 mock 来管理一个对象的所有依赖项。通过这个方式，我们可以测试这个类在隔离情况下的行为。但是这里有个明显的缺点，那就是当我们修改了一个类后，其他依赖于这个类的类的单元测试不能自动失败。但是关于这一点我们可以通过集成测试来补救，因为它可以测试所有的类。</p>
+
+<p>我们不应该‘过度mock’，也就是说，去 mock 除了被测试的对象的其他对象这样的习惯是要尽量避免的。当我们刚开始的时候，我们经常会这样做，我们甚至会 mock 那些简单到可以作为方法参数的对象。现在我们使用了不少真实的对象，而不是 mock 它们。</p>
+
+<p>作为我们所有测试类的公共父类的一部分，我们还加入了这个方法</p>
+
+<pre><code>- (void)verifyMockLater:(id)mock;
+</code></pre>
+
+<p>它可以保证这个 mock 会在这个方法结束的时候被验证，这样使用 mock 就会更加方便。我们可以在创建一个 mock 的时候就指定这个 mock 应该被验证：</p>
+
+<pre><code>- (void)testThatItRollsBackWhenSaveFails;
+{
+    // given
+    id contextMock = [OCMockObject partialMockForObject:self.uiMOC];
+    [self verifyMockLater:contextMock];
+    NSError *error = [NSError errorWithDomain:NSCocoaErrorDomain code:NSManagedObjectValidationError userInfo:nil];
+    [(NSManagedObjectContext *)[[contextMock stub] andReturnValue:@NO] save:[OCMArg setTo:error]];
+
+    // expect
+    [[contextMock expect] rollback];
+
+    // when
+    [ZMUser insertNewObjectInManagedObjectContext:self.uiMOC];
+    [self.uiMOC saveOrRollback];
+}
+</code></pre>
+
+<p><a name="statelessness"> </a></p>
+
+<h2 id="">状态性和无状态性</h2>
+
+<p>无状态性的代码在过去几年中一直被提起。但是在现今，我们的 app 还是需要状态。如果没有状态，大部分 app 就会变得没有意义。但是状态的管理又很容易引起很多 bug，因为管理状态非常复杂。</p>
+
+<p>我们通过隔离这些状态来使我们的代码更好的运行。一些类中包含状态，而大部分则是无状态的。通过这样的方式之后，不仅是代码变得更加简单，测试用例也是如此。</p>
+
+<p>比如说，我们有一个叫 <code>EventSync</code> 的类，它是负责把本地变化发送到服务器。所以它需要跟踪哪些本地对象发生变化需要上传到服务器，还有哪些本地变化现在正在被上传到服务器。我们一次需要发送多个变化，但是我们不想发送重复的变化。</p>
+
+<p>我们也有跟踪对象之间的依赖关系。当 <strong>A</strong> 和 <strong>B</strong> 有依赖关系，并且 <strong>B</strong> 有本地变化，那么我们在发送 <strong>A</strong> 的本地变化之前，需要先等待 <strong>B</strong> 的本地变化发送完毕。</p>
+
+<p>我们有一个 <code>UserSyncStrategy</code> 类，它有一个 <code>-nextRequest</code> 方法可以生成下一次请求。这个请求会将本地改变发送到服务器。虽然这个类本身是无状态的。更确切地说，所有它的状态都被封装在一个叫 <code>UpstreamObjcetSync</code> 的类中，这个类负责跟踪那些有本地变化的用户对象，还有那些我们正在运行的请求。除了这个类之外其他东西都是没有状态的。</p>
+
+<p>通过这个方式，我们可以很容易得到测试 <code>UpstremObjectSync</code> 的集合。它们检查这个类是否正确地管理状态。对于 <code>UserSyncStrategy</code> 来说，当我们在 mock <code>UpstremObjectSync</code> 的时候，就不用再担心 <code>UserSyncStrategy</code> 本身的状态了。这大大减少了测试的复杂度，更进一步，因为我们正在同步很多不同类型的对象，我们那些不同的类都是无状态的，并且可以重用 <code>UpstreamObjectSync</code> 类，这使代码简单了很多。</p>
+
+<p><a name="core-data"> </a></p>
+
+<h2 id="coredata">Core Data</h2>
+
+<p>我们的代码非常依赖于 <a href="https://developer.apple.com/technologies/mac/data-management.html">Core Data</a>。因为我们需要我们的测试是相互隔离的，这样我们就必须为每个测试用例创建一个<strong>干净的</strong> Core Data 栈，然后再销毁它。我们需要确保在这个测试用例到下个测试用例的过程中没有重复使用同一个 Core Data 存储。</p>
+
+<p>我们的所有代码都是以两个 managed object context 为中心：一个是用户界面时要使用的，它需要放在主队列上，而另一个是我们同步时要使用的，它被放在自己的私有队列上。</p>
+
+<p>我们不想在每个需要 managed object context 的测试中都去重复创建它们。所以我们在共享的 <code>TestCase</code> 父类的 <code>-setUp</code> 方法中加入了创建两个 managed object context 的方法。这使每个独立的测试用例更易读。 </p>
+
+<p>一个测试用例需要 managed object context 时可以很方便地调用 <code>self.managedObjectContext</code> 或者  <code>self.syncManagedObjectContext</code>，就像这样：</p>
+
+<pre><code>- (void)testThatItDoesNotCrashWithInvalidFields
+{
+    // given
+    NSDictionary *payload =     // expected JSON response
+    @{
+      @"status": @"foo",
+      @"from": @"eeeee",
+      @"to": @44,
+      @"last_update": @[],
+    };
+
+    // when
+    ZMConnection *connection = [ZMConnection connectionFromTransportData:payload
+                                                    managedObjectContext:self.managedObjectContext];
+
+    // then
+    XCTAssertNil(connection);
+}
+</code></pre>
+
+<p>我们使用 <code>NSMainQueueConcurrencyType</code> 和 <code>NSPrivateQueueConcurrencyType</code> 来保持代码的一致性。但是我们在 <code>-performBlock:</code> 之上实现了我们自己的 <code>-performGroupedBlock:</code> 来解决隔离的问题。关于这一点，在下面<a href="index.html#async-testing">关于测试异步代码这节</a>中会讲到。</p>
+
+<p><a name="merging-multiple-contexts"> </a></p>
+
+<h2 id="context">合并多个Context</h2>
+
+<p>在我们的代码中有两个context。在产品中，我们非常依赖于通过 <code>-mergeChangesFromContextDidSaveNotification:</code> 方法将一个 context 合并到另一个 context 中。同时，每个 context 使用一个单独的 persistent store coordinator。这样两个 context 能以最小的资源冲突来访问同一个 SQLite。</p>
+
+<p>但是对于测试来说，我们必须改变这一点，我们想使用一个内存上的存储空间。</p>
+
+<p>使用磁盘上的 SQLite 空间对于测试来说并不管用，因为在从磁盘中删除存储时会产生竞态条件。它会打破测试用例之间相互隔离的局面。而且使用内存空间能更加快速，这有利于测试。</p>
+
+<p>我们使用工厂方法来创建我们的 <code>NSManagedObjectContext</code> 实例。基础测试类略微地改变了工厂方法的行为，来实现所有的 context 能够公用同样的 <code>NSPersistentStoreCoordinator</code>。在每个测试的结束时，我们都要销毁公用的 persistent store coordinator 来确保下个测试用例能够使用新的 <code>NSPersistentStoreCoordinator</code> 和新的存储。</p>
+
+<p><a name="async-testing"> </a></p>
+
+<h2 id="">测试异步代码</h2>
+
+<p>测试异步代码充满了技巧性。大多数测试框架都有提供一些针对测试异步代码的基础辅助方法。</p>
+
+<p>假设我们有一个关于 <code>NSString</code> 的异步消息：</p>
+
+<pre><code>- (void)appendString:(NSString *)other resultHandler:(void(^)(NSString *result))handler;
+</code></pre>
+
+<p>使用 XCTest，我们可以这样测试它：</p>
+
+<pre><code>- (void)testThatItAppendsAString;
+{
+    NSString *s1 = @"Foo";
+    XCTestExpectation *expectation = [self expectationWithDescription:@"Handler called"];
+    [s1 appendString:@"Bar" resultHandler:^(NSString *result){
+        [expectation fulfill];
+        XCTAssertEqualObjects(result, @"FooBar");
+    }];
+    [self waitForExpectationsWithTimeout:0.1 handler::nil];
+}
+</code></pre>
+
+<p>大部分的测试框架都有类似这样的东西。</p>
+
+<p>但是异步代码的测试的主要问题是隔离。隔离在英语中是 Isolation，也就是在<a href="../issue-15-4.1.html">这篇关于糟糕的测试的文章</a>中被提到过的 FIRST 的字母 "I"。</p>
+
+<p>测试异步代码的时候，我们很难确定在下一个测试什么时候开始，因为我们不知道被测试的代码是否在所有的线程或队列中都已经结束运行。</p>
+
+<p>我发现对于这样的问题的最好解决方法就是坚持使用 group，也就是<code>dispatch_group_t</code>。</p>
+
+<p><a name="dispatch-group"> </a></p>
+
+<h2 id="">不要单独行动，加入一个组</h2>
+
+<p>我们的一些类中需要在内部使用 <code>dispatch_queue_t</code>，一些则在 <code>NSManagedObjectContext</code> 的私有队列中使用 block 队列。</p>
+
+<p>在我们的 <code>-tearDown</code> 方法中，我们需要等所有的异步工作结束。为了实现这样的方式，我们必须做好几件事情，就像下面提到的。</p>
+
+<p>我们的测试类中有一个这样的 property：</p>
+
+<pre><code>@property (nonatomic) dispatch_group_t;
+</code></pre>
+
+<p>我们在我们的公共父类中定义并且设置它。</p>
+
+<p>接下来，我们可以将这个组放入到那些使用 <code>dispatch_queue</code> 或类似的东西的类中，比如，我们始终使用 <code>dispatch_group_async()</code> 来替换 <code>dispatch_async()</code>。</p>
+
+<p>因为我们非常依赖于 CoreData，所以我们为 <code>NSManagedObjectContext</code> 的调用增加一个方法：</p>
+
+<pre><code>- (void)performGroupedBlock:(dispatch_block_t)block ZM_NON_NULL(1);
+{
+    dispatch_group_enter(self.dispatchGroup);
+    [self performBlock:^{
+        block();
+        dispatch_group_leave(self.dispatchGroup);
+    }];
+}
+</code></pre>
+
+<p>并且为所有 managed object contexts 添加一个名为 <code>dispatchGroup</code> 的property。然后我们在所有的代码中仅仅使用 <code>-performGroupedBlock:</code> 就可以了。</p>
+
+<p>这样我们就可以在 <code>tearDown</code> 方法中加入等待所有异步工作结束的代码了：</p>
+
+<pre><code>- (void)tearDown
+{
+    [self waitForGroup];
+    [super tearDown];
+}
+
+- (void)waitForGroup;
+{
+    __block BOOL didComplete = NO;
+    dispatch_group_notify(self.requestGroup, dispatch_get_main_queue(), ^{
+        didComplete = YES;
+    });
+    NSDate *end = [NSDate dateWithTimeIntervalSinceNow:timeout];
+    while (! didComplete) {
+        NSTimeInterval const interval = 0.002;
+        if (! [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:interval]]) {
+            [NSThread sleepForTimeInterval:interval];
+        }
+    }
+}
+</code></pre>
+
+<p>这是可行的，因为 <code>-tearDown</code> 是在 main loop 中被调用的。我们在 main loop 调用它就可以确保任意会进入主队列中的代码都被运行过。如果这个组永远不空的话，上面这个代码将会被挂起。在这个情况下，我们稍微调整了一下代码，这样我们就拥有了一个超时机制。</p>
+
+<h3 id="">等待所有任务结束</h3>
+
+<p>实现这个方法之后，我们的很多其他的测试用例也变得简单很多。在这里，我们创建了一个 <code>WaitForAllGroupsToBeEmpty()</code> 辅助方法，我们可以这样使用它：</p>
+
+<pre><code>- (void)testThatItDoesNotAskForNextRequestIfThereAreNoChangesWithinASave
+{
+    // expect
+    [[self.transportSession reject] attemptToEnqueueSyncRequestWithGenerator:OCMOCK_ANY];
+    [[self.syncStrategy reject] processSaveWithInsertedObjects:OCMOCK_ANY updateObjects:OCMOCK_ANY];
+    [self verifyMockLater:self.transportSession];
+
+    // when
+    NSError *error;
+    XCTAssertTrue([self.testMOC save:&amp;error]);
+    WaitForAllGroupsToBeEmpty(0.1);
+}
+</code></pre>
+
+<p>最后一行代码是等待所有的异步任务都执行完，比如，这个测试用例确保了在那些异步的 block 又插入了额外的异步任务的时候，它们都会被执行完毕，并且都没有触发 rejected 相关的方法。</p>
+
+<p>我们用一个简单的宏来实现它</p>
+
+<pre><code>#define WaitForAllGroupsToBeEmpty(timeout) \
+    do { \
+        if (! [self waitForGroupToBeEmptyWithTimeout:timeout]) { \
+            XCTFail(@"Timed out waiting for groups to empty."); \
+        } \
+    } while (0)
+</code></pre>
+
+<p>在这里，作为替换，可以调用测试的公共父类中的一个方法：</p>
+
+<pre><code>- (BOOL)waitForGroupToBeEmptyWithTimeout:(NSTimeInterval)timeout;
+{
+    NSDate * const end = [[NSDate date] dateByAddingTimeInterval:timeout];
+
+    __block BOOL didComplete = NO;
+    dispatch_group_notify(self.requestGroup, dispatch_get_main_queue(), ^{
+        didComplete = YES;
+    });
+    while ((! didComplete) &amp;&amp; (0. &lt; [end timeIntervalSinceNow])) {
+        if (! [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.002]]) {
+            [NSThread sleepForTimeInterval:0.002];
+        }
+    }
+    return didComplete;
+}
+</code></pre>
+
+<p><a name="custom-expectations"> </a></p>
+
+<h3 id="expectations">自定义 Expectations</h3>
+
+<p>在<a href="index.html#async-testing">本节的开始</a>，我们提到了</p>
+
+<pre><code>XCTestExpectation *expectation = [self expectationWithDescription:@"Handler called"];
+</code></pre>
+
+<p>和</p>
+
+<pre><code>[self waitForExpectationsWithTimeout:0.1 handler::nil];
+</code></pre>
+
+<p>是异步测试中的一些基本构建块。</p>
+
+<p>XCTest 在对于使用 <code>NSNotification</code> 和 KVO 上的情况提供了一些便利的方法，这些方法都是建立在这些构建块的基础上的。</p>
+
+<p>但是很多时候，我们发现自己会在很多地方使用相同模式的代码，比如，如果我们用异步地方式去检验 NSManagedObjectContext 对象被保存，我们可能会写出如下代码：</p>
+
+<pre><code>// expect
+[self expectationForNotification:NSManagedObjectContextDidSaveNotification
+                          object:self.syncManagedObjectContext
+                         handler:nil];
+</code></pre>
+
+<p>我们可以抽象出一个公共的方法来简化这个代码</p>
+
+<pre><code>- (XCTestExpectation *)expectationForSaveOfContext:(NSManagedObjectContext *)moc;
+{
+    return [self expectationForNotification:NSManagedObjectContextDidSaveNotification
+                          object:moc
+                         handler:nil];
+}
+</code></pre>
+
+<p>然后再在测试用例中这样使用它：</p>
+
+<pre><code>// expect
+[self expectationForSaveOfContext:self.syncManagedObjectContext];
+</code></pre>
+
+<p>这样更易读。根据这种模式，我们也可以给其他情况也添加一些自定义的方法。</p>
+
+<p><a name="fake-transport-session"> </a></p>
+
+<h2 id="">偷天换日 — 伪装传输层</h2>
+
+<p>在测试时，一个很重要的问题就是如何测试应用与服务端之间的交互。最理想的解决方案是快速的以真实服务器为基础建一个本地副本，给它提供一些假数据，然后通过 http 对它直接运行测试用例。</p>
+
+<p>实际上，我们就是使用的这种方案。它为我们提供了一个非常真实的测试配置。但这有个不好的方面，就是这种方案运行速度非常慢。在每次测试之间，清理服务器数据库的速度就很慢。我们有 1,000 个测试用例，就算现在其中只有 30 个测试用例需要依赖真实的服务器，如果我们要清理数据库，并且提供一个 “干净” 的服务器实例就需要画 5 秒钟的时间，那么我们的测试过程中有 2.5 分钟的时间是在等待清理。我们还有在服务器的 API 可用之前对它进行测试的需求，我们需要其他的解决方案。</p>
+
+<p>替代的解决方案就是 ‘伪装服务器’。从一开始，我们把所有和服务器交互的代码全部都整合在 <code>TransportSession</code> 这个类中，这个类很接近于 <code>NSURLSession</code>，不同的是它也可以处理 JSON 转换。</p>
+
+<p>我们有一系列的测试用例是使用我们提供给 UI 层的 API，并且所有的这些和服务器的交互都被整合到 <code>TransportSession</code> 类的一个<strong>伪装的</strong> 实现中。这个传输会话同时模仿一个真实的 <code>TransportSession</code>行为，以及一个服务器的行为。这个伪装的会话实现了整个 <code>TransportSession</code> 协议，并且也提供了一些允许我们改变其状态的方法。</p>
+
+<p>相比在每个测试用例中使用 OCMock 来模拟服务器，使用一个自定义的类有很多优势。我们可以创建比使用 mock 更复杂的场景。我们可以模拟一些在真实服务器上很难触发的边缘情况。</p>
+
+<p>并且，这个伪装的服务器也有对其自身的测试用例，所以它的返回结果也是更精确。如果我们想改变服务器的反应到一个请求上去，我们只需要在一个地方改动即可。这使我们所有依赖于伪装服务器的的测试用例更稳定，这样也能更容易发现代码中和新的行为配合不好的地方。</p>
+
+<p><code>FakeTransportSession</code> 的实现很简单。使用一个 <code>HTTPRequest</code> 对象来封装请求相关的 URL、method 和其他一些可选的参数。<code>FakeTransportSession</code> 把所有的请求映射为内部的方法，这些内部方法产生相应的响应。它甚至有已拥有内存空间的 Core Data 栈来跟踪相应的对象。使用这种方式，一个 GET 请求可以返回一个之前使用 PUT 请求添加的资源。</p>
+
+<p>所有的这些听起来需要很多的时间投入。但是，这个伪装的服务器实际上是非常简单的：因为它不是一个真正的服务器，并且我们削减了大量的细节。这个伪装的服务器只能够为一个客户端提供服务，并且我们也不需要担心性能和扩展性。我们也不需要一次实现所有的功能，我们只需要实现在开发和测试中所需要的功能即可。</p>
+
+<p>这里还有一件事情对我们很有利：在我们开始做这件事时，我们服务器的 API 已经非常稳定而且有良好的定义。</p>
+
+<h2 id="">自定义断言宏</h2>
+
+<p>使用 Xcode Test 框架，我们需要使用 XCTAssert 宏来做实际的检查：</p>
+
+<pre><code>XCTAssertNil(request1);
+XCTAssertNotNil(request2);
+XCTAssertEqualObjects(request2.path, @"/assets");
+</code></pre>
+
+<p>在苹果的<a href="https://developer.apple.com/library/prerelease/ios/documentation/DeveloperTools/Conceptual/testing_with_xcode/testing_3_writing_test_classes/testing_3_writing_test_classes.html">"编写测试类和方法"</a>这篇文章里，有一个全面的按照类别排列的断言列表。</p>
+
+<p>但是我们发现自己经常使用一些特定情况的断言，比如：</p>
+
+<pre><code>XCTAssertTrue([string isKindOfClass:[NSString class]] &amp;&amp; ([[NSUUID alloc] initWithUUIDString:string] != nil),
+              @"'%@' is not a valid UUID string", string);
+</code></pre>
+
+<p>这么写非常的啰嗦，难以阅读。并且我们也不喜欢重复代码。我们通过编写自己的断言宏来解决这个问题：</p>
+
+<pre><code>#define AssertIsValidUUIDString(a1) \
+    do { \
+        NSUUID *_u = ([a1 isKindOfClass:[NSString class]] ? [[NSUUID alloc] initWithUUIDString:(a1)] : nil); \
+        if (_u == nil) { \
+            XCTFail(@"'%@' is not a valid UUID string", a1); \
+        } \
+    } while (0)
+</code></pre>
+
+<p>在我们的测试用例中，我们只需要这样使用它即可：</p>
+
+<pre><code>AssertIsValidUUIDString(string);
+</code></pre>
+
+<p>这种方式也让代码更具有可读性。</p>
+
+<h3 id="">更进一步</h3>
+
+<p>我们都知道，使用 <a href="https://en.wikipedia.org/wiki/C_preprocessor#Macro_definition_and_expansion">C 的预处理宏</a> 就是在和野兽跳舞。</p>
+
+<p>有很多事情是无法避免的，我们只能是做到如何减轻这种痛苦。我们需要让测试框架知道这个断言是在哪个文件的哪行代码失败的。<code>XCTFail()</code> 本身就是一个宏，而且它还依赖于 <code>__FILE__</code> and <code>__LINE__</code>。</p>
+
+<p>对于更复杂的断言和检查，我们实现了一个简单的辅助类 <code>FailureRecorder</code>：</p>
+
+<pre><code>@interface FailureRecorder : NSObject
+
+- (instancetype)initWithTestCase:(XCTestCase *)testCase filePath:(char const *)filePath lineNumber:(NSUInteger)lineNumber;
+
+@property (nonatomic, readonly) XCTestCase *testCase;
+@property (nonatomic, readonly, copy) NSString *filePath;
+@property (nonatomic, readonly) NSUInteger lineNumber;
+
+- (void)recordFailure:(NSString *)format, ... NS_FORMAT_FUNCTION(1,2);
+
+@end
+
+
+#define NewFailureRecorder() \
+    [[FailureRecorder alloc] initWithTestCase:self filePath:__FILE__ lineNumber:__LINE__]
+</code></pre>
+
+<p>在我们的代码中，我们有一些地方我们想检查两个字典是不是相等：使用 <code>XCTAssertEqualObjects()</code> 可以做到，但是当不相等时，它的输出却不是很有用。</p>
+
+<p>我们想这样使用它</p>
+
+<pre><code>NSDictionary *payload = @{@"a": @2, @"b": @2};
+NSDictionary *expected = @{@"a": @2, @"b": @5};
+AssertEqualDictionaries(payload, expected);
+</code></pre>
+
+<p>检查到不相等时，就输出下面的结果</p>
+
+<pre><code>Value for 'b' in 'payload' does not match 'expected'. 2 == 5
+</code></pre>
+
+<p>所以我们创建了一个的宏</p>
+
+<pre><code>#define AssertEqualDictionaries(d1, d2) \
+    do { \
+        [self assertDictionary:d1 isEqualToDictionary:d2 name1:#d1 name2:#d2 failureRecorder:NewFailureRecorder()]; \
+    } while (0)
+</code></pre>
+
+<p>这个宏中调用了下面的方法</p>
+
+<pre><code>- (void)assertDictionary:(NSDictionary *)d1 isEqualToDictionary:(NSDictionary *)d2 name1:(char const *)name1 name2:(char const *)name2 failureRecorder:(FailureRecorder *)failureRecorder;
+{
+    NSSet *keys1 = [NSSet setWithArray:d1.allKeys];
+    NSSet *keys2 = [NSSet setWithArray:d2.allKeys];
+    if (! [keys1 isEqualToSet:keys2]) {
+        XCTFail(@"Keys don't match for %s and %s", name1, name2);
+        NSMutableSet *missingKeys = [keys1 mutableCopy];
+        [missingKeys minusSet:keys2];
+        if (0 &lt; missingKeys.count) {
+            [failureRecorder recordFailure:@"%s is missing keys: '%@'",
+             name1, [[missingKeys allObjects] componentsJoinedByString:@"', '"]];
+        }
+        NSMutableSet *additionalKeys = [keys2 mutableCopy];
+        [additionalKeys minusSet:keys1];
+        if (0 &lt; additionalKeys.count) {
+            [failureRecorder recordFailure:@"%s has additional keys: '%@'",
+             name1, [[additionalKeys allObjects] componentsJoinedByString:@"', '"]];
+        }
+    }
+    for (id key in keys1) {
+        if (! [d1[key] isEqual:d2[key]]) {
+            [failureRecorder recordFailure:@"Value for '%@' in '%s' does not match '%s'. %@ == %@",
+             key, name1, name2, d1[key], d2[key]];
+        }
+    }
+}
+</code></pre>
+
+<p>这里的技巧是，<code>FailureRecorder</code> 捕获了 <code>__FILE__</code>，<code>__LINE__</code> 和测试用例。在 <code>-recordFailure:</code> 方法内部，它简单地把字符串传递给测试用例:</p>
+
+<pre><code>- (void)recordFailure:(NSString *)format, ...;
+{
+    va_list ap;
+    va_start(ap, format);
+    NSString *d = [[NSString alloc] initWithFormat:format arguments:ap];
+    va_end(ap);
+    [self.testCase recordFailureWithDescription:d inFile:self.filePath atLine:self.lineNumber expected:YES];
+}
+</code></pre>
+
+<p><a name="integration-with-xcode"> </a></p>
+
+<h2 id="xcodexcodeserver">与 Xcode 和 Xcode Server 集成</h2>
+
+<p>XCTest 最好的优点就是它可以和 <a href="https://developer.apple.com/xcode/">Xcode IDE</a> 集成的非常好。使用 Xode 6 和 Xcode 6 Server，这方面的优点更被加强了。这种紧密集成是非常有用的，并且能提高我们的效率。</p>
+
+<h3 id="">专注</h3>
+
+<p>当运行一个单一的测试用例或者在一个测试类中运行一系列测试用例时，点击左边栏上、靠近行数的小菱形按钮，使我们可以运行特定的一个或者一系列测试用例：</p>
+
+<p><img src="http://img.objccn.io/issue-15/xctest-diamond-in-gutter.png" alt="Diamond in Xcode Gutter" /></p>
+
+<p>如果测试失败，它会变成红色：</p>
+
+<p><img src="http://img.objccn.io/issue-15/xctest-red-diamon-in-gutter.png" alt="Failing Test" /></p>
+
+<p>如果测试通过，它会变成绿色：</p>
+
+<p><img src="http://img.objccn.io/issue-15/xctest-green-diamon-in-gutter.png" alt="Passing Test" /></p>
+
+<p>我们最喜欢的一个键盘快捷键是 ^⌥⌘G，它可以再一次的运行之前运行的最后一个或者最后一系列测试用例。当点击了边栏上的小菱形按钮后，我们可以改变测试代码，并且简单的再去运行它们而不需要我们的手离开键盘。当调试测试用例时，这是非常有用的。</p>
+
+<h3 id="">导航</h3>
+
+<p>在 Xcode 左侧的导航栏中有一列<strong>测试导航</strong>，这里是按照所属类分组展示的测试用例：</p>
+
+<p><img src="http://img.objccn.io/issue-15/xctest-test-navigator.png" alt="Test Navigator" /></p>
+
+<p>也可以从这里开始运行某一个单一的测试用例或者是某一组测试用例。更有用的是，我们可以使用导航栏底部的第三个小图标来过滤所有失败的测试用例。</p>
+
+<p><img src="http://img.objccn.io/issue-15/xctest-test-navigator-failing.png" alt="Test Navigator with failing tests" /></p>
+
+<p><a name="integration-with-xcode"> </a></p>
+
+<h3 id="">持续集成</h3>
+
+<p>OS X Server 有一个叫做 <a href="https://www.apple.com/osx/server/features/#xcode-server">Xcode Server</a> 的特性，它是一个基于 Xcode 的持续集成服务器，我们已经正在使用它了。</p>
+
+<p>只要有新的提交，我们的 Xcode Server 就会自动从 Github 上 check out 我们的工程。我们配置它，让它运行静态分析，在 iPod touch 和一些 iOS 模拟器上运行所有的测试用例，并且最后自动打包成 Xcode archive 以供下载。</p>
+
+<p>在 Xcode 6 中，这些 Xcode Server 的特性得到更好的发挥，即使是对复杂的工程。</p>
+
+<p>我们有一个运行在 release 分支上的 Xcode Server 的自定义<em>触发器</em>。这个<em>触发器</em>脚本把生成好的 Xcode archive 上传到文件服务器上。这样一来，我们就有了基于版本控制的存档。 UI 小组就可以从文件服务器上下载预编译好的框架的指定版本。</p>
+
+<p><a name="behaviour-driven-development"> </a></p>
+
+<h2 id="bddxctest">BDD 和 XCTest</h2>
+
+<p>如果你熟悉<a href="../issue-15-1.1.html">行为驱动开发</a>，你会发现我们的命名风格在很大程度上受这种测试方式的影响。之前，我们中有些人使用过 <a href="https://github.com/kiwi-bdd/Kiwi">Kiwi</a> 作为测试库，所以很自然会集中在一个方法或者一个类的行为上。但是，这是不是意味着 XCTest 可以取代 BDD 库呢？答案是：并不能完全取代。</p>
+
+<p>XCTest 的优势和缺点都是由于它太简单了。你只需要创建一个类，使用 “test” 作为测试方法名的前缀，只需要这样就可以了，不需要再做其他的。和 Xcode 很好的集成性也是 XCTest 获得青睐的原因。你可以点击边栏上的小菱形按钮来运行测试用例，你也可以很容易的查看所有失败的测试用例，也可以在测试用例列表中点击某一行而快速的跳转到某一个测试用例。</p>
+
+<p>不幸的是，这已经是 XCTest 的全部优点了。在开发和测试中，使用 XCTest 时我们没有碰到任何的障碍，但是经常会想如果它能更方便一些就好了。XCTest 类看起来就像普通的类，而一个 BDD 测试套件的结构和其嵌套的上下文是显而易见的。并且这种为测试创建嵌套上下文的可能性也是最缺失的。嵌套的上下文允许我们在使独立的测试相对简单的情况下创建越来越具体的场景。当然，在 XCTest 中这也是可以的，比如在一些测试用例中调用自定义的 setup 方法，但这并不方便。</p>
+
+<p>BDD 框架的附加功能的重要性是取决于项目的大小。我们的结论是，XCTest 对中小型的工程来说是一个很好的选择，但是对于更大型的工程，就有必要参考一下像 <a href="https://github.com/kiwi-bdd/Kiwi">Kiwi</a> 或者 <a href="https://github.com/specta/specta">Specta</a> 这样的 BDD 框架。</p>
+
+<p><a name="the-project"> </a></p>
+
+<h2 id="">总结</h2>
+
+<p>XCTest 是不是正确的选择呢？你必须根据手头的项目来做判断。我们选择使用 XCTest 作为 <a href="https://en.wikipedia.org/wiki/Keep_it_simple_stupid">KISS (Keep it simple, stupid)</a> 的一部分，当然我们也有一份希望改进的愿望清单。尽管我们不得不做一些取舍，但是 XCTest 对我们来说是很好的选择。对于其他的测试框架，这些取舍将会是另外一些事情。</p>
+
+<hr />
+
+<p><a href="http://objcnn.io/issue-15">话题 #15 下的更多文章</a></p>
+
+<p>原文 <a href="http://www.objc.io/issue-15/xctest.html">Real-World Testing with XCTest</a></p>
+                    </div>
+                    <h3>关于译者</h3>
+                    <div class="at_author">
+                        <div class="row">
+                            <div class="medium-2 columns show-for-medium-up">
+                                <div class="at_author_image">
+                                    <img src="../content/images/2014/Mar/huangxuanhua.jpg" alt="黄宣冬">
+                                </div>
+                            </div>
+                            <div class="medium-10 columns">
+                                <div class="at_author_name">
+                                    <h3>黄宣冬</h3>
+                                </div>
+                                <div class="at_author_bio">
+                                    <p>从事iOS应用开发的程序猿一枚，江湖自称治愈系萌汉子，优美代码追求者，正在人生漫漫路中缓缓前行。</p>
+                                    <p><a href="http://morisunshine.com">http://morisunshine.com</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+
+<div id="at_footer">
+	<div class="row">
+		<div class="large-12 columns text-center">
+			<div class="at_block">
+				<div class="copyright">
+					<span>&copy; 2015 <a href="../index.html">objc中国</a><br />本站由 <a href="http://im.onevcat.com">@onevcat</a> 创建，文章源自 <a href="http://objc.io">objc.io</a>，由 <a href="https://github.com/objccn">objc中国 项目组</a>整理维护</span>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+        </div>
+    </div>
+
+    
+    <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.1.0.min.js"></script>
+    <script>window.jQuery || document.write('<script src="../assets/js/jquery-2.1.0.min.js"><\/script>')</script>
+
+    <script>
+        var ghostionConfig = {
+            site_url:                       "objccn.io",
+            google_fonts_family:            "Open+Sans:400,400italic,700,700italic",
+            google_analytics_tracking_id:   "UA-49045539-1",
+            disqus_shortname:               "objccn"
+        };
+    </script>
+    <script src="../assets/js/ghostion.min.js"></script>
+    
+</body>
+</html>

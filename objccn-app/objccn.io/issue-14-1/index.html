@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    
+    <title>使 Mac 应用数据脚本化</title>
+    <meta name="description" content="" />
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <meta name="google-site-verification" content="m9cRSZABM-v4ZnQ2oia-QgKq1TvTqbZPkFxzYmi31Jc" />
+    <meta name="baidu-site-verification" content="q04WZj6EQE" />
+
+    <link rel="shortcut icon" href="../assets/images/favicon.png" />
+    
+    <link rel="stylesheet" href="../assets/css/ghostion.min.css" />
+
+    
+    <link rel="stylesheet" href="../assets/css/ghostion.custom.css" />
+
+    
+    <meta name="generator" content="Ghost 0.4" />
+<link rel="alternate" type="application/rss+xml" title="objc中国" href="../rss/index.html">
+<link rel="canonical" href="index.html" />
+</head>
+<body class="post-template page">
+    <div id="at_page_surround">
+        <div id="at_body">
+            
+
+
+<div id="at_header">
+    <div class="row">
+        <div class="medium-4 columns">
+            <div class="at_logo_container">
+                
+                    <a href="../index.html"><img class="at_logo_img" src="../content/images/2014/Mar/logo-1.png" alt="objc中国" />
+                    
+                    <span class="at_logo_text">objc中国</span></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="at_showcase">
+	<div class="at_blog_cover" >
+	    <div class="at_showcase_overlay ">
+			<div class="row">
+				<div class="large-12 large-centered columns">
+					<div class="at_block">
+						<div class="text-center">
+				            
+				            <div class="at_block">
+				                <article class="post page">
+				                    <div class="at_post_header">
+				                        <h1 class="at_post_title">使 Mac 应用数据脚本化</h1>
+				                    </div>
+				                    <div class="at_post_meta">
+				                        <span class="at_featured_post"><span class="fa fa-bookmark"></span> <span>Featured</span></span>
+				                        <span class="at_post_author"><span class="fa fa-user"></span> Ckitakishi</span>
+				                        <time class="at_post_time" datetime="2014-07-26"><span class="fa fa-calendar"></span> 26 Jul 2014</time>
+				                        <span class="at_post_tags"> </span>
+				                    </div>
+					                <div class="at_post_share">
+					                    <h6 class="at_post_share_title">分享文章</h6>
+					                    <a class="at_post_share_icon" href="http://twitter.com/share?text=%23objc%E4%B8%AD%E5%9B%BD%20%E4%BD%BF%20Mac%20%E5%BA%94%E7%94%A8%E6%95%B0%E6%8D%AE%E8%84%9A%E6%9C%AC%E5%8C%96&url=http://objccn.io/issue-14-1/"
+					                        onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+					                        <span class="fa fa-twitter-square"></span>
+					                    </a>
+					                    <a class="at_post_share_icon" href="https://www.facebook.com/sharer/sharer.php?u=http://objccn.io/issue-14-1/"
+					                        onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+					                        <span class="fa fa-facebook-square"></span>
+					                    </a>
+					                    <a class="at_post_share_icon" href="http://service.weibo.com/share/share.php?url=http://objccn.io/issue-14-1/&appkey=&title=%23objc%E4%B8%AD%E5%9B%BD%23%20%E4%BD%BF%20Mac%20%E5%BA%94%E7%94%A8%E6%95%B0%E6%8D%AE%E8%84%9A%E6%9C%AC%E5%8C%96&pic=&ralateUid=&language=zh_cn"
+					                        onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+					                        <span class="fa fa-weibo"></span>
+					                    </a>
+					                </div>
+				                </article>
+				            </div>
+				            
+						</div>
+					</div>
+				</div>
+			</div>
+	    </div>
+	</div>
+</div>
+
+
+<div id="at_mainbody" class="at_post" role="main">
+    <div class="row">
+        <div class="large-12 columns">
+            
+            <div class="at_block">
+                <article class="post page">
+                    <div class="at_post_content">
+                        <p>当为应用添加 AppleScript 支持的时候 - OS X 10.10 中也可以是 JavaScript 支持（译者注：10.10 中我们可以使用 JavaScript 作为脚本语言了），最好以应用的数据作为开始。这里的脚本并不是说自动按钮点击什么的；而是在说将你的 model 层暴露给那些会在自己的工作流程中使用你的应用的人。</p>
+
+<p>有的用户会向朋友和家人推荐应用，虽然通常像这样的用户极少，但是他们是超级用户。他们的博客和 twitter 上有关于应用的内容，人们关注了他们。他们会成为你的应用的最大传播者。</p>
+
+<p>总体而言，添加脚本支持最重要的原因是它使得应用更加专业，而这所能得到的回报是值得我们努力的。</p>
+
+<h2 id="noteland">Noteland</h2>
+
+<p>Noteland 是一个除了空白窗口之外没有任何 UI 的应用，但是它有 model 层，并且可以脚本化。你可以在 <a href="https://github.com/objcio/issue-14-scriptable-apps">GitHub</a> 上找到它。</p>
+
+<p>Noteland 支持 AppleScript（10.10上还支持 JavaScript）。它是在 Xcode 5.1.1 中用 Objective-C 写的。我们最初试图使用 Swift 和 Xcode 6 Beta 2，但是出现了困难。这完全可能是我们自己的错误，因为毕竟我们仍然在学习 Swift。</p>
+
+<h3 id="noteland">Noteland 的对象模型</h3>
+
+<p>有两个类，notes（笔记） 和 tags（标签）。可能有多个笔记，而且一个笔记也许有多个标签。</p>
+
+<p>NLNote.h 声明了几个属性: <code>uniqueID</code>，<code>text</code>，<code>creationDate</code>，<code>archived</code>，<code>tags</code> 和一个只读的 <code>title</code> 属性。</p>
+
+<p>Tags 类更加简单。NLTag.h 声明了两个可脚本属性: <code>uniqueID</code> 和 <code>name</code>。</p>
+
+<p>我们希望用户能够创建，编辑和删除笔记和标签，并且能够访问和改变除了只读以外的属性。</p>
+
+<h3 id="sdef">脚本定义文件 (.sdef)</h3>
+
+<p>第一个步骤是定义脚本接口，概念上可以理解为为脚本创建一个 .h 文件，但是是以 AppleScript 能够识别的格式进行创建。</p>
+
+<p>过去，我们需要创建和编辑 aete 资源（“aete” 代表 Apple Event Terminology）。现在容易了很多：我们可以创建一个 sdef（scripting definition 脚本定义）XML 文件。</p>
+
+<p>你可能更倾向于使用 JSON 或者 plist，但是 XML 在这里会更加合适，至少它毫无疑问战胜了 aete 资源。事实上，曾有一段时间有 plist 版本，但是它要求你保持 <em>两个</em> 不同的 plist 同步，这非常痛苦。</p>
+
+<p>原来的资源的名字 (aete，Apple Event Terminology) 其实没什么特别的意思。Apple event 是由 AppleScript 生成，发送和接受的低级别消息。这本身是一种很有趣的技术，而且有脚本支持以外的用途。而且实际上，它从 90 年代初的 System 7 开始就一直存在，而且在过渡到 OS X 的过程中存活了下来。</p>
+
+<p>（猜测：Apple event 的存活是由于很多印刷出版商依赖于 AppleScript，在 90 年代中后期的 '黑暗日子' 中，出版商们是 Apple 最忠实的用户。）</p>
+
+<p>一个 sdef 文件总是以同样的头部作为开始：</p>
+
+<pre><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE dictionary SYSTEM "file://localhost/System/Library/DTDs/sdef.dtd"&gt;
+</code></pre>
+
+<p>顶级项是字典 (dictionary)，“字典” 是 AppleScript 中专指一个脚本接口的词。在字典中你会发现一个或多个套件 (suite)。</p>
+
+<p>（提示：打开 AppleScript Editor，然后选择 File > Open Dictionary...你会看到有脚本字典的应用列表。如果你选择 iTunes 作为例子，你会看到类，属性和 iTunes 能识别的命令。）</p>
+
+<pre><code>&lt;dictionary title="Noteland Terminology"&gt;
+</code></pre>
+
+<h4 id="">标准套件</h4>
+
+<p>标准套件定义了应用应该支持的所有类和操作。其中包括退出，关闭窗口，创建和删除对象，查询对象等等。</p>
+
+<p>将它添加到你的 sdef 文件，从位于 <code>/System/Library/ScriptingDefinitions/CocoaStandard.sdef</code> 的标准套件中复制和粘贴。</p>
+
+<p>从 <code>&lt;suite name="Standard Suite"</code>, 从头到尾且包括结尾 <code>&lt;/suite&gt;</code> 复制所有东西。</p>
+
+<p>将它粘贴到你的 sdef 文件中 <code>dictionary</code> 元素的正下方。</p>
+
+<p>然后，在你的 sdef 文件中，遍历并删除所有没有用到的东西。Noteland 不基于文档且无需打印，所以我们去掉了打开和保存命令，文件类，以及与打印有关的一切。</p>
+
+<p>（建议：Xcode 在 XML 的缩进方面做得很好，为了重新缩进，选中所有文本并且选择 Editor > Structure > Re-Indent。）</p>
+
+<p>当你完成编辑后，使用命令行 xmllint 程序 <code>xmllint path/to/noteland.sdef</code> 以确保 XML 是正常的。如果它只显示了 XML，没有错误和警告，那么就是正确的。（记住你可以在 Xcode 的窗口标题栏拖拽文件的代理图标到终端，然后会粘贴文件的路径。）</p>
+
+<h4 id="noteland">Noteland 套件</h4>
+
+<p>一个单一的应用定义套件通常是最好的，虽然并不强制：当确实合情合理的时候，你可以有超过一个的套件。Noteland 只定义一个，下面是 Noteland 套件：</p>
+
+<pre><code>&lt;suite name="Noteland Suite" code="Note" description="Noteland-specific classes."&gt;
+</code></pre>
+
+<p>脚本字典所期望的是某些部件被包含在其他东西中。顶级容器是应用程序对象本身。</p>
+
+<p>在 Noteland 中，它的类名是 <code>NLApplication</code>。对于应用的类你应该总是使用 <code>capp</code> 作为编码 (code) 值：这是一个标准的 Apple event 编码。（注意它也存在于标准套件中。）</p>
+
+<pre><code>&lt;class name="application" code="capp" description="Noteland’s top level scripting object." plural="applications" inherits="application"&gt;
+    &lt;cocoa class="NLApplication"/&gt;
+</code></pre>
+
+<p>该应用包含一个笔记的数组。区分元素（这里可以有不止一项）和属性非常重要。换句话说，编码中的数据应该作为你字典中的一个元素。</p>
+
+<pre><code>&lt;element type="note" access="rw"&gt;
+    &lt;cocoa key="notes"/&gt;
+&lt;/element&gt;`
+</code></pre>
+
+<p>Cocoa 脚本使用 KVC，字典用来指定键的名称。</p>
+
+<h4 id="note">Note 类</h4>
+
+<pre><code>&lt;class name="note" code="NOTE" description="A note" inherits="item" plural="notes"&gt;
+    &lt;cocoa class="NLNote"/&gt;`
+</code></pre>
+
+<p>上面的编码是 <code>NOTE</code>。这几乎可以是任何东西，但是请注意，Apple 保留所有的小写编码供自己使用，所以 <code>note</code> 是不被允许的。它可以是 <code>NOT*</code>, 或 <code>NoTe</code>, 或 <code>XYzy</code>，或者任何你想要的。（理想情况下自己的编码不会与其他应用的编码冲突。但是我们没有办法确保这一点，所以我们只能够 <em>猜测</em>。也就是说， 猜想 <code>NOTE</code> 可能并不是一个很好的选择。）</p>
+
+<p>你的类应该继承自 <code>item</code>。（理论上，你可以让一个类继承自你的另一个类，不过我们没有做过这个尝试。）</p>
+
+<p>note 类有多个属性：</p>
+
+<pre><code>&lt;property name="id" code="ID  " type="text" access="r" description="The unique identifier of the note."&gt;
+    &lt;cocoa key="uniqueID"/&gt;
+&lt;/property&gt;
+&lt;property name="name" code="pnam" type="text" description="The name of the note — the first line of the text." access="r"&gt;
+    &lt;cocoa key="title"/&gt;
+&lt;/property&gt;
+&lt;property name="body" code="body" description="The plain text content of the note, including first line and subsequent lines." type="text" access="rw"&gt;
+    &lt;cocoa key="text"/&gt;
+&lt;/property&gt;
+&lt;property name="creationDate" code="CRdt" description="The date the note was created." type="date" access="r"/&gt;
+&lt;property name="archived" code="ARcv" description="Whether or not the note has been archived." type="boolean" access="rw"/&gt;
+</code></pre>
+
+<p>如果可能，最好为你的对象提供独一无二的 ID。否则，脚本不得不依赖于可能发生改变的名字和位置。对唯一的 ID 使用编码 'ID  '。（注意有两个空格；编码应该是四个字符。）而这个唯一 ID 的名字必须是 <code>id</code>。</p>
+
+<p>只要有意义，提供 <code>name</code> 属性就是标准的做法，编码应该是 <code>pnam</code>。在 Noteland 中它是一个只读属性，因为名称只是笔记中文本的第一行，而且笔记的文本通过可读写的 <code>body</code> 属性编辑。 </p>
+
+<p>对于 <code>creationDate</code> 和 <code>archived</code>，我们并不需要提供 Cocoa 的键元素，因为键和属性名字相同。</p>
+
+<p>注意类型：text, date 和 boolean。AppleScript 支持它们和其它几个，详细地在<a href="https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/ScriptableCocoaApplications/SApps_about_apps/SAppsAboutApps.html#//apple_ref/doc/uid/TP40001976-SW12">本文档中列出</a>。</p>
+
+<p>笔记可以有标签，下面是一个标签元素：</p>
+
+<pre><code>&lt;element type="tag" access="rw"&gt;
+    &lt;cocoa key="tags"/&gt;
+&lt;/element&gt;
+&lt;/class&gt;`
+</code></pre>
+
+<h4 id="tag">Tag 类</h4>
+
+<p>Tags 是 <code>NLTap</code> 对象：</p>
+
+<pre><code>&lt;class name="tag" code="TAG*" description="A tag" inherits="item" plural="tags"&gt;
+    &lt;cocoa class="NLTag"/&gt;`
+</code></pre>
+
+<p>Tags 只有两个属性，<code>id</code> 和 <code>name</code>：</p>
+
+<pre><code>&lt;property name="id" code="ID  " type="text" access="r" description="The unique identifier of the tag."&gt;
+    &lt;cocoa key="uniqueID"/&gt;
+&lt;/property&gt;
+&lt;property name="name" code="pnam" type="text" access="rw"&gt;
+    &lt;cocoa key="name"/&gt;
+&lt;/property&gt;
+&lt;/class&gt;
+</code></pre>
+
+<p>下面的代码是 Noteland 套件和整个字典的结束：</p>
+
+<pre><code>    &lt;/suite&gt;
+&lt;/dictionary&gt;
+</code></pre>
+
+<h3 id="">应用程序配置</h3>
+
+<p>应用不是默认就能脚本化的。我们在 Xcode 中，需要编辑应用的 Info.plist。</p>
+
+<p>因为应用使用了一个自定义的 <code>NSApplication</code> 子类，用来提供顶级容器，我们编辑主体类 (<code>NSPrincipalClass</code>) 来声明 <code>NLApplication</code> (Noteland 的 <code>NSApplication</code> 子类名字)。</p>
+
+<p>我们还添加了一个脚本化的键（<code>OSAScriptingDefinition</code>）并且设置它为 YES。最后，我们添加一个名为（<code>OSAScriptingDefinition</code>） 的键来表示脚本定义文件的名字，并将它设置为 sdef 的文件命名为：noteland.sdef。</p>
+
+<h3 id="">代码</h3>
+
+<h4 id="nsapplication">NSApplication 子类</h4>
+
+<p>你可能会惊讶竟然只需要写那么少的代码。</p>
+
+<p>参见 Noteland 工程中的 NLApplication.m 文件。它惰性地创建了一个笔记数组且提供了一些 dummy 数据。说惰性只是因为它没有连接脚本支持。</p>
+
+<p>（注意这里没有对象持久化，因为我想让 Noteland 尽可能自由，而不仅仅是脚本支持。你可以使用 Core Data 或 archiever（归档）或者其它东西来保存数据。）</p>
+
+<p>它也可以跳过 dummy 数据并提供一个数组。</p>
+
+<p>在本例中，数组是 <code>NSMutableArray</code> 类型的。它可以不必是 <code>NSMutableArray</code>，而是一个 <code>NSArray</code>，但这样的话 Cocoa 脚本在笔记数组发生改变时将会替换整个数组。但是如果我们让它作为 <code>NSMutableArray</code> 数组 <em>且</em> 提供下面两个方法的话，这个数组就不必被替换。取而代之，对象将会被添加到可变数组中，以及从中移除。 </p>
+
+<pre><code>- (void)insertObject:(NLNote *)object inNotesAtIndex:(NSUInteger)index {
+    [self.notes insertObject:object atIndex:index];
+}
+
+- (void)removeObjectFromNotesAtIndex:(NSUInteger)index {
+    [self.notes removeObjectAtIndex:index];
+}
+</code></pre>
+
+<p>另外需要注意，笔记数组在类扩展的 .m 文件中被声明。不需要将它放到 .h 文件中。因为 Cocoa 脚本使用 KVC，而且不关心你的header，它会找到这个属性的。</p>
+
+<h4 id="nlnote">NLNote 类</h4>
+
+<p>NLNote.h 声明了笔记的各个属性：<code>uniqueID</code>，<code>text</code>，<code>creationDate</code>，<code>archived</code>，<code>title</code> 和 <code>tags</code>。</p>
+
+<p>在 <code>init</code> 方法中设置 <code>uniqueID</code> 和 <code>creationDate</code>，以及将标签数组设为空的 <code>NSArray</code>。这次我们使用 <code>NSArray</code> 而不是 <code>NSMutableArray</code>，仅仅为了说明它也可以达到目的。</p>
+
+<p><code>tilte</code> 方法返回一个计算后的值：笔记中文本的第一行。（回想一下，这会成为脚本字典的 <code>name</code>。）</p>
+
+<p>要注意 <code>objectSpecifier</code> 方法。这是你的类的关键；脚本支持需要这个使其能够理解你的对象。</p>
+
+<p>幸运的是，这个方法很容易实现。虽然对象说明符 (object specifiers) 有不同类型，通常情况下最好使用 <code>NSUniqueIDSpecifier</code>，因为它很稳定。（其它选项包括：<code>NSNameSpecifier</code>, <code>NSPositionalSpecifier</code> 等。）</p>
+
+<p>对象说明符需要了解容器相关的东西，而且容器是顶级应用的对象。</p>
+
+<p>代码如下所示：</p>
+
+<pre><code>NSScriptClassDescription *appDescription = (NSScriptClassDescription *)[NSApp classDescription];
+return [[NSUniqueIDSpecifier alloc] initWithContainerClassDescription:appDescription containerSpecifier:nil key:@"notes" uniqueID:self.uniqueID];
+</code></pre>
+
+<p><code>NSApp</code> 是全局应用的对象；我们获取它的 <code>classDescription</code>。键为 <code>@"notes"</code>，<code>containerSpecifier</code> 为 nil 指的是顶级（应用）的容器， <code>uniqueID</code> 是笔记的 <code>uniqueID</code>。</p>
+
+<h4 id="note">Note 作为容器</h4>
+
+<p>我们需要超前考虑一点。标签也会需要 <code>objectSpecifier</code>，而且标签是包含在笔记中的，所以标签需要引用包含它的笔记。</p>
+
+<p>Cocoa 脚本处理标签的创建，但是我们可以重写让自己自定义行为的方法。</p>
+
+<p>NSObjectScripting.h 定义了 <code>-newScriptingObjectOfClass:forValueForKey: withContentsValue:properties:</code>。这正是我们需要的。在 NLNote.m 中，它看起来是这样的：</p>
+
+<pre><code>NLTag *tag = (NLTag *)[super newScriptingObjectOfClass:objectClass forValueForKey:key withContentsValue:contentsValue properties:properties];
+tag.note = self;
+return tag;
+</code></pre>
+
+<p>我们使用父类的实现来创建标签，然后设置标签的 <code>note</code> 属性为该笔记。为了避免可能的循环引用，NLTag.h 的 note 是 weak 属性。</p>
+
+<p>（你可能认为这并不太不优雅，我们同意这么说。我们希望取代那种为了子类的 <code>objectSpecifiers</code> 而需要存在的容器。像是 <code>objectSpecifierForScriptingObject:</code> 这样可能会更好。我们提出了一个 bug <a href="rdar://17473124">rdar://17473124</a>。）</p>
+
+<h4 id="nltag">NLTag 类</h4>
+
+<p><code>NLTag</code> 有 <code>uniqueID</code>, <code>name</code>, 和 <code>note</code> 属性。</p>
+
+<p><code>NLTag</code> 的 <code>objectSpecifier</code> 在概念上和 <code>NLNote</code>中的代码相同，除了容器是笔记而不是顶级应用类。</p>
+
+<p>它看起来像下面这样：</p>
+
+<pre><code>NSScriptClassDescription *noteClassDescription = (NSScriptClassDescription *)[self.note classDescription];
+NSUniqueIDSpecifier *noteSpecifier = (NSUniqueIDSpecifier *)[self.note objectSpecifier];
+return [[NSUniqueIDSpecifier alloc] initWithContainerClassDescription:noteClassDescription containerSpecifier:noteSpecifier key:@"tags" uniqueID:self.uniqueID];
+</code></pre>
+
+<p>就是这样。完成了。并没有太多代码，大量的工作都是设计接口和编辑 sdef 文件。</p>
+
+<p>在过去，你需要编写 Apple event 处理程序，并与 Apple event 描述符和各种一团乱麻的玩意儿一起工作。换句话说，要完成这些你需要走很长的路。值得庆幸的是，现在已经不是过去的日子了。 </p>
+
+<p>接下来才是有趣的东西。</p>
+
+<h3 id="applescripteditor">AppleScript Editor</h3>
+
+<p>启动 Noteland。启动 /Applications/Utilities/AppleScript Editor.app。</p>
+
+<p>运行下面的脚本：</p>
+
+<pre><code>tell application "Noteland"
+    every note
+end tell
+</code></pre>
+
+<p>在底部的结果窗口中，你会看到下面这样的信息：</p>
+
+<pre><code>{note id "0B0A6DAD-A4C8-42A0-9CB9-FC95F9CB2D53" of application "Noteland", note id "F138AE98-14B0-4469-8A8E-D328B23C67A9" of application "Noteland"}
+</code></pre>
+
+<p>当然，ID 会有所不同，但是这些迹象表明，它在工作。</p>
+
+<p>试一试这个脚本：</p>
+
+<pre><code>tell application "Noteland"
+    name of every note
+end tell
+</code></pre>
+
+<p>你会在结果窗中看到 <code>{"Note 0", "Note 1"}</code>。</p>
+
+<p>再试一下这个脚本：</p>
+
+<pre><code>tell application "Noteland"
+    name of every tag of note 2
+end tell
+</code></pre>
+
+<p>结果：<code>{"Tiger Swallowtails", "Steak-frites"}</code>。</p>
+
+<p>（请注意 AppleScript 数组是基于 1 的，所以 2 指的是第二个笔记。当我们明白这个以后，就一点也不奇怪了）</p>
+
+<p>你也可以创建笔记：</p>
+
+<pre><code>tell application "Noteland"
+    set newNote to make new note with properties {body:"New Note" &amp; linefeed &amp; "Some text.", archived:true}
+    properties of newNote
+end tell
+</code></pre>
+
+<p>结果将会是类似这样的（详细信息有相应改变）：</p>
+
+<pre><code>{creationDate:date "Thursday, June 26, 2014 at 1:42:08 PM", archived:true, name:"New Note", class:note, id:"49D5EE93-655A-446C-BB52-88774925FC62", body:"New Note\nSome text."}`
+</code></pre>
+
+<p>你还可以创建新的标签：</p>
+
+<pre><code>tell application "Noteland"
+    set newNote to make new note with properties {body:"New Note" &amp; linefeed &amp; "Some text.", archived:true}
+    set newTag to make new tag with properties {name:"New Tag"} at end of tags of newNote
+    name of every tag of newNote
+end tell
+</code></pre>
+
+<p>结果会是：<code>{"New Tag"}</code>。</p>
+
+<p>完美工作！</p>
+
+<h3 id="">扩展学习</h3>
+
+<p>将对象模型脚本化只是添加脚本支持的一部分；你也可以为命令添加支持。例如，Noteland 可以有一个将笔记写到硬盘文件的导出命令。RSS 阅读器可能有一个刷新命令，邮件应用可能有下载邮件命令，等等。</p>
+
+<p>Matt Neuburg 的 <a href="http://www.amazon.com/AppleScript-Definitive-Guide-Matt-Neuburg/dp/0596102119/ref=la_B001H6OITU_1_1?s=books&amp;ie=UTF8&amp;qid=1403816403&amp;sr=1-1">AppleScript 权威指南</a> 值得一读，尽管它是 2006 年出版的，但是从那以后并没有发生太大的改变。Matt 还写有一篇 <a href="http://www.apeth.net/matt/scriptability/scriptabilityTutorial.html">Cocoa 应用添加脚本支持的教程</a>。该教程绝对值得一读，它比这篇文章更加详细。</p>
+
+<p>这有一个 <a href="https://developer.apple.com/videos/wwdc/2014/">WWDC 2014 Session 的视频</a>，是关于 JavaScript 的自动化的，其中谈到了新的 JavaScript OSA 语言。（多年以前 Apple 曾提出，总有一天会出现 AppleScript 的程序员的特有语言，因为自然语言对写 C 和 C 类语言的人说略有一点怪。JavaScript 可以被认为是程序员的特有语言。）</p>
+
+<p>当然，Apple 有关于这些技术的文档：</p>
+
+<ul>
+<li><a href="https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/ScriptableCocoaApplications/SApps_intro/SAppsIntro.html#//apple_ref/doc/uid/TP40002164">Cocoa 脚本指南</a></li>
+<li><a href="https://developer.apple.com/library/mac/documentation/applescript/conceptual/applescriptx/AppleScriptX.html#//apple_ref/doc/uid/10000156-BCICHGIE">AppleScript 概览</a></li>
+</ul>
+
+<p>此外，请参阅 Apple 的 Sketch 应用，它实现了脚本化。</p>
+
+<hr />
+
+<p><a href="http://www.objc.io/issue-14/">话题 #14 下的更多文章</a></p>
+
+<p>原文 <a href="http://www.objc.io/issue-14/scripting-data.html">Making Your Mac App’s Data Scriptable</a></p>
+                    </div>
+                    <h3>关于译者</h3>
+                    <div class="at_author">
+                        <div class="row">
+                            <div class="medium-2 columns show-for-medium-up">
+                                <div class="at_author_image">
+                                    <img src="../content/images/2014/May/Ckitakishi.png" alt="Ckitakishi">
+                                </div>
+                            </div>
+                            <div class="medium-10 columns">
+                                <div class="at_author_name">
+                                    <h3>Ckitakishi</h3>
+                                </div>
+                                <div class="at_author_bio">
+                                    <p>iOS 开发者，懂一点 web 前端开发。正在为写出优美的代码而修炼。</p>
+                                    <p><a href="http://ckitakishi.com">http://ckitakishi.com</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+
+<div id="at_footer">
+	<div class="row">
+		<div class="large-12 columns text-center">
+			<div class="at_block">
+				<div class="copyright">
+					<span>&copy; 2015 <a href="../index.html">objc中国</a><br />本站由 <a href="http://im.onevcat.com">@onevcat</a> 创建，文章源自 <a href="http://objc.io">objc.io</a>，由 <a href="https://github.com/objccn">objc中国 项目组</a>整理维护</span>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+        </div>
+    </div>
+
+    
+    <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.1.0.min.js"></script>
+    <script>window.jQuery || document.write('<script src="../assets/js/jquery-2.1.0.min.js"><\/script>')</script>
+
+    <script>
+        var ghostionConfig = {
+            site_url:                       "objccn.io",
+            google_fonts_family:            "Open+Sans:400,400italic,700,700italic",
+            google_analytics_tracking_id:   "UA-49045539-1",
+            disqus_shortname:               "objccn"
+        };
+    </script>
+    <script src="../assets/js/ghostion.min.js"></script>
+    
+</body>
+</html>

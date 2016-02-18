@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    
+    <title>Core Image 介绍</title>
+    <meta name="description" content="" />
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <meta name="google-site-verification" content="m9cRSZABM-v4ZnQ2oia-QgKq1TvTqbZPkFxzYmi31Jc" />
+    <meta name="baidu-site-verification" content="q04WZj6EQE" />
+
+    <link rel="shortcut icon" href="../assets/images/favicon.png" />
+    
+    <link rel="stylesheet" href="../assets/css/ghostion.min.css" />
+
+    
+    <link rel="stylesheet" href="../assets/css/ghostion.custom.css" />
+
+    
+    <meta name="generator" content="Ghost 0.4" />
+<link rel="alternate" type="application/rss+xml" title="objc中国" href="../rss/index.html">
+<link rel="canonical" href="index.html" />
+</head>
+<body class="post-template page">
+    <div id="at_page_surround">
+        <div id="at_body">
+            
+
+
+<div id="at_header">
+    <div class="row">
+        <div class="medium-4 columns">
+            <div class="at_logo_container">
+                
+                    <a href="../index.html"><img class="at_logo_img" src="../content/images/2014/Mar/logo-1.png" alt="objc中国" />
+                    
+                    <span class="at_logo_text">objc中国</span></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="at_showcase">
+	<div class="at_blog_cover" >
+	    <div class="at_showcase_overlay ">
+			<div class="row">
+				<div class="large-12 large-centered columns">
+					<div class="at_block">
+						<div class="text-center">
+				            
+				            <div class="at_block">
+				                <article class="post page">
+				                    <div class="at_post_header">
+				                        <h1 class="at_post_title">Core Image 介绍</h1>
+				                    </div>
+				                    <div class="at_post_meta">
+				                        <span class="at_featured_post"><span class="fa fa-bookmark"></span> <span>Featured</span></span>
+				                        <span class="at_post_author"><span class="fa fa-user"></span> April</span>
+				                        <time class="at_post_time" datetime="2015-02-13"><span class="fa fa-calendar"></span> 13 Feb 2015</time>
+				                        <span class="at_post_tags"> </span>
+				                    </div>
+					                <div class="at_post_share">
+					                    <h6 class="at_post_share_title">分享文章</h6>
+					                    <a class="at_post_share_icon" href="http://twitter.com/share?text=%23objc%E4%B8%AD%E5%9B%BD%20Core%20Image%20%E4%BB%8B%E7%BB%8D&url=http://objccn.io/issue-21-6/"
+					                        onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+					                        <span class="fa fa-twitter-square"></span>
+					                    </a>
+					                    <a class="at_post_share_icon" href="https://www.facebook.com/sharer/sharer.php?u=http://objccn.io/issue-21-6/"
+					                        onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+					                        <span class="fa fa-facebook-square"></span>
+					                    </a>
+					                    <a class="at_post_share_icon" href="http://service.weibo.com/share/share.php?url=http://objccn.io/issue-21-6/&appkey=&title=%23objc%E4%B8%AD%E5%9B%BD%23%20Core%20Image%20%E4%BB%8B%E7%BB%8D&pic=&ralateUid=&language=zh_cn"
+					                        onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+					                        <span class="fa fa-weibo"></span>
+					                    </a>
+					                </div>
+				                </article>
+				            </div>
+				            
+						</div>
+					</div>
+				</div>
+			</div>
+	    </div>
+	</div>
+</div>
+
+
+<div id="at_mainbody" class="at_post" role="main">
+    <div class="row">
+        <div class="large-12 columns">
+            
+            <div class="at_block">
+                <article class="post page">
+                    <div class="at_post_content">
+                        <p>这篇文章会为初学者介绍一下 Core Image，一个 OS X 和 iOS 的图像处理框架。</p>
+
+<p>如果你想跟着本文中的代码学习，你可以在 GitHub 上下载<a href="https://github.com/objcio/issue-21-core-image-explorer">示例工程</a>。示例工程是一个 iOS 应用程序，列出了系统提供的大量图像滤镜以供选择，并提供了一个用户界面用来调整参数并观察效果。</p>
+
+<p>虽然示例代码是用 Swift 写的 iOS 程序，不过实现概念很容易转换到 Objective-C 和 OS X.</p>
+
+<h2 id="">基本概念</h2>
+
+<p>说到 Core Image，我们首先需要介绍几个基本的概念。</p>
+
+<p>一个<strong>滤镜</strong>是一个对象，有很多输入和输出，并执行一些变换。例如，模糊滤镜可能需要输入图像和一个模糊半径来产生适当的模糊后的输出图像。</p>
+
+<p>一个<strong>滤镜图表</strong>是一个链接在一起的滤镜网络 (<a href="http://en.wikipedia.org/wiki/Directed_acyclic_graph">无回路有向图</a>)，使得一个滤镜的输出可以是另一个滤镜的输入。以这种方式，可以实现精心制作的效果。我们将在下面看到如何连接滤镜来创建一个复古的拍照效果。</p>
+
+<h2 id="coreimageapi">熟悉 Core Image API</h2>
+
+<p>有了上述的这些概念，我们可以开始探索 Core Image 的图像滤镜细节了。</p>
+
+<h3 id="coreimage">Core Image 架构</h3>
+
+<p>Core Image 有一个插件架构，这意味着它允许用户编写自定义的滤镜并与系统提供的滤镜集成来扩展其功能。我们在这篇文章中不会用到 Core Image 的可扩展性；我提到它只是因为它影响到了框架的 API。</p>
+
+<p>Core Image 是用来最大化利用其所运行之上的硬件的。每个滤镜实际上的实现，即<strong>内核</strong>，是由一个 <a href="https://www.opengl.org/documentation/glsl/">GLSL</a> (即 OpenGL 的着色语言) 的<a href="https://developer.apple.com/library/mac/documentation/GraphicsImaging/Reference/CIKernelLangRef/Introduction/Introduction.html">子集</a>来书写的。当多个滤镜连接成一个滤镜图表，Core Image 便把内核串在一起来构建一个可在 GPU 上运行的高效程序。</p>
+
+<p>只要有可能，Core Image 都会把工作延迟。通常情况下，直到滤镜图表的最后一个滤镜的输出被请求之前都不会发生分配或处理。</p>
+
+<p>为了完成工作，Core Image 需要一个称为<strong>上下文 (context)</strong> 的对象。这个上下文是框架真正工作的地方，它需要分配必要的内存，并编译和运行滤镜内核来执行图像处理。建立一个上下文是非常昂贵的，所以你会经常想创建一个反复使用的上下文。接下来我们将看到如何创建一个上下文。</p>
+
+<h3 id="">查询可用的滤镜</h3>
+
+<p>Core Image 滤镜是按名字创建的。要获得系统滤镜的列表，我们要向 Core Image 的 <code>kCICategoryBuiltIn</code> 类别请求得到滤镜的名字：</p>
+
+<pre><code>let filterNames = CIFilter.filterNamesInCategory(kCICategoryBuiltIn) as [String]  
+</code></pre>
+
+<p>iOS 上可用的滤镜列表非常接近于 OS X 上可用滤镜的一个子集。在 OS X 上有 169 个内置滤镜，在 iOS 上有 127 个。</p>
+
+<h3 id="">通过名字创建一个滤镜</h3>
+
+<p>现在，我们有了可用滤镜的列表，我们就可以创建和使用滤镜了。例如，要创建一个高斯模糊滤镜，我们传给 <code>CIFilter</code> 初始化方法相应的名称就可以了：</p>
+
+<pre><code>let blurFilter = CIFilter(named:"CIGaussianBlur")  
+</code></pre>
+
+<h3 id="">设置滤镜参数</h3>
+
+<p>由于 Core Image 的插件结构，大多数滤镜属性并不是直接设置的，而是通过键值编码（KVC）设置。例如，要设置模糊滤镜的模糊半径，我们使用 KVC 来设置 <code>inputRadius</code> 属性：</p>
+
+<pre><code>blurFilter.setValue(10.0 forKey:"inputRadius")  
+</code></pre>
+
+<p>由于这种方法需要 <code>AnyObject?</code> （即 Objective-C 里的 <code>id</code>）作为其参数值，它不是类型安全的。因此，设置滤镜参数需要谨慎一些，确保你传值的类型是正确的。</p>
+
+<h3 id="">查询滤镜属性</h3>
+
+<p>为了知道一个滤镜提供什么样的输入和输出参数，我们就可以分别获取 <code>inputKeys</code> 和 <code>outputKeys</code> 数组。它们都返回 <code>NSString</code> 的数组。</p>
+
+<p>要获取每个参数的详细信息，我们可以看看由滤镜提供的 <code>attributes</code> 字典。每个输入和输出参数名映射到它自己的字典里，描述了它是什么样的参数，如果有的话还会给出它的最大值和最小值。例如，下面是 <code>CIColorControls</code> 滤镜对应的 <code>inputBrightness</code> 参数字典：</p>
+
+<pre><code>inputBrightness = {  
+    CIAttributeClass = NSNumber;
+    CIAttributeDefault = 0;
+    CIAttributeIdentity = 0;
+    CIAttributeMin = -1;
+    CIAttributeSliderMax = 1;
+    CIAttributeSliderMin = -1;
+    CIAttributeType = CIAttributeTypeScalar;
+};
+</code></pre>
+
+<p>对于数值参数，该字典会包含 <code>kCIAttributeSliderMin</code> 和 <code>kCIAttributeSliderMax</code> 键，来限制期望的输入域。大多数参数还包含一个 <code>kCIAttributeDefault</code> 关键字，映射到该参数的默认值。</p>
+
+<h2 id="">图片滤镜实战</h2>
+
+<p>图像滤镜的工作由三部分组成：构建和配置滤镜图表，发送等待滤镜处理的图像，得到滤镜处理后的图像。下面的部分对此进行了详细描述。</p>
+
+<h3 id="">构建一个滤镜图表</h3>
+
+<p>构建一个滤镜图表由这几个部分组成：实例化我们需要的滤镜，设置它们的参数，把它们连接起来以便该图像数据按顺序传过每个滤镜。</p>
+
+<p>在本节中，我们将创建一个用来制作 19 世纪锡版照风格图像的滤镜图表。我们将两个效果链在一起来达到这种效果：同时去饱和以及染色调的黑白滤镜，和一个暗角滤镜来创建一个有阴影效果的加框图片。</p>
+
+<p>用 Quartz Composer，来做 Core Image 滤镜图表的原型非常有用，可以<a href="https://developer.apple.com/downloads/index.action?name=Graphics">从苹果开发者网站下载</a>。下面，我们整理了所需的照片滤镜，把黑白滤镜和暗角滤镜串在一起：</p>
+
+<p><img src="http://img.objccn.io/issue-21/quartz.png" alt="A filter graph built with Quartz Composer, showing intermediate filtered images" /></p>
+
+<p>一旦达到了我们满意的效果，我们可以重新在代码里创建滤镜图表：</p>
+
+<pre><code>let sepiaColor = CIColor(red: 0.76, green: 0.65, blue: 0.54)  
+let monochromeFilter = CIFilter(name: "CIColorMonochrome",  
+    withInputParameters: ["inputColor" : sepiaColor, "inputIntensity" : 1.0])
+monochromeFilter.setValue(inputImage, forKey: "inputImage")
+
+let vignetteFilter = CIFilter(name: "CIVignette",  
+    withInputParameters: ["inputRadius" : 1.75, "inputIntensity" : 1.0])
+vignetteFilter.setValue(monochromeFilter.outputImage, forKey: "inputImage")
+
+let outputImage = vignetteFilter.outputImage  
+</code></pre>
+
+<p>需要注意的是黑白滤镜的输出图像变为暗角滤镜的输入图像。这将导致暗角效果要应用到黑白图像上。还要注意的是，我们可以在初始化中指定参数，而不一定需要用 KVC 单独设置它们。</p>
+
+<h3 id="">创建输入图像</h3>
+
+<p>Core Image 滤镜要求其输入图像是 <code>CIImage</code> 类型。而对于 iOS 的程序员来说这可能会有一点不寻常，因为他们更习惯用 <code>UIImage</code>，但这个区别是值得的。一个 <code>CIImage</code> 实例实际上比 <code>UIImage</code> 更全面，因为 <code>CIImage</code> 可以无限大。当然，我们不能存储无限的图像在内存中，但在概念上，这意味着你可以从 2D 平面上的任意区域获取图像数据，并得到一个有意义的结果。</p>
+
+<p>所有我们在本文中使用的图像都是有限的，而且也可以很容易从一个 <code>UIImage</code> 来创建一个 <code>CIImage</code>。事实上，这只需要一行代码：</p>
+
+<pre><code>let inputImage = CIImage(image: uiImage)  
+</code></pre>
+
+<p>也有很方便的初始化方法直接从图像数据或文件 URL 来创建 <code>CIImage</code>。</p>
+
+<p>一旦我们有了一个 <code>CIImage</code>，我们就可以通过设置滤镜的 <code>inputImage</code> 参数来将其设置为滤镜的输入图像：</p>
+
+<pre><code>filter.setValue(inputImage, forKey:"inputImage")  
+</code></pre>
+
+<h3 id="">得到一个滤镜处理后的图片</h3>
+
+<p>滤镜都有一个名为 <code>outputImage</code> 的属性。正如你可能已经猜到的一样，它是 <code>CIImage</code> 类型的。那么，我们如何实现从一个 <code>CIImage</code> 创建 <code>UIImage</code> 这样一个反向操作？好了，虽然我们到此已经花了所有的时间建立一个滤镜图表，现在是调用 <code>CIContext</code> 的力量来实际的做图像滤镜处理工作的时候了。</p>
+
+<p>创建一个上下文最简单的方法是给它的构造方法传一个 nil 字典：</p>
+
+<pre><code>let ciContext = CIContext(options: nil)  
+</code></pre>
+
+<p>为了得到一个滤镜处理过的图像，我们需要 <code>CIContext</code> 从输出图像的一个矩形内创建一个 <code>CGImage</code>，传入输入图像的范围（bounds）：</p>
+
+<pre><code>let cgImage = ciContext.createCGImage(filter.outputImage, fromRect: inputImage.extent())  
+</code></pre>
+
+<p>我们使用输入图像大小的原因是，输出图像通常和输入图像具有不同的尺寸比。例如，一个模糊图像由于采样超出了输入图像的边缘，围绕在其边界外还会有一些额外的像素。</p>
+
+<p>现在，我们可以从这个新创建的 <code>CGImage</code> 来创建一个 <code>UIImage</code> 了：</p>
+
+<pre><code>let uiImage = UIImage(CGImage: cgImage)  
+</code></pre>
+
+<p>直接从一个 <code>CIImage</code> 创建 <code>UIImage</code> 也是可以的，但这种方法有点让人郁闷：如果你试图在一个 <code>UIImageView</code> 上显示这样的图像，其 <code>contentMode</code> 属性将被忽略。使用过渡的 <code>CGImage</code> 则需要一个额外的步骤，但可以省去这一烦恼。</p>
+
+<h3 id="opengl">用 OpenGL 来提高性能</h3>
+
+<p>用 CPU 来绘制一个 <code>CGImage</code> 是非常耗时和浪费的，它只将结果回传给 UIKit 来做合成。我们更希望能够在屏幕上绘制应用滤镜后的图像，而不必去 Core Graphics 里绕一圈。幸运的是，由于 OpenGL 和 Core Image 的可互操作性，我们可以这么做。</p>
+
+<p>要 OpenGL 上下文和 Core Image 上下文之间共享资源，我们需要用一个稍微不同的方式来创建我们的 <code>CIContext</code>：</p>
+
+<pre><code>let eaglContext = EAGLContext(API: .OpenGLES2)  
+let ciContext = CIContext(EAGLContext: context)  
+</code></pre>
+
+<p>在这里，我们用 OpenGL ES 2.0 的功能集创建了一个 <code>EAGLContext</code>。这个 GL 上下文可以用作一个 <code>GLKView</code> 的背衬上下文或用来绘制成一个 <code>CAEAGLLayer</code>。示例代码使用这种技术来有效地绘制图像。</p>
+
+<p>当一个 <code>CIContext</code> 具有了关联 GL 的上下文，滤镜处理后的图像就可用 OpenGL 来绘制，像如下这样调用方法：</p>
+
+<pre><code>ciContext.drawImage(filter.outputImage, inRect: outputBounds, fromRect: inputBounds)  
+</code></pre>
+
+<p>与以前一样，<code>fromRect</code> 参数是用滤镜处理后的图像的坐标空间来绘制的图像的一部分。这个 <code>inRect</code> 参数是 GL 上下文的坐标空间的矩形应用到需要绘制图像上。如果你想保持图像的长宽比，你可能需要做一些数学计算来得到适当的 <code>inRect</code>。</p>
+
+<h3 id="cpu">强制在 CPU 上做滤镜操作</h3>
+
+<p>只要有可能，Core Image 将在 GPU 上执行滤镜操作。然而，它确实有回滚到 CPU 上执行的可能。滤镜操作在 CPU 上完成可具有更好的精确度，因为 GPU 经常在浮点计算上以失真换得更快的速度。在创建一个上下文时，你可以通过设置 <code>kCIContextUseSoftwareRenderer</code> 关键字的值为 <code>true</code> 来强制 Core Image 在 CPU 上运行。</p>
+
+<p>你可以通过在 Xcode 中设置计划配置（scheme configuration）里的 <code>CI_PRINT_TREE</code> 环境变量为 <code>1</code> 来决定用 CPU 还是 GPU 来渲染。这将导致每次一个滤镜处理图像被渲染的时候 Core Image 都会打印诊断信息。此设置用来检查合成图像滤镜树也很有用。</p>
+
+<h2 id="">示例应用一览</h2>
+
+<p>本文的<a href="https://github.com/objcio/issue-21-core-image-explorer">示例代码</a>是一个 iPhone 应用程序，展示了 iOS 里大量的各式 Core Image 图像滤镜。</p>
+
+<h3 id="gui">为滤镜参数创建一个 GUI</h3>
+
+<p>为了尽可能多的演示各种滤镜，示例应用程序利用了 Core Image 的内省特点生成了一个界面，用于控制它支持的滤镜参数：</p>
+
+<p><img src="http://img.objccn.io/issue-21/color-controls.png" alt="Image being tweaked with the Color Controls filter" /></p>
+
+<p>示例应用程序只限于单一的图像输入以及零个或多个数值输入的滤镜。也有一些有趣的滤镜不属于这一类（特别是那些合成和转换滤镜）。即便如此，该应用程序仍然很好的概述了 Core Image 支持的功能。</p>
+
+<p>对于每个滤镜的输入参数，都有一个滑动条可以用于配置参数的最小值和最大值，其值被设置为默认值。当滑动条的值发生变化时，它把改变后的值传给它的 delegate，一个持有 <code>CIFilter</code> 引用的 <code>UIImageView</code> 子类。</p>
+
+<h3 id="">使用内建的照片滤镜</h3>
+
+<p>除了许多其他的内置滤镜，示例应用程序还展示了 iOS 7 中引入的照片滤镜。这些滤镜没有我们可以调整的参数，但它们值得被囊括进来，因为它们展示了如何在 iOS 中模拟照片应用程序的效果：</p>
+
+<p><img src="http://img.objccn.io/issue-21/photo-filters.png" alt="Image processed with the Transfer photo filter" /></p>
+
+<h2 id="">结论</h2>
+
+<p>这篇文章简要介绍了 Core Image 这个高性能的图像处理框架。我们一直在试图在如此简短的形式内尽可能多的展示这个框架的功能。你现在已经学会了如何实例化和串联 Core Image 的滤镜，在滤镜图表传入和输出图像，以及调整参数来获得想要的结果。你还学习了如何访问系统提供的照片滤镜，用以模拟在 iOS 上的照片应用程序的行为。</p>
+
+<p>现在你知道了足够多的东西来写你自己的照片编辑应用程序了。随着更多的一些探索，你就可以写自己的滤镜了，利用你的 Mac 或 iPhone 的神奇的力量来执行以前无法想象的效果。快去动手做吧！</p>
+
+<h3 id="">参考</h3>
+
+<p><a href="https://developer.apple.com/library/mac/documentation/GraphicsImaging/Reference/CoreImagingRef/_index.html#//apple_ref/doc/uid/TP40001171">Core Image Reference Collection</a> 是 Core Image 的权威文档集。</p>
+
+<p><a href="https://developer.apple.com/library/ios/documentation/GraphicsImaging/Reference/CoreImageFilterReference/index.html#//apple_ref/doc/uid/TP40004346">Core Image Filter Reference</a> 包含了 Core Image 提供的图像滤镜的完整列表，以及用法示例。</p>
+
+<p>如果想要写更函数式风格的 Core Image 代码，可以看看 Florian Kluger <a href="../issue-16-4/index.html">在 objccn.io 话题 #16 里的文章</a>。</p>
+
+<hr />
+
+<p><a href="http://www.objccn.io/issue-21">话题 #21 下的更多文章</a></p>
+
+<p>原文 <a href="http://www.objc.io/issue-21/core-image-intro.html">An Introduction to Core Image</a></p>
+                    </div>
+                    <h3>关于译者</h3>
+                    <div class="at_author">
+                        <div class="row">
+                            <div class="medium-2 columns show-for-medium-up">
+                                <div class="at_author_image">
+                                    <img src="../content/images/2015/Jan/april.jpeg" alt="April">
+                                </div>
+                            </div>
+                            <div class="medium-10 columns">
+                                <div class="at_author_name">
+                                    <h3>April</h3>
+                                </div>
+                                <div class="at_author_bio">
+                                    <p>做 iOS / Mac / Web 开发的大白羊小妹儿~</p>
+                                    <p><a href="http://www.aprilme.com">http://www.aprilme.com</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+
+<div id="at_footer">
+	<div class="row">
+		<div class="large-12 columns text-center">
+			<div class="at_block">
+				<div class="copyright">
+					<span>&copy; 2015 <a href="../index.html">objc中国</a><br />本站由 <a href="http://im.onevcat.com">@onevcat</a> 创建，文章源自 <a href="http://objc.io">objc.io</a>，由 <a href="https://github.com/objccn">objc中国 项目组</a>整理维护</span>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+        </div>
+    </div>
+
+    
+    <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.1.0.min.js"></script>
+    <script>window.jQuery || document.write('<script src="../assets/js/jquery-2.1.0.min.js"><\/script>')</script>
+
+    <script>
+        var ghostionConfig = {
+            site_url:                       "objccn.io",
+            google_fonts_family:            "Open+Sans:400,400italic,700,700italic",
+            google_analytics_tracking_id:   "UA-49045539-1",
+            disqus_shortname:               "objccn"
+        };
+    </script>
+    <script src="../assets/js/ghostion.min.js"></script>
+    
+</body>
+</html>
